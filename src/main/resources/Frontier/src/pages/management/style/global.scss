@@ -1,0 +1,27 @@
+/*全局样式*/
+body {
+    margin: 0;
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    //background-color: #a6a6a6;
+}
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+body .el-message-box{
+    width: unset;
+}
+body .el-message{
+    min-width: 350px;
+}
+
+.el-dialog{
+    width: 100%;
+    max-width: 450px
+}
+
+.el-notification.right{
+    right: 2px;
+    width: 250px;
+}

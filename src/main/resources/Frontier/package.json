@@ -1,0 +1,58 @@
+{
+  "name": "we-check",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "compress": "node compress.js"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bean": "^1.0.15",
+    "chart.js": "^2.7.3",
+    "element-ui": "^2.4.5",
+    "flotr2": "^0.1.0",
+    "jquery": "^3.3.1",
+    "jsqr": "^1.1.1",
+    "moment": "^2.22.2",
+    "pwa": "^1.9.4",
+    "qrcode": "^1.2.2",
+    "qs": "^6.5.2",
+    "register-service-worker": "^1.0.0",
+    "stats-webpack-plugin": "^0.7.0",
+    "sw-precache-webpack-plugin": "^0.11.5",
+    "underscore": "^1.9.1",
+    "url-parse": "^1.4.3",
+    "vue": "^2.5.16",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.0-rc.5",
+    "@vue/cli-service": "^3.0.0-rc.5",
+    "minimist": "^1.2.0",
+    "node-sass": "^4.9.2",
+    "offline-plugin": "^5.0.5",
+    "sass-loader": "^7.0.1",
+    "vue-template-compiler": "^2.5.16",
+    "webpack-cli": "^3.1.0",
+    "worker-loader": "^2.0.0"
+  },
+  "description": "H5签到APP",
+  "main": ".postcssrc.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/depressedX/WeCheck.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/depressedX/WeCheck/issues"
+  },
+  "homepage": "https://github.com/depressedX/WeCheck#readme"
+}
