@@ -158,7 +158,6 @@
 house： 
 
 |key|type|Description|
-|---|---|---|
 |house_id|string|房产证号|
 |owner_id|string|拥有者的身份证号|
 |owner_name|string|拥有者的姓名|
