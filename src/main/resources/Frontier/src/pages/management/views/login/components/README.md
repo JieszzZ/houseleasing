@@ -1,1 +1,0 @@
-这里放相应view的私有component
