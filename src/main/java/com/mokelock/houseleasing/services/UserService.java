@@ -1,6 +1,6 @@
 package com.mokelock.houseleasing.services;
 
-public interface UserServices {
+public interface UserService {
 
     boolean signIn();
 
