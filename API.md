@@ -49,8 +49,8 @@
   POST /user/login
   ```
   ##### input
-  Name|Type  |Description
-  ----|--|----  
+  |Name|Type|Description|
+  |---|---|---|
   |username|string|用户名|  
   |password|string|密码|
   #### response
@@ -138,7 +138,7 @@
     "phone":18560125097  //电话号码
     "id":370102199711111111  //身份证号
     "credit":15   //信誉值
-    "myhouse":[
+    "myHouse":[
         {
             "commu_name":"奥龙官邸"，
             "house_hash"："sdfaafadsfasd"
@@ -256,7 +256,7 @@
 
 
   ```
-  GET /user/myhouse
+  GET /user/myHouse
   ```
    ##### params
   
@@ -315,7 +315,7 @@
 
 * #### 修改我的房子 (u)
   ```
-  POST /user/myhouse
+  POST /user/myHouse
   ```
  
    ##### input
