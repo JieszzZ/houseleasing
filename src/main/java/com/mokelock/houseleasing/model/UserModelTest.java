@@ -3,7 +3,7 @@ package com.mokelock.houseleasing.model;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class UserModel {
+public class UserModelTest {
 
     private String userType;
     private String username;
@@ -92,10 +92,10 @@ public class UserModel {
                 '}';
     }
 
-    public UserModel() {
+    public UserModelTest() {
     }
 
-    public UserModel(String userType, String username, String name, String gender, String phone, String ID, String credit, ArrayList<Map> myHouse) {
+    public UserModelTest(String userType, String username, String name, String gender, String phone, String ID, String credit, ArrayList<Map> myHouse) {
         this.userType = userType;
         this.username = username;
         this.name = name;

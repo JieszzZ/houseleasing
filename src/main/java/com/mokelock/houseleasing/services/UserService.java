@@ -23,7 +23,7 @@ public interface UserService {
     ArrayList<record> getRecords(String _username);
 
     //根据用户名查询该用户名下的房子信息，存储在一个ArrayList<house>链表中
-    ArrayList<house> getHouses(String _username);
+//    ArrayList<house> getHouses(String _username);
 
     //修改一个用户的信誉值，得到的信誉值是_credit，成功返回true，失败返回false；实际上是调用了postUser
     boolean postCredit(User _old,short _credit);

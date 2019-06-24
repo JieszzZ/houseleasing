@@ -2,7 +2,7 @@ package com.mokelock.houseleasing.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.mokelock.houseleasing.model.UserModel;
+import com.mokelock.houseleasing.model.UserModelTest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,13 +53,13 @@ public class UserController {
      * @return 包含用户信息的Model
      */
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public UserModel user(HttpServletRequest request) {
+    public UserModelTest user(HttpServletRequest request) {
         String username = request.getParameter("username");
         if (username == null) {
             HttpSession session = request.getSession();
             username = (String) session.getAttribute("username");
         }
-        return new UserModel();
+        return new UserModelTest();
     }
 
     /**
