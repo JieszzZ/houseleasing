@@ -103,7 +103,7 @@ public class UserController {
      *       {
      *       "time": 2019-1-13    //交易时间
      *       "gas": 500  //花费的手续费
-     *       “low_location”：{
+     *       “LowLocation”：{
      *               “provi”:"山东省"，
      *               “city”："济南市"，
      *               “sector”:"历下区",
