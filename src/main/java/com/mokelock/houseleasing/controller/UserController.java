@@ -1,8 +1,10 @@
 package com.mokelock.houseleasing.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mokelock.houseleasing.model.UserModel;
+import com.mokelock.houseleasing.model.UserModelTest;
+import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +16,8 @@ import javax.servlet.http.HttpSession;
 @RequestMapping(value = "/user")
 public class UserController {
 
+    private final static Logger logger = Logger.getLogger(UserController.class);
+
     /**
      * 用户登录
      * @param username 用户名
@@ -21,7 +25,10 @@ public class UserController {
      * @return 返回状态 0 用户 | 1 管理员 | 2 账户不存在 | 3 密码错误
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public int login(String username, String password) {
+    public int login(HttpSession session, String username, String password) {
+        boolean checkResult = true;
+        session.setAttribute("username", username);
+        logger.debug(username + " login");
         return 0;
     }
 
@@ -30,8 +37,8 @@ public class UserController {
      * @return true 已登录 | false 未登录
      */
     @RequestMapping(value = "/hasLoggedIn", method = RequestMethod.POST)
-    public boolean hasLoggedIn() {
-        return false;
+    public boolean hasLoggedIn(HttpSession session) {
+        return session.getAttribute("username") != null;
     }
 
     /**
@@ -39,8 +46,11 @@ public class UserController {
      * @return true 成功注销 | false 失败
      */
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
-    public boolean logout () {
-        return false;
+    public boolean logout (HttpSession session) {
+        logger.debug(session.getAttribute("username") + " logout");
+        session.removeAttribute("username");
+        session.invalidate();
+        return true;
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -53,13 +63,13 @@ public class UserController {
      * @return 包含用户信息的Model
      */
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public UserModel user(HttpServletRequest request) {
+    public UserModelTest user(HttpServletRequest request) {
         String username = request.getParameter("username");
         if (username == null) {
             HttpSession session = request.getSession();
             username = (String) session.getAttribute("username");
         }
-        return new UserModel();
+        return new UserModelTest();
     }
 
     /**
@@ -149,6 +159,36 @@ public class UserController {
      */
     @RequestMapping(value = "/info", method = RequestMethod.POST)
     public void info (String password, String phone) {
+
+    }
+
+    /**
+     * 联系房主
+     * @param house_hash 房子hash
+     * @return 房主电话
+     */
+    @RequestMapping(value = "/contact_owner", method = RequestMethod.POST)
+    public String contactOwner(String house_hash) {
+        return "";
+    }
+
+    /**
+     * 获取所有用户信息
+     * @return 用户信息列表
+     */
+    @RequestMapping(value = "/all_info", method = RequestMethod.GET)
+    public JSON allInfo() {
+        JSON json = new JSONArray();
+        return json;
+    }
+
+    /**
+     * 修改用户信息
+     * @param username 用户账户
+     * @param credit 信誉值
+     */
+    @RequestMapping(value = "/changeinfo", method = RequestMethod.POST)
+    public void changeInfo(String username, String credit){
 
     }
 
