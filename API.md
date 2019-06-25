@@ -49,8 +49,8 @@
   POST /user/login
   ```
   ##### input
-  |Name|Type|Description|
-  |---|---|---|
+  Name|Type  |Description
+  ----|--|----  
   |username|string|用户名|  
   |password|string|密码|
   #### response
@@ -138,7 +138,7 @@
     "phone":18560125097  //电话号码
     "id":370102199711111111  //身份证号
     "credit":15   //信誉值
-    "myHouse":[
+    "myhouse":[
         {
             "commu_name":"奥龙官邸"，
             "house_hash"："sdfaafadsfasd"
@@ -225,17 +225,18 @@
     "username":"liupenghao",//用户名
     "name":"刘鹏昊",//姓名
     “record”:[
-        {
-        "time": 2019-1-13    //交易时间
-        "gas": 500  //花费的手续费
-        “low_location”：{
-                “provi”:"山东省"，
-                “city”："济南市"，
-                “sector”:"历下区",
-                "commu_name":"奥龙官邸"
-        }，
-       "specific_location":"2号楼3单元1801",
-        “record”:[
+          {
+            "time": 2019-1-13    //交易时间
+            "gas": 500  //花费的手续费
+            “low_location”：{
+                    “provi”:"山东省"，
+                    “city”："济南市"，
+                    “sector”:"历下区",
+                    "commu_name":"奥龙官邸"
+            }，
+           "specific_location":"2号楼3单元1801"
+          },
+
           {"time": 2019-1-13    //交易时间
             "gas": 500  //花费的手续费
             “low_location”：{
@@ -246,17 +247,17 @@
             }，
           "specific_location":"2号楼3单元1801",
           }，
-        ...
+          ...
        ]，
      }
   }
   ```
 
-* #### 获取我的房子 (u)
+* #### 获取我的某一套房子详细信息 (u)
 
 
   ```
-  GET /user/myHouse
+  GET /user/myhouse
   ```
    ##### params
   
@@ -295,7 +296,7 @@
       "elevator":true
       "lease":3800
       "house_type":1  // 1 一室 2 二室 3 其他
-      "house_credit":16,
+      "house_owner_credit":16,       //房主的信誉
       "house_comment":[
         {
           "user_id":"quyans111",   //评论人账号名
@@ -315,7 +316,7 @@
 
 * #### 修改我的房子 (u)
   ```
-  POST /user/myHouse
+  POST /user/myhouse
   ```
  
    ##### input
@@ -370,7 +371,8 @@ house：
 |lease_inter|number|0 全部 1 500元以下 2 500-1000元   3 1000-1500元 4 1500-2000元 5 2000元以上 |
 |lease_type|number| 0 全部 1 整租 2 合租 |
 |house_type|number| 0 全部 1 一室 2 二室 3 其他 |
-|house_credit|number| 房子信誉值  eg: 16 |
+|house_owner_credit|number| 房主信誉值  eg: 16 |
+|house_level|number|1~5 五个级别 |
 |house_comment|array| 房子评论  |
 |verify|boolean| 是否经过验证，true 通过了 false没通过  |
 
@@ -385,6 +387,8 @@ low_location：
 |sector|string|区|
 |commu_name|string|小区名|
 
+注意：现在provi 默认为山东省 city 默认为 济南市 留着字段以后扩展
+前端向后端发的时候 不带commu_name 字段
 
 * #### 获取房源详细信息(u|m)
   ```
@@ -426,6 +430,7 @@ low_location：
       "lease":3800
       "house_type":1  // 1 一室 2 二室 3 其他
       "house_credit":16,
+      "house_level":5 //房子五个等级
       "house_comment":[
         {
           "user_id":"quyans111",   //评论人账号名
@@ -704,7 +709,7 @@ low_location：
 
 * #### 请假请求反馈(m)
  ```
-  POST /tract/response
+  POST /tract/acquire
   ```
   ##### params
 
@@ -724,11 +729,11 @@ low_location：
   
   * #### 请假反馈获取(u)
  ```
-  GET /leave/{requestID}/feedback
+  GET /tract/{requestID}/feedback
   ```
   ```
   例如：
-  GET /leave/XIDJGE/feedback  
+  GET /tract/XIDJGE/feedback  
   ```
 
   #### response

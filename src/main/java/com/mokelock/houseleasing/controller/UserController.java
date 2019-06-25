@@ -1,6 +1,7 @@
 package com.mokelock.houseleasing.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mokelock.houseleasing.model.UserModelTest;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -149,6 +150,36 @@ public class UserController {
      */
     @RequestMapping(value = "/info", method = RequestMethod.POST)
     public void info (String password, String phone) {
+
+    }
+
+    /**
+     * 联系房主
+     * @param house_hash 房子hash
+     * @return 房主电话
+     */
+    @RequestMapping(value = "/contact_owner", method = RequestMethod.POST)
+    public String contactOwner(String house_hash) {
+        return "";
+    }
+
+    /**
+     * 获取所有用户信息
+     * @return 用户信息列表
+     */
+    @RequestMapping(value = "/all_info", method = RequestMethod.GET)
+    public JSON allInfo() {
+        JSON json = new JSONArray();
+        return json;
+    }
+
+    /**
+     * 修改用户信息
+     * @param username 用户账户
+     * @param credit 信誉值
+     */
+    @RequestMapping(value = "/changeinfo", method = RequestMethod.POST)
+    public void changeInfo(String username, String credit){
 
     }
 
