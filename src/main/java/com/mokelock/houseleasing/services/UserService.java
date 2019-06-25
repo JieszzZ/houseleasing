@@ -8,8 +8,6 @@ import java.util.ArrayList;
 
 public interface UserService {
 
-    boolean signIn();
-
     //获取目标用户账户的余额，查询失败返回-1
     int getBalance(String _username);
 
