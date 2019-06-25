@@ -36,9 +36,9 @@ public class User extends modifyUser{
 
 
 
-    public void setUsername(String _usename)
+    public void setUsername(String _username)
     {
-        username = _usename;
+        username = _username;
     }
 
     public String getUsername()

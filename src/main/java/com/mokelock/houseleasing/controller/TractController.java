@@ -3,6 +3,7 @@ package com.mokelock.houseleasing.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,8 +50,8 @@ public class TractController {
      *       "groupID":"xxoo",
      *       "request_status":0,   # 0：未处理  1：同意   2：拒绝
      */
-    @RequestMapping(value = "/leave/${requestID}/feedback", method = RequestMethod.GET)
-    public JSON feedback(){
+    @RequestMapping(value = "/leave/{requestID}/feedback", method = RequestMethod.GET)
+    public JSON feedback(@PathVariable("requestID") String requestID){
         JSON json = new JSONObject();
         return json;
     }
