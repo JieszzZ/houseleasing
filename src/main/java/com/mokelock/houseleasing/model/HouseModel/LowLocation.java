@@ -9,7 +9,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 * 房屋概要地址
 */
 //继承
-public class LowLocation extends JSONObject{
+public class LowLocation{
 
     public LowLocation() {
         super();

@@ -14,7 +14,7 @@ public class SampleHouse {
     public SampleHouse() {
     }
 
-    public SampleHouse(String use_id, String photo, LowLocation low_location, int lease, int lease_type, int house_type) {
+    public SampleHouse(String use_id, String photo, JSONObject low_location, int lease, int lease_type, int house_type) {
         this.use_id = use_id;
         this.photo = photo;
         this.low_location = low_location;
@@ -23,7 +23,7 @@ public class SampleHouse {
         this.house_type = house_type;
     }
 
-    public SampleHouse(String photo, LowLocation low_location, int lease, int lease_type, int house_type) {
+    public SampleHouse(String photo, JSONObject low_location, int lease, int lease_type, int house_type) {
         this.photo = photo;
         this.low_location = low_location;
         this.lease = lease;
@@ -72,14 +72,24 @@ public class SampleHouse {
         this.photo = photo;
     }
 
-    //lowlocation
-    private LowLocation low_location;
+    //帮助值的传输
+    private JSONObject low_location;
 
-    public LowLocation getLow_location() {
+    public JSONObject getLow_location() {
         return low_location;
     }
-    public void setLow_location(LowLocation low_location) {
+    public void setLow_location(JSONObject low_location) {
         this.low_location = low_location;
+    }
+
+    //lowlocation
+    private LowLocation low_location2;
+
+    public LowLocation getLow_location2() {
+        return low_location2;
+    }
+    public void setLow_location2(LowLocation low_location2) {
+        this.low_location2 = low_location2;
     }
 
     //租金

@@ -1,5 +1,6 @@
 package com.mokelock.houseleasing.model.HouseModel;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
@@ -14,7 +15,7 @@ public class House{
     }
 
     //包含了所有需要返回给前端的信息
-    public House(String[] house_pic, String house_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, LowLocation low_location, String specific_location, int floor, boolean elevator, int lease, int house_type, int house_owner_credit, HouseComment[] house_comment) {
+    public House(String[] house_pic, String house_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, JSONObject low_location, String specific_location, int floor, boolean elevator, int lease, int house_type, int house_owner_credit, JSONArray house_comment) {
         this.house_pic = house_pic;
         this.house_hash = house_hash;
         this.owner_id = owner_id;
@@ -45,7 +46,7 @@ public class House{
     }
     /**********************************************************************/
 
-    public House(String[] house_pic, String house_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, LowLocation low_location, String specific_location, int floor, boolean elevator, int lease, int house_type, int house_owner_credit, double house_level, HouseComment[] house_comment) {
+    public House(String[] house_pic, String house_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, JSONObject low_location, String specific_location, int floor, boolean elevator, int lease, int house_type, int house_owner_credit, double house_level, JSONArray house_comment) {
         this.house_pic = house_pic;
         this.house_hash = house_hash;
         this.owner_id = owner_id;
@@ -64,7 +65,7 @@ public class House{
         this.house_level = house_level;
         this.house_comment = house_comment;
     }
-    public House(String user_id, String[] house_pic, String house_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, LowLocation low_location, String specific_location, int floor, boolean elevator, int lease, int house_type, int house_owner_credit, double house_level, HouseComment[] house_comment) {
+    public House(String user_id, String[] house_pic, String house_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, JSONObject low_location, String specific_location, int floor, boolean elevator, int lease, int house_type, int house_owner_credit, double house_level, JSONArray house_comment) {
         this.user_id = user_id;
         this.house_pic = house_pic;
         this.house_hash = house_hash;
@@ -187,14 +188,25 @@ public class House{
         this.state = state;
     }
 
-    //简略地址
-    private LowLocation low_location;
+    //简略地址JSON
+    private JSONObject low_location;
 
-    public LowLocation getLow_location() {
+    public JSONObject getLow_location() {
         return low_location;
     }
-    public void setLow_location(LowLocation low_location) {
+    public void setLow_location(JSONObject low_location) {
         this.low_location = low_location;
+    }
+
+
+    //简略地址
+    private LowLocation low_location2;
+
+    public LowLocation getLow_location2() {
+        return low_location2;
+    }
+    public void setLow_location2(LowLocation low_location2) {
+        this.low_location2 = low_location2;
     }
 
     //详细地址几号楼几单元门牌号
@@ -289,14 +301,25 @@ public class House{
         this.house_level = house_level;
     }
 
-    //房子的评论
-    private HouseComment[] house_comment;
+    //房子评论JSONARRAY
+    private JSONArray house_comment;
 
-    public HouseComment[] getHouse_comment() {
+    public JSONArray getHouse_comment() {
         return house_comment;
     }
-    public void setHouse_comment(HouseComment[] house_comment) {
+    public void setHouse_comment(JSONArray house_comment) {
         this.house_comment = house_comment;
+    }
+
+
+    //房子的评论
+    private HouseComment[] house_comment2;
+
+    public HouseComment[] getHouse_comment2() {
+        return house_comment2;
+    }
+    public void setHouse_comment2(HouseComment[] house_comment2) {
+        this.house_comment2 = house_comment2;
     }
 
 }
