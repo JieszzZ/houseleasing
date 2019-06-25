@@ -33,7 +33,7 @@ public class IPFS_SERVICE_IMPL implements IPFS_SERVICE {
             if(file.exists()){
                 file.delete();
             }
-            //通过文件流输出
+            //通过文件流输出.
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(data,0,data.length);
             fos.flush();
