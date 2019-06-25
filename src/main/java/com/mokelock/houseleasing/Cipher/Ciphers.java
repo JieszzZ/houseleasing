@@ -1,4 +1,4 @@
-package com.mokelock.houseleasing.services;
+package com.mokelock.houseleasing.Cipher;
 import java.io.File;
 public interface Ciphers {
     String getKey(int length,String pwd);//通过口令生成指定长度（128，192，256）的AES密钥，可以第一次的时候调用，记住pwd即可解密。

@@ -1,6 +1,5 @@
-package com.mokelock.houseleasing.services.servicesImpl;
-import com.mokelock.houseleasing.services.Ciphers;
-import org.springframework.stereotype.Service;
+package com.mokelock.houseleasing.Cipher.CiphersImpl;
+import com.mokelock.houseleasing.Cipher.Ciphers;
 
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
@@ -12,7 +11,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.Base64.*;
 
-@Service
 public class CiphersImpl implements Ciphers {
     static Encoder encoder= Base64.getEncoder();
     static Decoder decoder= Base64.getDecoder();
