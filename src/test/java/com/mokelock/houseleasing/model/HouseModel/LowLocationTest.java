@@ -1,7 +1,5 @@
 package com.mokelock.houseleasing.model.HouseModel;
 
-import org.json.JSONObject;
-import org.json.JSONString;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
