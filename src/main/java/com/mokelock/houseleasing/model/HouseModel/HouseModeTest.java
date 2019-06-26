@@ -1,4 +1,4 @@
-package com.mokelock.houseleasing.model;
+package com.mokelock.houseleasing.model.HouseModel;
 
 import com.mokelock.houseleasing.model.HouseModel.HouseComment;
 import com.mokelock.houseleasing.model.HouseModel.LowLocation;
