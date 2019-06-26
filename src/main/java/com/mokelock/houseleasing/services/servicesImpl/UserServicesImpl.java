@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 @Service
 public class UserServicesImpl implements UserService {
-
     @Override
     public int getBalance(String _username) {
         return 0;
@@ -55,4 +54,6 @@ public class UserServicesImpl implements UserService {
     public boolean postUser(User _old, modifyUser _modified) {
         return false;
     }
+
+
 }
