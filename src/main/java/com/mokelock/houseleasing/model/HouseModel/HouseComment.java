@@ -3,8 +3,6 @@ package com.mokelock.houseleasing.model.HouseModel;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
-import java.text.DecimalFormat;
-
 /*
  * 李晓婷
  * 20190624
