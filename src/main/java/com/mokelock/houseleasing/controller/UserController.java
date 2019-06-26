@@ -4,11 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mokelock.houseleasing.model.UserModelTest;
+import com.mokelock.houseleasing.model.UserRegisterModel;
+import com.mokelock.houseleasing.services.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
+import javax.annotation.Resources;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -17,6 +21,9 @@ import javax.servlet.http.HttpSession;
 public class UserController {
 
     private final static Logger logger = Logger.getLogger(UserController.class);
+
+    @Resource
+    private UserService userService;
 
     /**
      * 用户登录
@@ -54,7 +61,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public void register() {
+    public void register(UserRegisterModel userRegisterModel) {
 
     }
 
@@ -69,6 +76,7 @@ public class UserController {
             HttpSession session = request.getSession();
             username = (String) session.getAttribute("username");
         }
+        logger.debug("/user/user " + username);
         return new UserModelTest();
     }
 
@@ -84,7 +92,7 @@ public class UserController {
             username = (String) session.getAttribute("username");
         }
         JSONObject json = new JSONObject();
-        json.put("username", "");
+        json.put("username", username);
         json.put("name", "");
         json.put("balance", "");
         return json;
