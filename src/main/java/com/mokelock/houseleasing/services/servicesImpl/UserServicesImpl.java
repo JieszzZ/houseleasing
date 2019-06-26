@@ -59,7 +59,12 @@ public class UserServicesImpl implements UserService {
     }
 
     @Override
-    public boolean postPassword(User _old, String _password) {
+    public int getBalance(String _username) {
+        return 0;
+    }
+
+    @Override
+    public boolean getUser(User _one, String _username) {
         return false;
     }
 
@@ -96,4 +101,39 @@ public class UserServicesImpl implements UserService {
     @Override
     //修改一个房子的信息;_house_hash为需要修改的房子的哈希地址；成功返回true，失败返回false；
     public boolean postHouse(String _house_hash,int _state,boolean _elevator,int _lease,String _phone){return true;}
+    public boolean postAccount(String _username, int _money) {
+        return false;
+    }
+
+    @Override
+    public ArrayList<record> getRecords(String _username) {
+        return null;
+    }
+
+    @Override
+    public boolean postCredit(User _old, short _credit) {
+        return false;
+    }
+
+    @Override
+    public boolean postGender(User _old, byte _gender) {
+        return false;
+    }
+
+    @Override
+    public boolean postPassword(User _old, String _password) {
+        return false;
+    }
+
+    @Override
+    public boolean postPhone(User _old, String _phone) {
+        return false;
+    }
+
+    @Override
+    public boolean postUser(User _old, modifyUser _modified) {
+        return false;
+    }
+
+
 }

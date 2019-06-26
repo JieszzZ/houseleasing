@@ -65,6 +65,8 @@ public interface UserService {
 
     //修改一个用户的密码和电话号码，成功返回true，失败返回false，实际上调用的是这个函数的重载：boolean postUser(User _old, modifyUser _modified);
     boolean postUser(User _old,String _password,String _phone);
+    //根据用户名查询该用户名下的房子信息，存储在一个ArrayList<house>链表中
+//    ArrayList<house> getHouses(String _username);
 
     //修改一个用户的信誉值，得到的信誉值是_credit，成功返回true，失败返回false；实际上是调用了postUser
     boolean postCredit(User _old,short _credit);
