@@ -6,6 +6,13 @@ import io.ipfs.api.NamedStreamable;
 import io.ipfs.multihash.Multihash;
 
 import java.io.File;
+import  java.io.FileOutputStream;
+import java.io.IOException;
+
+
+public class IPFS_SERVICE {
+
+    private static IPFS ipfs = new IPFS("/ip4/127.0.0.1/tcp/5001");//ipfs的服务器地址和端口
 import java.io.FileOutputStream;
 import java.io.IOException;
 

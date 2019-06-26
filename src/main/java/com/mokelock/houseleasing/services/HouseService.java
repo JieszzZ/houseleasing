@@ -1,6 +1,8 @@
 package com.mokelock.houseleasing.services;
 
 import com.alibaba.fastjson.JSON;
+import com.mokelock.houseleasing.model.HouseComment;
+import com.mokelock.houseleasing.model.low_location;
 import com.alibaba.fastjson.JSONObject;
 
 /*
@@ -9,6 +11,7 @@ import com.alibaba.fastjson.JSONObject;
  * 房屋相关处理接口
  */
 public interface HouseService {
+
 
     //获取房源详细信息（用户获取和管理员获取的返回值中role字段不同，而游客不能获取详细信息）
     JSON speInfo(String house_hash);

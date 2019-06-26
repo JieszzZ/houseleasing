@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.HouseModel.SampleHouse;
-=======
 
 import com.mokelock.houseleasing.services.HouseService;
 import org.springframework.stereotype.Service;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class HouseServiceImpl implements HouseService {
     @Override
+
 
     //获取房源详细信息
     public JSON speInfo(String house_hash) {
@@ -57,21 +57,17 @@ public class HouseServiceImpl implements HouseService {
     }
 
     @Override
-
     //评价房子
-    public JSONObject valuation(String house_hash, int house_level, String comment, String[] comment_pic) {
         /*
         * 获取用户账号、文字评论和图片评论、房屋等级
         * 根据房源hash找到该房源的详细信息并将房源评论添加上
         * 返回状态消息
         * */
     public JSON valuation(String house_hash, int house_level, String comment, String[] comment_pic) {
-
         return null;
     }
 
     @Override
-
     //获取房屋列表
     public JSON allInfo() {
         /*
