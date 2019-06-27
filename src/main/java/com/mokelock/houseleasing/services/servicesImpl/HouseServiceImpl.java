@@ -1,4 +1,4 @@
-package com.mokelock.houseleasing.services.servicesImpl;
+﻿package com.mokelock.houseleasing.services.servicesImpl;
 
 import com.alibaba.fastjson.JSON;
 
@@ -44,6 +44,15 @@ public class HouseServiceImpl implements HouseService {
          * 判断lease_type是否为空，如果否，则从array3的房源中找到简略地址字段与lease_type相同的，并将其hash值存入array4
          * 最后的array4就是用户搜索到的房源的hash，根据hash获取概要信息返回
          * */
+    }
+    @Override
+    public JSON speinfo(String house_hash) {
+        return null;
+    }
+
+    @Override
+    public JSON search(JSON low_location, int lease_inter, int house_type, int lease_type) {
+
         return null;
     }
 
