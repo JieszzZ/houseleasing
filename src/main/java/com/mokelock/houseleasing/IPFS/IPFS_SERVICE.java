@@ -6,7 +6,7 @@ import io.ipfs.api.NamedStreamable;
 import io.ipfs.multihash.Multihash;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import  java.io.FileOutputStream;
 import java.io.IOException;
 
 public interface IPFS_SERVICE {
