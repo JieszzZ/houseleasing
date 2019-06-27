@@ -1,6 +1,6 @@
 package com.mokelock.houseleasing.services;
 
-import com.mokelock.houseleasing.model.House;
+import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.UserModel.User;
 import com.mokelock.houseleasing.model.UserModel.modifyUser;
 import com.mokelock.houseleasing.model.UserModel.record;

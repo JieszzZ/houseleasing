@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mokelock.houseleasing.model.UserModel.User;
-import com.mokelock.houseleasing.model.UserModelTest;
 import com.mokelock.houseleasing.services.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,15 +71,15 @@ public class UserController {
      * @return 包含用户信息的Model
      */
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public UserModelTest user(HttpServletRequest request) {
+    public User user(HttpServletRequest request) {
         String username = request.getParameter("username");
         if (username == null) {
             HttpSession session = request.getSession();
             username = (String) session.getAttribute("username");
         }
         logger.debug("/user/user " + username);
-        User user = userService.
-        return new UserModelTest();
+//        User user = userService.getUser()
+        return new User();
     }
 
     /**
