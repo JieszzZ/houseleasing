@@ -19,6 +19,7 @@ public class User extends modifyUser{
     private String pay_password;
     private Image profile_a; //本人身份证照片带脸，找一个合适的文件格式
     private Image profile_b; //本人身份证照片带国徽，找一个合适的文件格式
+    private String hash;
     //private String password;
     //private String phone;
     //private short credit;
@@ -102,6 +103,15 @@ public class User extends modifyUser{
         profile_b = _pro_b;
     }
     public Image getProfile_b(){return profile_b;}
+
+    public void setHash(String _hash)
+    {
+        hash = _hash;
+    }
+    public String getHash()
+    {
+        return hash;
+    }
 
 
 }
