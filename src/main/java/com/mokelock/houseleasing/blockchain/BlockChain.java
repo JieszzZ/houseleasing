@@ -65,7 +65,7 @@ public class BlockChain {
      * 创建用户账户
      * @return 账户hash地址
      */
-    private String creatCredentials(String ethPassword) {
+    public String creatCredentials(String ethPassword) {
 //        String filePath = "E:\\Geth\\data\\keystore";
         String fileName_local = null;
         Credentials credentials = null;
@@ -85,7 +85,7 @@ public class BlockChain {
      * 获得环境版本信息
      * @return 版本号
      */
-    private String getVersion() {
+    public String getVersion() {
         Web3j web3j = Web3j.build(new HttpService(url));
         Web3ClientVersion web3ClientVersion = null;
         try {
@@ -102,7 +102,7 @@ public class BlockChain {
      * @param fromAddress 查询账户地址
      * @return 余额
      */
-    private BigInteger getBalance(String fromAddress) {
+    public BigInteger getBalance(String fromAddress) {
         Web3j web3j = Web3j.build(new HttpService(url));
         EthGetBalance ethGetBalance = null;
         try {
@@ -127,7 +127,7 @@ public class BlockChain {
      * @param toAddress 收款人地址
      * @return 交易hash
      */
-    private String transaction(String ethPassword, String fileName, String toAddress) {
+    public String transaction(String ethPassword, String fileName, String toAddress) {
         Web3j web3 = Web3j.build(new HttpService(url));  // defaults to http://localhost:8545/
         Credentials credentials = null;
         TransactionReceipt transactionReceipt = null;
@@ -235,7 +235,7 @@ public class BlockChain {
      * @param transactionAddress 交易hash
      * @return json
      */
-    private String getReceipt(String transactionAddress) {
+    public String getReceipt(String transactionAddress) {
         Web3j web3j = Web3j.build(new HttpService(url));
         EthGetTransactionReceipt receipt = null;
         try {
@@ -258,7 +258,7 @@ public class BlockChain {
      * 查询历史记录
      * @return 历史hash
      */
-    private String replayFilter(String userAddress) {
+    public String replayFilter(String userAddress) {
         Web3j web3j = Web3j.build(new HttpService(url));
         BigInteger startBlock = BigInteger.valueOf(0);
         BigInteger endBlock = BigInteger.valueOf(2010000);
