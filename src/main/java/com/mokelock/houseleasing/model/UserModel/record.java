@@ -6,6 +6,14 @@ public class record {
     private low_location lowLocation;
     private String specific_location;
 
+    public record(){};
+    public record(String _time,int _gas,low_location _lowLocation,String _specific_location)
+    {
+        time = _time;
+        gas =_gas;
+        lowLocation = _lowLocation;
+        specific_location = _specific_location;
+    }
 
     public void setTime(String _time){time = _time;}
     public String getTime(){return time;}
