@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class myTest {
+public class BlockChain {
 
     private String filePath = "E:\\Geth\\data\\keystore";
 //    private String fileName;
@@ -34,7 +34,7 @@ public class myTest {
 
 //    public static void main(String[] args) {
 //
-//        myTest test = new myTest();
+//        BlockChain test = new BlockChain();
 //        test.filePath = "E:\\Geth\\data\\keystore";
 //        test.fileName = "E:\\Geth\\data\\keystore\\UTC--2019-06-20T02-55-19.079955800Z--5e283b353b65baf5f18640e8a3228c8e764a9c29";
 //        test.ethPassword = "123456";
