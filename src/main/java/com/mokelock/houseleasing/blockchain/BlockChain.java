@@ -348,4 +348,13 @@ public class BlockChain {
     public void withdraw(String ownerAddress, String userAddress){
 
     }
+
+    /**
+     * 获取ipfs数据表地址
+     * @param type 0: 账户-账户对应表| 1: 在线房子概要信息表| 2: 下线房子概要信息表| 3: 房子详细信息表
+     * @return hash地址
+     */
+    public String getHash(int type){
+        return "";
+    }
 }
