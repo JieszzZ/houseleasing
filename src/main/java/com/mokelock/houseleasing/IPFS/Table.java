@@ -18,5 +18,8 @@ public interface Table {
     *insert之前要调用query来查询houseid，然后判断返回值.size()是否为0，若不为0则重复，不能插入。
     * 文本写入编码一律为utf8，读文件时注意编码。
     *  */
-    void insert(House house_obj,String eth_id,String path);//插入查重必须在前面完成，插入之前要先运行一次query house_id，并判断返回值的size是否为0
+    void insert(House house_obj,String path);//插入查重必须在前面完成，插入之前要先运行一次query house_id，并判断返回值的size是否为0
+    void update(House house_obj,String new_hash,String path);//更新hash。
+    ArrayList<String[]> get_all(String[] key_to_get,String path);//得到整个表。
+    void delete(House[] house_obj,String path);//删除指定房源。配合insert可以完成两张表之间的修改。
 }
