@@ -459,6 +459,7 @@ low_location：
   |lease_inter|number|0 全部 1 500元以下 2 500-1000元   3 1000-1500元 4 1500-2000元 5 2000元以上 |
   |house_type|number| 0 全部 1 一室 2 二室 3 其他 |
   |lease_type|number| 0 全部 1 整租 2 合租 |
+  |elevator|number| 0 全部 1 有电梯  |
 
    #### response
   ```
@@ -575,13 +576,18 @@ low_location：
   {
   "status":200,
   "message":"success",
+  "data":{
+            "username":"qys",
+            "credit":30     //最新的信誉值
+        }
   }
   ```
   
-    * #### 获取房屋列表(m)
+      
+  * #### 获取房屋列表(m)
     
   ```
-  GET /house/allinfo (m)
+  GET /house/allInfo
   ```
 
 
