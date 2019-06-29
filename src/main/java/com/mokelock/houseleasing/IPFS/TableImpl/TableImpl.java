@@ -5,6 +5,7 @@ import com.alibaba.fastjson.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import java.io.*;
@@ -29,6 +30,86 @@ public class TableImpl implements  Table{
             e.printStackTrace();
         }
     }
+    public void delete(House[] house_obj,String path){
+        File file=new File(path);
+//        String house_id=house_obj.getHouse_id();
+        List<String> list=new ArrayList();
+        try{
+            String str=null;
+            BufferedReader br=new BufferedReader(new FileReader(path));
+            while((str=br.readLine())!=null){
+                JSONObject jsonObject=JSONObject.parseObject(str);
+                for(int i=0;i<house_obj.length;i++){
+                    if(!jsonObject.getString("house_id").equals(house_obj[i].getHouse_id())) {
+                        if(!list.contains(str))
+                            list.add(str);
+                    }
+                }
+            }
+            FileOutputStream fos=new FileOutputStream(path,false);
+//            String template=msg+"\r\n";
+            for(int i=0;i<list.size();i++){
+                String template=list.get(i)+"\r\n";
+                fos.write( template.getBytes("utf-8") );
+            }
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    public void update(House house_obj,String new_hash,String path){
+        File file=new File(path);
+        List<String> list=new ArrayList<>();
+        try{
+            String str=null;
+            BufferedReader br=new BufferedReader(new FileReader(path));
+            while((str=br.readLine())!=null){
+                JSONObject jsonObject=JSONObject.parseObject(str);
+                if(jsonObject.getString("house_id").equals(house_obj.getHouse_id())){
+                    jsonObject.put("house_hash",new_hash);
+                    str=jsonObject.toJSONString();
+                }
+                list.add(str);
+            }
+            FileOutputStream fos=new FileOutputStream(path,false);
+//            String template=msg+"\r\n";
+            for(int i=0;i<list.size();i++){
+                String template=list.get(i)+"\r\n";
+                fos.write( template.getBytes("utf-8") );
+            }
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    public ArrayList<String[]> get_all(String[] key_to_get,String path){
+        ArrayList<String[]> value=new ArrayList<String[]>();
+        try{
+            String str  = null;
+            BufferedReader br=new BufferedReader(new FileReader(path));
+            while((str = br.readLine()) != null){
+                JSONObject jsonObject=JSONObject.parseObject(str);
+                int counter=0;
+                String[]element=new String[key_to_get.length];
+                for(int i=0;i<key_to_get.length;i++){
+                    element[i]=jsonObject.getString(key_to_get[i]);
+                }
+                value.add(element);
+            }
+            return value;
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }catch(IOException e){
+            e.printStackTrace();
+        }catch (NullPointerException e){
+            System.out.println("不存在的关键字");
+        }
+        String[] error={"not found"};
+        return value;
+    }
+
     public ArrayList<String[]> query(String[] key_for_search, String[] value_for_search, String[] key_to_get, String path){
         ArrayList<String[]> value=new ArrayList<String[]>();
 //        String[] element=new String[key_to_get.length];
@@ -48,9 +129,9 @@ public class TableImpl implements  Table{
 
                 }
                 String[] element=new String[key_to_get.length];
-                for (int i = 0; i < key_to_get.length; i++) {
-                    element[i] = "init";
-                }
+//                for (int i = 0; i < key_to_get.length; i++) {
+//                    element[i] = "init";
+//                }
                 if(counter==key_for_search.length) {
                     for (int i = 0; i < key_to_get.length; i++) {
                         element[i] = jsonObject.getString(key_to_get[i]);
@@ -63,15 +144,18 @@ public class TableImpl implements  Table{
             e.printStackTrace();
         }catch(IOException e){
             e.printStackTrace();
+        }catch (NullPointerException e){
+            System.out.println("不存在的关键字");
         }
         String[] error={"not found"};
         return value;
     }
-    public void insert(House house_obj,String eth_id,String path){
+    public void insert(House house_obj,String path){
         String house_id=house_obj.getHouse_id();
         String lease_inter=String.valueOf(house_obj.getLease_inter());
         String house_type=String.valueOf(house_obj.getHouse_type());
         String lease_type=String.valueOf(house_obj.getLease_type());
+        String house_hash=String.valueOf(house_obj.getHouse_hash());
         JSONObject loc=house_obj.getLow_location();
         String provi=loc.getString("provi");
         String city=loc.getString("city");
@@ -82,7 +166,7 @@ public class TableImpl implements  Table{
             FileOutputStream fos=new FileOutputStream(path,true);
             Map map=new HashMap();
             map.put("house_id",house_id);
-            map.put("eth_id",eth_id);
+            map.put("house_hash",house_hash);
             map.put("lease_inter",lease_inter);
             map.put("house_type",house_type);
             map.put("lease_type",lease_type);
@@ -101,49 +185,48 @@ public class TableImpl implements  Table{
     }
     public static void main(String args[]){
         TableImpl tml=new TableImpl();
-        String path="C:\\Users\\徐宇钦\\Desktop\\teh.txt";
+        String path="C:\\Users\\徐宇钦\\Desktop\\teh3.txt";
         tml.create(path);
-////        tml.insert("A","0X123456",path);
-////        tml.insert("B","0X456",path);
-////        tml.insert("C","0X123",path);
+//        tml.insert("A","0X123456",path);
+//        tml.insert("B","0X456",path);
+//        tml.insert("C","0X123",path);
 //        String [] a={"user_name"};
 //        String [] b={"A"};
 //        String [] d={"eth_id"};
 //        String [] c=tml.query(a,b,d,path);
         House sample=new House();
-        sample.setHouse_id("65745234");
+        sample.setHouse_id("12345");
         sample.setLease_inter(500);
         sample.setHouse_type(1);
         sample.setLease_type(2);
+        sample.setHouse_hash("klgjeklredad");
         Map map=new HashMap();
-        map.put("provi","sdd");
-        map.put("city","jnn");
+        map.put("provi","sh");
+        map.put("city","pd");
         map.put("sector","qq");
         map.put("commu_name","xqq");
         JSONObject jsonObject=new JSONObject(map);
         sample.setLow_location(jsonObject);
-        tml.insert(sample,"0x56789",path);
-
-        String[] key_for_search={"house_type","lease_type"};
-        String[] value_for_search={"1","2"};
-        String[] key_to_get={"house_id","eth_id","lease_inter"};
+        String[] key_for_search={"house_id"};
+        String[] value_for_search={sample.getHouse_id()};
+        String[] key_to_get={"provi"};
         ArrayList<String[]>v=tml.query(key_for_search,value_for_search,key_to_get,path);
-        for(int i=0;i<v.size();i++){
-            for(int j=0;j<v.get(i).length;j++){
-                System.out.print(v.get(i)[j]+" ");
-            }
-            System.out.println();
+        if(v.size()==0){
+            System.out.println(v.size());
+            tml.insert(sample,path);
         }
-//        String[] key_for_search={"house_id"};
-//        String[] value_for_search={"6574523"};
-//        String[] key_to_get={"eth_id"};
-//        ArrayList<String[]>v=tml.query(key_for_search,value_for_search,key_to_get,path);
-//        System.out.println(v.size());
-//        for(int i=0;i<v.size();i++){
-//            for(int j=0;j<v.get(i).length;j++){
-//                System.out.print(v.get(i)[j]+" ");
-//            }
-//            System.out.println();
-//        }
+        else{
+            System.out.println("重复");
+        }
+        tml.update(sample,"qwesafagqaw",path);
+        House[] h={sample};
+//        tml.delete(h,path);
+        key_to_get=new String[]{"house_id"};
+        for(int i=0;i<tml.get_all(key_to_get,path).size();i++){
+            for(int j=0;j<tml.get_all(key_to_get,path).get(i).length;j++){
+                System.out.println(tml.get_all(key_to_get,path).get(i)[j]);
+            }
+        }
+
     }
 }

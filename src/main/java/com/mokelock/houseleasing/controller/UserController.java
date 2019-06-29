@@ -3,6 +3,7 @@ package com.mokelock.houseleasing.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.UserModel.User;
 import com.mokelock.houseleasing.services.UserService;
 import org.apache.log4j.Logger;
@@ -14,6 +15,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -32,10 +35,13 @@ public class UserController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public int login(HttpSession session, String username, String password) {
-        boolean checkResult = true;
-        session.setAttribute("username", username);
-        logger.debug(username + " login");
-        return 0;
+        boolean checkResult = userService.login(username, password);
+        if (checkResult) {
+            session.setAttribute("username", username);
+            logger.debug(username + " login");
+            return 0;
+        }
+        return 3;
     }
 
     /**
@@ -62,8 +68,13 @@ public class UserController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public void register(User user, HttpServletResponse response) {
         boolean result = userService.register(user);
-//        if(!result) {
-//        }
+        if(!result) {
+            try {
+                response.getWriter().append("fail");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -78,8 +89,9 @@ public class UserController {
             username = (String) session.getAttribute("username");
         }
         logger.debug("/user/user " + username);
-//        User user = userService.getUser()
-        return new User();
+        User user = new User();
+        userService.getUser(user, username);
+        return user;
     }
 
     /**
@@ -93,10 +105,13 @@ public class UserController {
             HttpSession session = request.getSession();
             username = (String) session.getAttribute("username");
         }
+        User user = new User();
+        int balance = userService.getBalance(username);
+        userService.getUser(user, username);
         JSONObject json = new JSONObject();
         json.put("username", username);
-        json.put("name", "");
-        json.put("balance", "");
+        json.put("name", user.getName(username));
+        json.put("balance", balance);
         return json;
     }
 
@@ -106,11 +121,24 @@ public class UserController {
      * @return 用户信息 {"username":"000","name":"000","balance":"000"}
      */
     @RequestMapping(value = "/account", method = RequestMethod.POST)
-    public JSON account(String money) {
+    public JSON account(HttpServletRequest request, int money) {
+        String username = request.getParameter("username");
+        if (username == null) {
+            HttpSession session = request.getSession();
+            username = (String) session.getAttribute("username");
+        }
+        boolean result = userService.postAccount(username, money);
         JSONObject json = new JSONObject();
-        json.put("username", "");
-        json.put("name", "");
-        json.put("balance", "");
+        if (result) {
+            User user = new User();
+            int balance = userService.getBalance(username);
+            userService.getUser(user, username);
+            json.put("username", username);
+            json.put("name", user.getName(username));
+            json.put("balance", balance);
+        } else {
+            json.put("result", false);
+        }
         return json;
     }
 
@@ -132,14 +160,13 @@ public class UserController {
      *      }]
      */
     @RequestMapping(value = "/trans_record", method = RequestMethod.GET)
-    public JSON trans_record(HttpServletRequest request) {
+    public ArrayList trans_record(HttpServletRequest request) {
         String username = request.getParameter("username");
         if (username == null) {
             HttpSession session = request.getSession();
             username = (String) session.getAttribute("username");
         }
-        JSONObject json = new JSONObject();
-        return json;
+        return userService.getRecords(username);
     }
 
     /**
@@ -148,9 +175,8 @@ public class UserController {
      * @return 见接口文档。。。好长
      */
     @RequestMapping(value = "/myHouse", method = RequestMethod.GET)
-    public JSON getMyHouse(String house_hash){
-        JSONObject json = new JSONObject();
-        return json;
+    public House getMyHouse(String house_hash){
+        return userService.getHouses(house_hash);
     }
 
     /**
