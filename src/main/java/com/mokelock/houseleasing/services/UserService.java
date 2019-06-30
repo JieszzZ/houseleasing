@@ -5,6 +5,7 @@ import com.mokelock.houseleasing.model.UserModel.User;
 import com.mokelock.houseleasing.model.UserModel.modifyUser;
 import com.mokelock.houseleasing.model.UserModel.record;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /*
@@ -19,7 +20,12 @@ import java.util.ArrayList;
 * 实现了读取用户信息的方法，但是修改的方法还未完成
 * 实现了读取JSON格式的方法，能读取用户信息，但是订单信息还不能解决
 *
-*
+*更新时间：2019/06/30
+*根据需求文档修改了一下方法输入的参数
+* 注掉了多余的方法
+*实现了读取交易记录，根据用户名查询以太坊账号等方法，注册，登录一切需要密码的操作均未实现：无数据库接口
+*一切修改的操作均未实现，如修改房源信息，修改电话号码：因为没有此类接口
+*顺便一提，我觉得今天应该完成不了第一版···
 *
 * */
 
@@ -44,7 +50,7 @@ public interface UserService {
     //注册需要在以太坊上申请一个以太坊账户，并且在系统以太坊账户的用户*以太账户对应表上添加该数据
     //在数据库上添加账号*密码信息
     //在以太坊账户上存储该用户的个人信息
-    boolean register(User _rUser);
+    boolean register(String _username, String _password, String pay_password, String name, String phone,Image _profile_a,Image _profile_b,String _id,String _gender);
 
     //获取目标用户账户的余额，查询失败返回-1
     //从以太坊返回账户的余额
@@ -71,7 +77,7 @@ public interface UserService {
     //根据房子的哈希值获取一个房屋的信息，返回一个house对象
     House getHouses(String _house_hash);
 
-
+/*
     //修改一个房子的状态；_house_hash为需要修改的房子的哈希地址；成功返回true，失败返回false；
     boolean postHouseState(String _house_hash,int _state);
 
@@ -83,10 +89,14 @@ public interface UserService {
 
     //修改一个房子房主的联系电话，_house_hash为需要修改的房子的哈希地址；成功返回true，失败返回false；
     boolean postHousePhone(String _house_hash,String _phone);
+*/
+
 
     //修改一个房子的信息;_house_hash为需要修改的房子的哈希地址；成功返回true，失败返回false；
     boolean postHouse(String _house_hash,int _state,boolean _elevator,int _lease,String _phone);
 
+
+/*
     //修改一个用户的密码和电话号码，成功返回true，失败返回false，实际上调用的是这个函数的重载：boolean postUser(User _old, modifyUser _modified);
     boolean postUser(User _old,String _password,String _phone);
 
@@ -98,13 +108,16 @@ public interface UserService {
 
     //修改一个用户的密码，成功返回true，失败返回false;实际上是调用了postUser
     boolean postPassword(User _old,String _password);
+*/
 
-    //修改一个用户的电话号码，成功返回true，失败返回false;实际上是调用了postUser
-    boolean postPhone(User _old,String _phone);
 
+    //修改一个用户的电话号码，成功返回true，失败返回false;需要输入用户密码，密码正确才能修改，密码错误则返回false;
+    boolean postPhone(User _old,String _password,String _phone);
+
+    /*
     //传入一个User对象和一个modifyUser对象，将_modified对象的信息覆盖old的信息,成功返回true，失败返回false;
     //该方法是其他修改方法的源方法，可以不用主动调用;
     boolean postUser(User _old, modifyUser _modified);
-
+*/
 
 }
