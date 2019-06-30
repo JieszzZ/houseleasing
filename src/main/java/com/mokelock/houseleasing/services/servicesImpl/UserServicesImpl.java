@@ -8,12 +8,13 @@ import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.UserModel.User;
 import com.mokelock.houseleasing.model.UserModel.modifyUser;
 import com.mokelock.houseleasing.model.UserModel.record;
+import com.mokelock.houseleasing.services.HouseService;
 import com.mokelock.houseleasing.services.UserService;
 //import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
 
@@ -39,7 +40,7 @@ public class UserServicesImpl implements UserService {
 
     @Override
     //注册账号;注册的信息存储在_rUser里;
-    public boolean register(User _rUser){return true;}
+    public boolean register(String _username, String _password, String pay_password, String name, String phone, Image _profile_a, Image _profile_b, String _id, String _gender){return true;}
 
     @Override
     public int getBalance(String _username) {
@@ -111,7 +112,7 @@ public class UserServicesImpl implements UserService {
             return alr;
         }
     }
-
+/*
     @Override
     public boolean postCredit(User _old, short _credit) {
         return false;
@@ -126,21 +127,37 @@ public class UserServicesImpl implements UserService {
     public boolean postPassword(User _old, String _password) {
         return false;
     }
-
+*/
     @Override
-    public boolean postPhone(User _old, String _phone) {return true;}
+    public boolean postPhone(User _old,String _password,String _phone) {return true;}
 
     //修改一个用户的密码和电话号码，成功返回true，失败返回false，实际上调用的是这个函数的重载：boolean postUser(User _old, modifyUser _modified);
     public boolean postUser(User _old,String _password,String _phone){return true;}
-
+/*
     @Override
     public boolean postUser(User _old, modifyUser _modified) {
         return false;
     }
-
+*/
     //根据房子的哈希值获取一个房屋的信息，返回一个house对象
-    public House getHouses(String _house_hash){return null;}
+    public House getHouses(String _house_hash)
+    {
+        HouseService hs = new HouseServiceImpl();
+        House house = new House();
+        try
+        {
+            JSONObject job =(JSONObject) hs.speInfo(_house_hash);
+            house = (House) JSONObject.toJavaObject(job,House.class);
+        }catch (Exception e)
+        {
+            System.out.println("getHouses() is error!");
+        }
+        finally {
+            return house;
+        }
+    }
 
+    /*
     @Override
     //修改一个房子的状态；_house_hash为需要修改的房子的哈希地址；成功返回true，失败返回false；
     public boolean postHouseState(String _house_hash,int _state){return true;}
@@ -156,7 +173,7 @@ public class UserServicesImpl implements UserService {
     @Override
     //修改一个房子房主的联系电话，_house_hash为需要修改的房子的哈希地址；成功返回true，失败返回false；
     public boolean postHousePhone(String _house_hash,String _phone){return true;}
-
+*/
     @Override
     //修改一个房子的信息;_house_hash为需要修改的房子的哈希地址；成功返回true，失败返回false；
     public boolean postHouse(String _house_hash,int _state,boolean _elevator,int _lease,String _phone){return true;}
