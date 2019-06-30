@@ -8,7 +8,7 @@ public class Response {
     public Response() {
     }
 
-    public Response(int status, String message, JSONObject data) {
+    public Response(int status, String message, Object data) {
         this.status = status;
         this.message = message;
         this.data = data;
@@ -26,17 +26,27 @@ public class Response {
     private String message;
 
     //具体数据
-    private JSONObject data;
+    private Object data;
 
     //将Response对象转换为json对象的形式
-    public JSONObject toJson(){
-        String jsonString = JSONObject.toJSONString(this, SerializerFeature.PrettyFormat,
-                SerializerFeature.WriteNullStringAsEmpty);
-        return JSONObject.parseObject(jsonString);
+    public JSONObject RestoJson2() {
+        JSONObject fjo = new JSONObject(true);
+
+        fjo.put("status", this.status);
+        fjo.put("message", this.message);
+
+        return fjo;
     }
-    //将json对象格式的Response对象转化回来
-    public Response toRPO(JSONObject jobject){
-        return JSONObject.parseObject(jobject.toJSONString(), Response.class);
+    public JSONObject RestoJson3(){
+        JSONObject fjo = new JSONObject(true);
+
+        fjo.put("status",this.status);
+        fjo.put("message",this.message);
+        fjo.put("data",this.data);
+
+        return fjo;
+        //String jsonString = JSONObject.toJSONString(this, SerializerFeature.PrettyFormat,
+        //        SerializerFeature.WriteNullStringAsEmpty);
     }
 
     public int getStatus() {
@@ -55,11 +65,11 @@ public class Response {
         this.message = message;
     }
 
-    public JSONObject getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(JSONObject data) {
+    public void setData(Object data) {
         this.data = data;
     }
 }

@@ -3,6 +3,8 @@ package com.mokelock.houseleasing.model.HouseModel;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
+import java.text.DecimalFormat;
+
 /*
  * 李晓婷
  * 20190624
@@ -29,16 +31,19 @@ public class HouseComment {
 
     //详情页需要
     //将HouseComment对象转换为json对象的形式
-    public JSONObject toJson(){
-        String jsonString = JSONObject.toJSONString(this, SerializerFeature.PrettyFormat,
-                SerializerFeature.WriteNullStringAsEmpty);
-        return JSONObject.parseObject(jsonString);
+    public JSONObject HCtoJson(){
+        JSONObject cjo = new JSONObject(true);
+
+        cjo.put("user_id",this.user_id);
+        cjo.put("comment",this.comment);
+        cjo.put("comment_pic",this.comment_pic);
+
+        return cjo;
     }
     //将json对象格式的HouseComment对象转化回来
-    public HouseComment toHCO(JSONObject jobject){
-        return JSONObject.parseObject(jobject.toJSONString(), HouseComment.class);
-    }
-
+    //public HouseComment toHCO(JSONObject jobject){
+    //    return JSONObject.parseObject(jobject.toJSONString(), HouseComment.class);
+    //}
     //DecimalFormat format = new DecimalFormat("0.0");
 
     //登录用户账号
@@ -91,16 +96,4 @@ public class HouseComment {
         this.comment_pic = comment_pic;
 
     }
-
-  /*  public String toString(){
-
-        return "HouseComment{" +
-                "user_id='" + user_id + '\'' +
-                ", comment='" + comment + '\'' +
-                ", comment_pic='" + comment_pic + '\'' +
-                ", house_hash='" + house_hash + '\'' +
-                ", level='" + level + '\'' +
-                '}';
-    }*/
-
 }
