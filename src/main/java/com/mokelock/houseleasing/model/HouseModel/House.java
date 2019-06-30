@@ -13,7 +13,7 @@ public class House{
 
     public House() {
     }
-    public House(String user_id, String[] house_pic, String house_id, String house_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, JSONObject low_location, String low_str_location, String specific_location, int floor, boolean elevator, int lease, int lease_inter, int lease_type, int house_type, int house_owner_credit, double house_level, JSONArray house_comment) {
+    public House(String user_id, String[] house_pic, String house_id, String house_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, JSONObject low_location, String low_str_location, String specific_location, int floor, String lon, String lat, boolean elevator, int lease, int lease_inter, int lease_type, int house_type, int house_owner_credit, double house_level, JSONArray house_comment) {
         this.user_id = user_id;
         this.house_pic = house_pic;
         this.house_id = house_id;
@@ -28,6 +28,8 @@ public class House{
         this.low_str_location = low_str_location;
         this.specific_location = specific_location;
         this.floor = floor;
+        this.lon = lon;
+        this.lat = lat;
         this.elevator = elevator;
         this.lease = lease;
         this.lease_inter = lease_inter;
@@ -40,7 +42,7 @@ public class House{
 
     /**********************************************************************/
     //包含了所有需要返回给前端的信息
-    public House(String[] house_pic, String house_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, JSONObject low_location, String low_str_location, String specific_location, int floor, boolean elevator, int lease, int house_type, int house_owner_credit, double house_level, JSONArray house_comment) {
+    public House(String[] house_pic, String house_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, JSONObject low_location, String low_str_location, String specific_location, int floor, String lon, String lat, boolean elevator, int lease, int house_type, int house_owner_credit, double house_level, JSONArray house_comment) {
         this.house_pic = house_pic;
         this.house_hash = house_hash;
         this.owner_id = owner_id;
@@ -53,6 +55,8 @@ public class House{
         this.low_str_location = low_str_location;
         this.specific_location = specific_location;
         this.floor = floor;
+        this.lon = lon;
+        this.lat = lat;
         this.elevator = elevator;
         this.lease = lease;
         this.house_type = house_type;
@@ -76,6 +80,8 @@ public class House{
         hjo.put("low_str_location",this.low_str_location);
         hjo.put("specific_location",this.specific_location);
         hjo.put("floor",this.floor);
+        hjo.put("lon",this.lon);
+        hjo.put("lat",this.lat);
         hjo.put("elevator",this.elevator);
         hjo.put("lease",this.lease);
         hjo.put("house_type",this.house_type);
@@ -230,6 +236,25 @@ public class House{
     }
     public void setFloor(int floor) {
         this.floor = floor;
+    }
+
+    //房子的面积
+    private String lon;//经度
+
+    public String getLon() {
+        return lon;
+    }
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
+    private String lat;//纬度
+
+    public String getLat() {
+        return lat;
+    }
+    public void setLat(String lat) {
+        this.lat = lat;
     }
 
     //有无电梯

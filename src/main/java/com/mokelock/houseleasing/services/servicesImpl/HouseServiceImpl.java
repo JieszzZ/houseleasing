@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mokelock.houseleasing.IPFS.IPFS_SERVICE_IMPL;
 import com.mokelock.houseleasing.IPFS.TableImpl.TableImpl;
 import com.mokelock.houseleasing.model.HouseModel.*;
 
@@ -29,53 +30,65 @@ public class HouseServiceImpl implements HouseService {
 
     //获取房源详细信息
     public JSON speInfo(String house_hash) {
+        //根据传进来的实参house_hash，去下载管理员的房屋表，得到这个房子所在文件夹的hash
+        // 然后根据这个hash下载房屋文件夹，然后即可访问里面的文件
 
-        //打开IPFS中存储房子详细信息的文件夹，每个房子的house_pic放在一个文件中，评论放在一个文件中
-        // 除图片和文件之外的房子信息每个房子放在一个文件中
+        //接口文档中说明：house_hash表示的是房产证的hash
+        //house_pic直接从txt中下载
 
-        TableImpl htable = new TableImpl();
-        String[] key_to_search = {"house_hash"};
+        IPFS_SERVICE_IMPL isi = new IPFS_SERVICE_IMPL();
+
+        //isi.download("这个房子文件夹的hash，假设是thehousefilehash");
+        //d:\thehousefilehash\info.txt    表示这个房屋的信息的TXT
+        //d:\thehousefilehash\comment.txt    表示这个房屋的评论的TXT
+        //d:\thehousefilehash\pic.txt    表示这个房屋的图片的TXT
+
+        TableImpl dhtable = new TableImpl();
+
+        String[] key_for_search = {"house_hash"};
         String[] value_to_search = {house_hash};
-        String[] key_to_get = {"house_pic","owner_id","verify",
-                "owner","owner_name","role","state",
-                "low_location","specific_location","floor",
-                "elevator", "lease","house_type","house_owner_credit","house_level","user_id","comment","comment_pic"};
+        String[] key_to_get = {"owner_id","verify", "owner","owner_name",
+                "role","state", "provi","city",
+                "sector","commu_name","specific_location", "floor",
+                "lon", "lat", "elevator", "lease",
+                "house_type", "house_credit", "house_level"};
+        String[] key_to_getComment = {"user_id","comment","comment_pic"};
 
-        ArrayList<String[]> dh = htable.query(key_to_search,value_to_search,key_to_get,"");
+        //得到满足条件的房子的信息
+        ArrayList<String[]> detailedHouse = dhtable.query(key_for_search, value_to_search, key_to_get, "");
+        ArrayList<String[]> houseComment = dhtable.get_all(key_to_getComment, "");
 
-        String[] house_pic = new String[3];
+        //获得所有评论的正确形式
+        JSONArray house_comment = new JSONArray();
+        HouseComment singleHouseComment;
+        for(int i = 0 ;i < houseComment.size() ;i++){
+            singleHouseComment = new HouseComment(houseComment.get(i)[0],houseComment.get(i)[1],
+                    (houseComment.get(i)[2].substring(1,houseComment.get(i)[2].length())).split(","));
+            house_comment.add(singleHouseComment.HCtoJson());
+        }
+
+        //存放得到的房子的图片
+        String[] house_pic = new String[3];//
+
+        //获得符合要求的形式
+        String low_str_location = detailedHouse.get(0)[6]+detailedHouse.get(0)[7]+detailedHouse.get(0)[8]+detailedHouse.get(0)[9];
+        //创建一个LowLocation类型的对象
         LowLocation ll = new LowLocation();
-        ll.StoLL(dh.get(0)[7]);
+        //使用字符串类型的low_str_location来初始化ll
+        ll.StoLL(low_str_location);
+        //获得JSON对象类型的low_location
         JSONObject low_location = ll.LLtoJson();
 
-        //String[] comment_pic = new String[];
+        House theHouse = new House(house_pic,house_hash,detailedHouse.get(0)[0],Boolean.parseBoolean(detailedHouse.get(0)[1]),
+                detailedHouse.get(0)[2],detailedHouse.get(0)[3],Integer.parseInt(detailedHouse.get(0)[4]),
+                Integer.parseInt(detailedHouse.get(0)[5]), low_location,low_str_location,detailedHouse.get(0)[10],
+                Integer.parseInt(detailedHouse.get(0)[11]), detailedHouse.get(0)[12], detailedHouse.get(0)[13],
+                Boolean.parseBoolean(detailedHouse.get(0)[14]),Integer.parseInt(detailedHouse.get(0)[15]),
+                Integer.parseInt(detailedHouse.get(0)[16]),Integer.parseInt(detailedHouse.get(0)[17]),
+                Integer.parseInt(detailedHouse.get(0)[18]),house_comment);
 
-
-
-        //JSONObject house_comment_single = hc.HCtoJson();
-        //JSONArray house_comment = new JSONArray();
-
-        //for(int i=0;i<评论的数量;i++){
-        // HouseComment hc = new HouseComment(dh.get(0)[15],dh.get(0)[16],comment_pic);
-        //house_comment.add(hc);
-        // }
-
-        //House detailedHouse = new House(house_pic,house_hash,dh.get(0)[1],Integer.parseInt(dh.get(0)[2]),
-        //        dh.get(0)[3],dh.get(0)[4],Integer.parseInt(dh.get(0)[5]),Integer.parseInt(dh.get(0)[6]),
-        //        low_location,dh.get(0)[7],dh.get(0)[8],Integer.parseInt(dh.get(0)[9]),
-        //        Boolean.parseBoolean(dh.get(0)[10]),Integer.parseInt(dh.get(0)[11]),
-        //        Integer.parseInt(dh.get(0)[12]),Integer.parseInt(dh.get(0)[13]),
-        //        Integer.parseInt(dh.get(0)[14]),house_comment);
-
-        //Response res = new Response(200,"success",detailedHouse);
-
-        //return res.RestoJson3();
-
-        //房源的hash就是房源在IPFS中的索引，根据索引就可以得到该房源的其他相关信息
-        //然后分层将房源的信息创建为json格式
-        //最后使用第二个构造函数创建House对象outputhouse将房源信息录入，并转化为json格式
-        //最后使用response来创建最终的返回信息
-        return null;
+        Response res = new Response(200,"success",theHouse.HtoJson());
+        return res.RestoJson3();
     }
 
     @Override
@@ -86,43 +99,67 @@ public class HouseServiceImpl implements HouseService {
 
         /*******************************************************************************************/
         //记录用户输入了几个查找条件，即用户调用该函数时的实参有几个是有具体数据的
+
+        LowLocation lowlocation = new LowLocation();
+        lowlocation.StoLL(low_location);
+
         int count = 0;
         //将所有可能被用户输入的实参的变量名和变量值
-        String[] allkey = {"low_location","lease_inter","house_type","lease_type","elevator"};
-        String[] allvalue = {low_location,lease_inter,house_type,lease_type,String.valueOf(elevator)};
+        String[] allkey = {"provi","city","sector","commu_name",
+                "lease_inter","house_type","lease_type","elevator"};
+        String[] allvalue = {lowlocation.getProvi(),lowlocation.getCity(),lowlocation.getSector(),lowlocation.getCommu_name(),
+                lease_inter,house_type,lease_type,String.valueOf(elevator)};
 
         //记录各实参索引的状态，1表示有具体值，0表示空或“”
         List<Integer> valued = new ArrayList<>();
         //如果实参有具体值，则记录该实参在
-        if(!low_location.equals("")){
+        if(!lowlocation.getProvi().equals("")){
             valued.add(0,1);
             count++;
-        }else if(low_location.equals("")){
+        }else if(lowlocation.getProvi().equals("")){
             valued.add(0,0);
         }
-        if(!lease_inter.equals("")){
+        if(!lowlocation.getCity().equals("")){
             valued.add(1,1);
             count++;
-        }else if(lease_inter.equals("")){
+        }else if(lowlocation.getCity().equals("")){
             valued.add(1,0);
         }
-        if(!house_type.equals("")){
+        if(!lowlocation.getSector().equals("")){
             valued.add(2,1);
             count++;
-        }else if(house_type.equals("")){
+        }else if(lowlocation.getSector().equals("")){
             valued.add(2,0);
         }
-        if(!lease_type.equals("")){
+        if(!lowlocation.getCommu_name().equals("")){
             valued.add(3,1);
             count++;
-        }else if(lease_type.equals("")){
+        }else if(lowlocation.getCommu_name().equals("")){
             valued.add(3,0);
         }
-        if(!(String.valueOf(elevator)).equals("")){
+        if(!lease_inter.equals("")){
             valued.add(4,1);
             count++;
-        }else if((String.valueOf(elevator)).equals("")){
+        }else if(lease_inter.equals("")){
             valued.add(4,0);
+        }
+        if(!house_type.equals("")){
+            valued.add(5,1);
+            count++;
+        }else if(house_type.equals("")){
+            valued.add(5,0);
+        }
+        if(!lease_type.equals("")){
+            valued.add(6,1);
+            count++;
+        }else if(lease_type.equals("")){
+            valued.add(6,0);
+        }
+        if(!(String.valueOf(elevator)).equals("")){
+            valued.add(7,1);
+            count++;
+        }else if((String.valueOf(elevator)).equals("")){
+            valued.add(7,0);
         }
         /*******************************************************************************************/
 
@@ -131,16 +168,19 @@ public class HouseServiceImpl implements HouseService {
         String[] key_to_search = new String[count];
         String[] value_to_search = new String[count];
         int in = 0;
-        for(int i = 0; i < 5; i++){
-            if(valued.indexOf(i) == 1){
+        for(int i = 0; i < valued.size(); i++){
+            if(valued.get(i) == 1){
                 key_to_search[in] = allkey[i];
                 value_to_search[in] = allvalue[i];
                 in++;
             }
         }
         //定义要得到的属性的集合
-        String[] key_to_get = {"house_pic","low_location","lease","house_type","lease_type","elevator"};
+        String[] key_to_get = {"provi","city","sector","commu_name","lease","house_type","lease_type","elevator"};
         /**/
+
+        //从文件下载获得
+        String house_pic = new String();
 
         //查询满足要求的房子
         TableImpl tableforsearch = new TableImpl();
@@ -148,22 +188,29 @@ public class HouseServiceImpl implements HouseService {
 
         //声明一个概要信息房子对象
         SampleHouse sh;
+
         //将所有房子想要输出的概要消息转化为json数组
         JSONArray allsh = new JSONArray();
-        String house_pic_single;
-        String low_str_location_single;
+
+        //String house_pic_single;
+        String provi_single;
+        String city_single;
+        String sector_single;
+        String commu_name_single;
         String lease_single;
         String house_type_single;
         String lease_type_single;
         boolean elevator_single;
 
         for(int i = 0;i < returnedSH.size();i++){
-            house_pic_single = returnedSH.get(i)[0];
-                low_str_location_single = returnedSH.get(i)[1];
-                lease_single = returnedSH.get(i)[2];
-                house_type_single = returnedSH.get(i)[3];
-                lease_type_single = returnedSH.get(i)[4];
-                elevator_single = Boolean.getBoolean(returnedSH.get(i)[5]);
+            provi_single = returnedSH.get(i)[0];
+            city_single = returnedSH.get(i)[1];
+            sector_single = returnedSH.get(i)[2];
+            commu_name_single = returnedSH.get(i)[3];
+            lease_single = returnedSH.get(i)[4];
+            house_type_single = returnedSH.get(i)[5];
+            lease_type_single = returnedSH.get(i)[6];
+            elevator_single = Boolean.getBoolean(returnedSH.get(i)[7]);
 
                 switch(house_type_single){
                     case "0":
@@ -190,7 +237,7 @@ public class HouseServiceImpl implements HouseService {
                         lease_type_single = "合租";
                         break;
                 }
-                sh = new SampleHouse(house_pic_single,low_str_location_single,lease_single,house_type_single,lease_type_single,elevator_single);
+                sh = new SampleHouse(house_pic,provi_single+city_single+sector_single+commu_name_single,lease_single,house_type_single,lease_type_single,elevator_single);
                 allsh.add(sh.SHtoJson());
         }
         Response resOfSearchSH = new Response(200,"success",allsh);
