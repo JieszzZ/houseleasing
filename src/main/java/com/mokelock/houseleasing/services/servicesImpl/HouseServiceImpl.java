@@ -254,10 +254,12 @@ public class HouseServiceImpl implements HouseService {
          * 返回状态消息
          * */
         String user_ID="123456";
+        String p="123";
+        TableImpl t=new TableImpl();
+        t.insert_into_comment(user_ID,comment,comment_pic,p);
 
         return null;
     }
-
 
     @Override
 
@@ -277,7 +279,7 @@ public class HouseServiceImpl implements HouseService {
         JSONObject j=new JSONObject();
         String path="123";
         TableImpl thouse=new TableImpl();
-        String[] key_to_get = {"verify","photo", "low_location", "lease", "house_type", "lease_type","elevator"};
+        String[] key_to_get = {"verify","photo", "provi","city","sector" ,"commu_name","lease", "house_type", "lease_type","elevator"};
 
         for (int i = 0; i < hash.length; i++)
         {
@@ -311,17 +313,17 @@ public class HouseServiceImpl implements HouseService {
                 }if (v1.get(m)[6]=="0"){
                     b=false;
                 }
-
+                String s3=v1.get(m)[2]+v1.get(m)[3]+v1.get(m)[4]+v1.get(m)[5];
                 String lease=v1.get(m)[3];
                 if(v1.get(m)[0]=="1"){
 
-                    SampleHouse shouse1 = new SampleHouse(v1.get(m)[1],s,lease,s1,s2,b);
+                    SampleHouse shouse1 = new SampleHouse(v1.get(m)[1],s3,lease,s1,s2,b);
                     shouse1.SHtoJson();
                     verified.add(shouse1);
                     //System.out.print(v1.get(m)[b]+" ");
                 }
                 if(v1.get(m)[0]=="0"){
-                    SampleHouse shouse2=new SampleHouse(v1.get(m)[1],s,lease,s1,s2,b);
+                    SampleHouse shouse2=new SampleHouse(v1.get(m)[1],s3,lease,s1,s2,b);
                     shouse2.SHtoJson();
                     non_verified.add(shouse2);
 
