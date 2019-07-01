@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/tract")
+@RequestMapping(value = "/api/tract")
 public class TractController {
 
     /**
@@ -18,28 +18,34 @@ public class TractController {
      * @param owner 房主账号
      * @return requestID？
      */
-    @RequestMapping(value = "/set", method = RequestMethod.POST)
+    @RequestMapping(value = "/userSet", method = RequestMethod.POST)
     public String set(String house_hash, String owner) {
-        return "";
+        return "{\"requestID\":\"xxoso\",}";
     }
 
     /**
      * 房主获取所有相关请求
      * @return 所有请求列表
      */
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public JSON get() {
+    @RequestMapping(value = "/ownerGet", method = RequestMethod.GET)
+    public String get() {
         JSON json = new JSONArray();
-        return json;
+        return "{\"tract\":[{\"requestID\":\"xxoo\",\"username\":\"xxdd\",\"name\":\"曲延松\",\"house_hash\":\"adfafd\",\"commu_name\":\"茗筑美嘉\",\"state\":0},{\"requestID\":\"xsxoo\",\"username\":\"xxdd\",\"name\":\"曲延松\",\"house_hash\":\"adfafd\",\"commu_name\":\"奥龙官邸\",\"state\":0}]}";
+    }
+
+    @RequestMapping(value = "/userGet", method = RequestMethod.GET)
+    public String userGet() {
+        return "{\"tract\":[{\"requestID\":\"xxoo\",\"username\":\"xxdd\",\"name\":\"曲延松\",\"house_hash\":\"adfafd\"," +
+                "\"commu_name\":\"茗筑美嘉\",\"state\":0},{\"requestID\":\"xsxoo\",\"username\":\"xxdd\",\"name\":\"曲延松\",\"house_hash\":\"adfafd\",\"commu_name\":\"奥龙官邸\",\"state\":2}]}";
     }
 
     /**
-     * 请假请求反馈(m)
+     * 请假请求反馈(u)
      * @param requestID 请求编号
      * @param request_response 请求反馈 true 同意签约 false 不同意签约
      * @param pay_password 支付密码
      */
-    @RequestMapping(value = "/response", method = RequestMethod.POST)
+    @RequestMapping(value = "/ownerRes", method = RequestMethod.POST)
     public void acquire(String requestID, String request_response, String pay_password) {
 
     }

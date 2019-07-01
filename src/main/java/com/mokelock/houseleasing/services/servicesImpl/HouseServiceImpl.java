@@ -1,4 +1,4 @@
-﻿package com.mokelock.houseleasing.services.servicesImpl;
+package com.mokelock.houseleasing.services.servicesImpl;
 
 import com.alibaba.fastjson.JSON;
 
