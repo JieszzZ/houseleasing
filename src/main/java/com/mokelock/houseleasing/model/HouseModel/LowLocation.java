@@ -134,12 +134,4 @@ public class LowLocation{
         this.commu_name = commu_name;
     }
 
-    /*public static void main(String args[]){
-        LowLocation a = new LowLocation("h","t","h","t");
-        JSONObject o = a.toJson();
-        String s = o.toJSONString();
-        System.out.println(o.get(a.provi));
-        System.out.println(a);
-    }*/
-
 }
