@@ -357,4 +357,20 @@ public class BlockChain {
     public String getHash(int type){
         return "";
     }
+
+    /**
+     * 修改用户电话信息
+     */
+    public void changeTelInfo(String ownerAddress, String tel){
+
+    }
+
+    /**
+     * 修改hash信息
+     * @param ownerAddress
+     * @param hash
+     */
+    public void changeHashInfo(String ownerAddress, String hash){
+
+    }
 }
