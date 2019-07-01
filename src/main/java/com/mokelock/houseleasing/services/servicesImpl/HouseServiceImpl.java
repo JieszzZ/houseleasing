@@ -209,9 +209,7 @@ public class HouseServiceImpl implements HouseService {
         String user_ID="123456";
         String p="123";
         TableImpl t=new TableImpl();
-        t.insert_into_comment(user_ID,comment,comment_pic,p
-
-        );
+        t.insert_into_comment(user_ID,comment,comment_pic,p);
 
         return null;
     }
