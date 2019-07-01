@@ -4,7 +4,8 @@ import com.alibaba.fastjson.JSON;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mokelock.houseleasing.IPFS.IPFS_SERVICE_IMPL;
+import com.mokelock.houseleasing.IPFS.IPFS_SERVICE;
+import com.mokelock.houseleasing.IPFS.IpfsImpl.IPFS_SERVICE_IMPL;
 import com.mokelock.houseleasing.IPFS.TableImpl.TableImpl;
 import com.mokelock.houseleasing.model.HouseModel.*;
 

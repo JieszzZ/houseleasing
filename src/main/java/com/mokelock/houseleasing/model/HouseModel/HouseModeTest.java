@@ -244,7 +244,7 @@ public class HouseModeTest {
         this.house_comment = house_comment;
     }
 
-    public String toString(){
+//    public String toString(){
 //        return "HouseModel{" +
 //                "house_pic='" + house_pic + '\'' +
 //                ", house_id='" + house_id + '\'' +
@@ -269,8 +269,7 @@ public class HouseModeTest {
 //                house_comment[1].toJson() + '\'' +
 //                house_comment[2].toJson() + '\'' +
 //                '}';
-        return "";
-    }
+//    }
 
 }
 
