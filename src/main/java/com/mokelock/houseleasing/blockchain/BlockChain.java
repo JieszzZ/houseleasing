@@ -1,78 +1,47 @@
 package com.mokelock.houseleasing.blockchain;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mokelock.houseleasing.model.HouseModel.House;
 import org.web3j.crypto.*;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tuples.generated.Tuple3;
+import org.web3j.tuples.generated.Tuple4;
 import org.web3j.tx.Transfer;
+import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
-import org.web3j.utils.Numeric;
 import rx.Subscription;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class BlockChain {
 
-    private String filePath = "E:\\Geth\\data\\keystore";
-//    private String fileName;
-//    private String ethPassword;
-    private String url = "http://211.87.230.12:9988/";
-//    private String fromAddress;
-//    private String toAddress;
-//    private String tansactionAddress;
+    private final static String url = "http://211.87.230.34:9988/";
+    private static Web3j web3j = Web3j.build(new HttpService(url));
 
-//    public static void main(String[] args) {
-//
-//        BlockChain test = new BlockChain();
-//        test.filePath = "E:\\Geth\\data\\keystore";
-//        test.fileName = "E:\\Geth\\data\\keystore\\UTC--2019-06-20T02-55-19.079955800Z--5e283b353b65baf5f18640e8a3228c8e764a9c29";
-//        test.ethPassword = "123456";
-//        test.url = "http://211.87.230.12:9988/";
-//        test.fromAddress = "0x5e283b353b65baf5f18640e8a3228c8e764a9c29";
-//        test.toAddress = "0x40b4dd13e90c55c1f3c62e5eea0e9074742256d9";
-//        test.tansactionAddress = "0x087e35de3fcfce828f3da369b4b0a468cfd302592d0dfc5d8e76f5b3408c7bd0";
-//
-//        String version = test.getVersion();
-//        System.out.println(version);
-//
-////        getBalance();
-//
-////        transaction();
-////        transaction2();
-//
-////        getReceipt();
-//
-////        replayFilter();
-//
-//        System.out.println(test.replayFilter());
-//        version = test.getVersion();
-//        System.out.println(version);
-//
-//    }
+    private final static String filePath = "E:\\Geth\\data\\keystore";
 
     /**
      * 创建用户账户
+     *
      * @return 账户hash地址
      */
     public String creatCredentials(String ethPassword) {
-//        String filePath = "E:\\Geth\\data\\keystore";
-        String fileName_local = null;
+        String fileName_local;
         Credentials credentials = null;
         try {
             fileName_local = WalletUtils.generateNewWalletFile(ethPassword, new File(filePath), false);
             credentials = WalletUtils.loadCredentials(ethPassword, filePath + "/" + fileName_local);
-        } catch (IOException | NoSuchAlgorithmException | CipherException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         assert credentials != null;
@@ -83,10 +52,10 @@ public class BlockChain {
 
     /**
      * 获得环境版本信息
+     *
      * @return 版本号
      */
     public String getVersion() {
-        Web3j web3j = Web3j.build(new HttpService(url));
         Web3ClientVersion web3ClientVersion = null;
         try {
             web3ClientVersion = web3j.web3ClientVersion().send();
@@ -99,11 +68,11 @@ public class BlockChain {
 
     /**
      * 获取用户余额
+     *
      * @param fromAddress 查询账户地址
      * @return 余额
      */
     public BigInteger getBalance(String fromAddress) {
-        Web3j web3j = Web3j.build(new HttpService(url));
         EthGetBalance ethGetBalance = null;
         try {
             ethGetBalance = web3j
@@ -122,20 +91,20 @@ public class BlockChain {
 
     /**
      * 转账
+     *
      * @param ethPassword 以太坊密码
-     * @param fileName 密钥文件
-     * @param toAddress 收款人地址
+     * @param fileName    密钥文件
+     * @param toAddress   收款人地址
      * @return 交易hash
      */
     public String transaction(String ethPassword, String fileName, String toAddress) {
-        Web3j web3 = Web3j.build(new HttpService(url));  // defaults to http://localhost:8545/
         Credentials credentials = null;
         TransactionReceipt transactionReceipt = null;
         try {
             credentials = WalletUtils.loadCredentials(ethPassword, fileName);
             System.out.println("local address = " + credentials.getAddress());
             transactionReceipt = Transfer.sendFunds(
-                    web3, credentials, toAddress,
+                    web3j, credentials, toAddress,
                     BigDecimal.valueOf(1.0), Convert.Unit.ETHER).send();
         } catch (Exception e) {
             e.printStackTrace();
@@ -160,83 +129,13 @@ public class BlockChain {
     //  transactionIndex: 0
     //}
 
-//    private void transaction2() {
-//        //设置需要的矿工费
-//        BigInteger GAS_PRICE = BigInteger.valueOf(22_000_000_000L);
-//        BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
-//
-//        //调用的是kovan测试环境，这里使用的是infura这个客户端
-//        Web3j web3j = Web3j.build(new HttpService(url));
-//        //转账人账户地址
-////        String ownAddress = "0x5e283b353b65baf5f18640e8a3228c8e764a9c29";
-//        //被转人账户地址
-////        String toAddress = "0x40b4dd13e90c55c1f3c62e5eea0e9074742256d9";
-//        //转账人私钥
-////        Credentials credentials = Credentials.create("xxxxxxxxxxxxx");
-//        Credentials credentials = null;
-//        try {
-//            credentials = WalletUtils.loadCredentials(ethPassword, fileName);
-//        } catch (IOException | CipherException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//        //getNonce（这里的Nonce我也不是很明白，大概是交易的笔数吧）
-//        EthGetTransactionCount ethGetTransactionCount = null;
-//        try {
-//            ethGetTransactionCount = web3j.ethGetTransactionCount(
-//                    fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
-//        } catch (InterruptedException | ExecutionException e) {
-//            e.printStackTrace();
-//        }
-//        assert ethGetTransactionCount != null;
-//        BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-//
-//        //创建交易，这里是转0.5个以太币
-//        BigInteger value = Convert.toWei("0.5", Convert.Unit.ETHER).toBigInteger();
-//        RawTransaction rawTransaction = RawTransaction.createEtherTransaction(
-//                nonce, GAS_PRICE, GAS_LIMIT, toAddress, value);
-//
-//        //签名Transaction，这里要对交易做签名
-//        assert credentials != null;
-//        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
-//        String hexValue = Numeric.toHexString(signedMessage);
-//
-//        //发送交易
-//        String transactionHash = "";
-//        try {
-//            EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
-//            transactionHash = ethSendTransaction.getTransactionHash();
-//        } catch (InterruptedException | ExecutionException e) {
-//            e.printStackTrace();
-//        }
-//
-//        //获得到transactionHash后就可以到以太坊的网站上查询这笔交易的状态了
-//        System.out.println("hash = " + transactionHash);
-//    }
-    // eth.getTransactionReceipt("0x087e35de3fcfce828f3da369b4b0a468cfd302592d0dfc5d8e76f5b3408c7bd0")
-    //{
-    //  blockHash: "0xda8dbe4de6d3a494423449fb90a35e09c0893380529b9424dd7ea40d6c485439",
-    //  blockNumber: 3449,
-    //  contractAddress: null,
-    //  cumulativeGasUsed: 21000,
-    //  from: "0x5e283b353b65baf5f18640e8a3228c8e764a9c29",
-    //  gasUsed: 21000,
-    //  logs: [],
-    //  logsBloom: "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    //  root: "0xe8718f1549bacdc59018276bd41842e6dd5b00bb058fcc29c66eed7b47b6c39e",
-    //  to: "0x40b4dd13e90c55c1f3c62e5eea0e9074742256d9",
-    //  transactionHash: "0x087e35de3fcfce828f3da369b4b0a468cfd302592d0dfc5d8e76f5b3408c7bd0",
-    //  transactionIndex: 0
-    //}
-
     /**
      * 获取交易详细信息
+     *
      * @param transactionAddress 交易hash
      * @return json
      */
     public String getReceipt(String transactionAddress) {
-        Web3j web3j = Web3j.build(new HttpService(url));
         EthGetTransactionReceipt receipt = null;
         try {
             receipt = web3j
@@ -254,123 +153,277 @@ public class BlockChain {
         return JSONObject.toJSONString(receipt);
     }
 
-    /**
-     * 查询历史记录
-     * @return 历史hash
-     */
-    public String replayFilter(String userAddress) {
-        Web3j web3j = Web3j.build(new HttpService(url));
-        BigInteger startBlock = BigInteger.valueOf(0);
-        BigInteger endBlock = BigInteger.valueOf(2010000);
-        /**
-         * 遍历旧区块
-         */
-//        Subscription subscription = web3j.
-//                replayBlocksObservable(
-//                        DefaultBlockParameter.valueOf(startBlock),
-//                        DefaultBlockParameter.valueOf(endBlock),
-//                        false).
-//                subscribe(ethBlock -> {
-//                    System.out.println("replay block");
-//                    System.out.println(ethBlock.getBlock().getNumber());
+//    /**
+//     * 查询历史记录
+//     * @return 历史hash
+//     */
+//    public String replayFilter(String userAddress) {
+//        Web3j web3j = Web3j.build(new HttpService(url));
+//        BigInteger startBlock = BigInteger.valueOf(0);
+//        BigInteger endBlock = BigInteger.valueOf(2010000);
+////        /**
+////         * 遍历旧区块
+////         */
+////        Subscription subscription = web3j.
+////                replayBlocksObservable(
+////                        DefaultBlockParameter.valueOf(startBlock),
+////                        DefaultBlockParameter.valueOf(endBlock),
+////                        false).
+////                subscribe(ethBlock -> {
+////                    System.out.println("replay block");
+////                    System.out.println(ethBlock.getBlock().getNumber());
+////                });
+//
+//        /*
+//          遍历旧交易
+//         */
+//        List list = new ArrayList();
+//        Subscription subscription1 = web3j.().
+//                subscribe(transaction -> {
+//                    System.out.println("replay transaction");
+//                    System.out.println("txHash " + transaction.getHash());
+//                    list.add(transaction.getHash());
 //                });
-
-        /**
-         * 遍历旧交易
-         */
-        List list = new ArrayList();
-        Subscription subscription1 = web3j.
-                replayTransactionsObservable(
-                        DefaultBlockParameterName.EARLIEST,
-                        DefaultBlockParameterName.LATEST).
-                subscribe(transaction -> {
-                    System.out.println("replay transaction");
-                    System.out.println("txHash " + transaction.getHash());
-                    list.add(transaction.getHash());
-                });
-        System.out.println(subscription1.isUnsubscribed());
-        System.out.println(list.toString());
-        return "end";
-    }
+//        System.out.println(subscription1.isUnsubscribed());
+//        System.out.println(list.toString());
+//        return "end";
+//    }
 
     /**
      * 获取账户合约中的信息
+     *
      * @param userAddress 用户账户
-     * @return
+     * @return 用户信息
      */
-    public String getMessage(String userAddress) {
-        return "";
+    public String getMessage(String userAddress, String contractAddress, String ethPassword) {
+        HouseContract houseContract = loadContract(userAddress, contractAddress, ethPassword);
+        Tuple4<String, String, String, String> tuple4 = null;
+        try {
+            tuple4 = houseContract.findUser(userAddress).send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String username = tuple4 != null ? tuple4.getValue1() : null;
+        String id = tuple4 != null ? tuple4.getValue2() : null;
+        String IPFS_hash = tuple4 != null ? tuple4.getValue3() : null;
+        String phone = tuple4 != null ? tuple4.getValue4() : null;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username", username);
+        jsonObject.put("id", id);
+        jsonObject.put("IPFS_hash", IPFS_hash);
+        jsonObject.put("phone", phone);
+        return jsonObject.toJSONString();
+    }
+
+    public void postUser(String userAddress, String contractAddress, String ethPassword){
+
     }
 
     /**
      * 用户提交合约
-     * @param userAddress 租客地址
+     *
+     * @param userAddress  租客地址
      * @param ownerAddress 房主地址
-     * @param coins 押金
+     * @param coins        押金
      */
-    public void submitOrder(String userAddress, String ownerAddress, String coins){
+    public void submitOrder(String userAddress, String contractAddress, String ethPassword, String ownerAddress, BigInteger coins) {
 
+        HouseContract houseContract = loadContract(userAddress, contractAddress, ethPassword);
+        //???wei value是个啥么东西
+        try {
+            TransactionReceipt receipt = houseContract.submitOrder(ownerAddress, coins, BigInteger.valueOf(100L)).send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * 房主回应合约
+     *
      * @param ownerAddress 房主地址
-     * @param userAddress 租客地址
-     * @param coins 押金
+     * @param userAddress  租客地址
+     * @param coins        押金
      */
-    public void responseOrder(String ownerAddress, String userAddress, String coins){
-
+    public void responseOrder(String ownerAddress, String contractAddress, String ethPassword, String userAddress,
+                              BigInteger coins) {
+        HouseContract houseContract = loadContract(ownerAddress, contractAddress, ethPassword);
+        try {
+            TransactionReceipt receipt = houseContract.respondOrder(userAddress, coins, BigInteger.valueOf(100L)).send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * 房主拒绝合约
+     *
      * @param ownerAddress 房主地址
-     * @param userAddress 租客地址
+     * @param userAddress  租客地址
      */
-    public void rejectOrder(String ownerAddress, String userAddress) {
-
+    public void rejectOrder(String ownerAddress, String contractAddress, String ethPassword, String userAddress) {
+        HouseContract houseContract = loadContract(ownerAddress, contractAddress, ethPassword);
+        try {
+            TransactionReceipt receipt = houseContract.rejectOrder(userAddress).send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * 第二次签名
+     *
+     * @param i            调用主体，0：房主| 1：房客
      * @param ownerAddress 房主地址
-     * @param userAddress 租客地址
+     * @param userAddress  租客地址
      */
-    public void confirmSecond(String ownerAddress, String userAddress){
-
+    public void confirmSecond(int i, String ownerAddress, String userAddress, String contractAddress, String ethPassword) {
+        HouseContract houseContract = null;
+        if (i == 0) {
+            houseContract = loadContract(ownerAddress, contractAddress, ethPassword);
+        } else if (i == 1) {
+            houseContract = loadContract(userAddress, contractAddress, ethPassword);
+        }
+        try {
+            TransactionReceipt receipt = houseContract != null ? houseContract.confirmSecond(userAddress, ownerAddress).send() : null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * 退押金
+     *
+     * @param i            调用主体，0：房主| 1：房客
      * @param ownerAddress 房主地址
-     * @param userAddress 租客地址
+     * @param userAddress  租客地址
      */
-    public void withdraw(String ownerAddress, String userAddress){
+    public void withdraw(int i, String ownerAddress, String userAddress, String contractAddress, String ethPassword) {
+        HouseContract houseContract = null;
+        if (i == 0) {
+            houseContract = loadContract(ownerAddress, contractAddress, ethPassword);
+        } else if (i == 1) {
+            houseContract = loadContract(userAddress, contractAddress, ethPassword);
+        }
+        try {
+            TransactionReceipt receipt = houseContract != null ? houseContract.withdraw(userAddress, ownerAddress).send() : null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 待修改
+     */
+    public void withdrawAppeal(){
 
     }
 
     /**
      * 获取ipfs数据表地址
+     *
      * @param type 0: 账户-账户对应表| 1: 在线房子概要信息表| 2: 下线房子概要信息表| 3: 房子详细信息表
-     * @return hash地址
+     * @return hash地址 | error
      */
-    public String getHash(int type){
-        return "";
+    public String getHash(int type) {
+        Credentials credentials = null;
+        try {
+            credentials = WalletUtils.loadCredentials("123456", "E:\\Geth\\data\\keystore\\UTC--2019-06-20T02-55-19" +
+                    ".079955800Z--5e283b353b65baf5f18640e8a3228c8e764a9c29");
+        } catch (IOException | CipherException e) {
+            e.printStackTrace();
+        }
+        HouseContract houseContract = HouseContract.load("aaaaaaaaaaaaaa", web3j, credentials, Convert.toWei("10",
+                Convert.Unit.GWEI).toBigInteger(), BigInteger.valueOf(100000));
+        Tuple3 tuple3 = null;
+        try {
+            tuple3 = houseContract.findAdminTable().send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (tuple3 == null) {
+            return "error";
+        }
+        String hash = "";
+        switch (type) {
+            case 0:
+                hash = (String) tuple3.getValue1();
+                break;
+            case 1:
+                hash = (String) tuple3.getValue2();
+                break;
+            case 2:
+                hash = (String) tuple3.getValue3();
+                break;
+        }
+        return hash;
     }
 
     /**
      * 修改用户电话信息
+     *
+     * @param ownerAddress 房主地址
+     * @param phone          电话
      */
-    public void changeTelInfo(String ownerAddress, String tel){
-
+    public void changeTelInfo(String ownerAddress, String contractAddress, String ethPassword,
+                              String IPFS_hash, String phone) {
+        HouseContract houseContract = loadContract(ownerAddress, contractAddress, ethPassword);
+        try {
+            TransactionReceipt receipt = houseContract.postUser(ownerAddress, IPFS_hash, phone).send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * 修改hash信息
-     * @param ownerAddress
-     * @param hash
+     *
+     * @param ownerAddress 房主地址
+     * @param hash         hash
      */
-    public void changeHashInfo(String ownerAddress, String hash){
+    public void changeHashInfo(String ownerAddress, String hash) {
 
+    }
+
+    /**
+     * 部署智能合约
+     *
+     * @param userAddress 用户地址
+     * @param ethPassword eth密码
+     * @return 合约地址
+     */
+    public String deplay(String userAddress, String ethPassword) {
+        Credentials credentials = null;
+        try {
+            credentials = WalletUtils.loadCredentials(ethPassword, filePath + "???");
+        } catch (IOException | CipherException e) {
+            e.printStackTrace();
+        }
+        DefaultGasProvider gasProvider = new DefaultGasProvider();
+        HouseContract houseContract = null;
+        try {
+            houseContract = HouseContract.deploy(web3j, credentials, gasProvider).send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return houseContract != null ? houseContract.getContractAddress() : null;
+    }
+
+    /**
+     * 加载合约
+     *
+     * @param userAddress     账户地址
+     * @param contractAddress 合约地址
+     * @param ethPassword     账户密码
+     * @return HouseContract对象
+     */
+    private HouseContract loadContract(String userAddress, String contractAddress, String ethPassword) {
+        Credentials credentials = null;
+        try {
+            credentials = WalletUtils.loadCredentials(ethPassword, filePath + "???");
+        } catch (IOException | CipherException e) {
+            e.printStackTrace();
+        }
+        return HouseContract.load(contractAddress, web3j, credentials, Convert.toWei("10",
+                Convert.Unit.GWEI).toBigInteger(), BigInteger.valueOf(100000));
     }
 }
