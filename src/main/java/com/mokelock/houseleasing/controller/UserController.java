@@ -65,17 +65,17 @@ public class UserController {
         return true;
     }
 
-//    @RequestMapping(value = "/register", method = RequestMethod.POST)
-//    public void register(User user, HttpServletResponse response) {
-//        boolean result = userService.register(user);
-//        if(!result) {
-//            try {
-//                response.getWriter().append("fail");
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public void register(User user, HttpServletResponse response) {
+        boolean result = userService.register(user);
+        if(!result) {
+            try {
+                response.getWriter().append("fail");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * 获取用户信息

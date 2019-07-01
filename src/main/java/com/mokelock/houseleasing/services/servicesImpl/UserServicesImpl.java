@@ -194,7 +194,7 @@ public class UserServicesImpl implements UserService {
     {
         int where = 0;
         String hash = findUser_Account_hash();
-        IPFS_SERVICE.download(path,hash);
+        IPFS_SERVICE.download(path,hash,path);
         Table table = new TableImpl();
         String[] user_name = {"username"};
         String[] _user = {_username};
