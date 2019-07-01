@@ -1,4 +1,4 @@
-﻿package com.mokelock.houseleasing.IPFS;
+package com.mokelock.houseleasing.IPFS;
 import com.mokelock.houseleasing.model.HouseModel.House;
 
 import java.util.ArrayList;

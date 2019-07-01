@@ -17,10 +17,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
+import org.springframework.stereotype.Service;
 
 
-
-//@Service
+@Service
 public class UserServicesImpl implements UserService {
 
     private static final int User_Account_TYPE = 1;
@@ -39,7 +39,7 @@ public class UserServicesImpl implements UserService {
     public boolean logout(String _username){return true;}
 
     @Override
-    //注册账号;注册的信息存储在_rUser里;
+    //注册账号;注册的信息分别为用户名，密码，支付口令，姓名，电话，身份证照片正，反，身份证号，性别;
     public boolean register(String _username, String _password, String pay_password, String name, String phone, Image _profile_a, Image _profile_b, String _id, String _gender){return true;}
 
     @Override
@@ -129,10 +129,16 @@ public class UserServicesImpl implements UserService {
     }
 */
     @Override
-    public boolean postPhone(User _old,String _password,String _phone) {return true;}
+    //需要比对密码
+    public boolean postPhone(User _old,String _password,String _phone)
+    {
+        BlockChain bc = new BlockChain();
+
+        return true;
+    }
 
     //修改一个用户的密码和电话号码，成功返回true，失败返回false，实际上调用的是这个函数的重载：boolean postUser(User _old, modifyUser _modified);
-    public boolean postUser(User _old,String _password,String _phone){return true;}
+   // public boolean postUser(User _old,String _password,String _phone){return true;}
 /*
     @Override
     public boolean postUser(User _old, modifyUser _modified) {
@@ -184,7 +190,7 @@ public class UserServicesImpl implements UserService {
     * 为毛这儿返回的是一个链表String数组
     *
     * */
-    private String  findAccount(String _username) throws IOException
+    public String  findAccount(String _username) throws IOException
     {
         int where = 0;
         String hash = findUser_Account_hash();

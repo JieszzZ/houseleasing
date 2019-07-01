@@ -1,4 +1,4 @@
-﻿package com.mokelock.houseleasing.services.servicesImpl;
+package com.mokelock.houseleasing.services.servicesImpl;
 
 import com.alibaba.fastjson.JSON;
 
@@ -254,10 +254,12 @@ public class HouseServiceImpl implements HouseService {
          * 返回状态消息
          * */
         String user_ID="123456";
+        String p="123";
+        TableImpl t=new TableImpl();
+        t.insert_into_comment(user_ID,comment,comment_pic,p);
 
         return null;
     }
-
 
     @Override
 
@@ -277,7 +279,7 @@ public class HouseServiceImpl implements HouseService {
         JSONObject j=new JSONObject();
         String path="123";
         TableImpl thouse=new TableImpl();
-        String[] key_to_get = {"verify","photo", "low_location", "lease", "house_type", "lease_type","elevator"};
+        String[] key_to_get = {"verify","photo", "provi","city","sector" ,"commu_name","lease", "house_type", "lease_type","elevator"};
 
         for (int i = 0; i < hash.length; i++)
         {
@@ -291,37 +293,37 @@ public class HouseServiceImpl implements HouseService {
                 String s2="0";
                 Boolean b=true;
                 String s=v1.get(m)[2];
-                if(v1.get(m)[4]=="0"){
+                if(v1.get(m)[7].equals("0")){
                     s1="全部";
-                }if (v1.get(m)[4]=="1"){
+                }if (v1.get(m)[7].equals("1")){
                     s1="一室";
-                }if (v1.get(m)[4]=="2"){
+                }if (v1.get(m)[7].equals("2")){
                     s1="二室";
-                }if (v1.get(m)[4]=="3"){
+                }if (v1.get(m)[7].equals("3")){
                     s1="其他";
                 }
-                if (v1.get(m)[5]=="0"){
+                if (v1.get(m)[8].equals("0")){
                     s2="全部";
-                }if (v1.get(m)[5]=="1"){
+                }if (v1.get(m)[8].equals("1")){
                     s2="整租";
-                }if (v1.get(m)[5]=="2"){
+                }if (v1.get(m)[8].equals("2")){
                     s2="合租";
-                }if (v1.get(m)[6]=="1"){
+                }if (v1.get(m)[9].equals("1")){
                     b=true;
-                }if (v1.get(m)[6]=="0"){
+                }if (v1.get(m)[9].equals("0")){
                     b=false;
                 }
-
+                String s3=v1.get(m)[2]+v1.get(m)[3]+v1.get(m)[4]+v1.get(m)[5];
                 String lease=v1.get(m)[3];
                 if(v1.get(m)[0]=="1"){
 
-                    SampleHouse shouse1 = new SampleHouse(v1.get(m)[1],s,lease,s1,s2,b);
+                    SampleHouse shouse1 = new SampleHouse(v1.get(m)[1],s3,lease,s1,s2,b);
                     shouse1.SHtoJson();
                     verified.add(shouse1);
                     //System.out.print(v1.get(m)[b]+" ");
                 }
                 if(v1.get(m)[0]=="0"){
-                    SampleHouse shouse2=new SampleHouse(v1.get(m)[1],s,lease,s1,s2,b);
+                    SampleHouse shouse2=new SampleHouse(v1.get(m)[1],s3,lease,s1,s2,b);
                     shouse2.SHtoJson();
                     non_verified.add(shouse2);
 
