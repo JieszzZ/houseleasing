@@ -293,24 +293,24 @@ public class HouseServiceImpl implements HouseService {
                 String s2="0";
                 Boolean b=true;
                 String s=v1.get(m)[2];
-                if(v1.get(m)[4]=="0"){
+                if(v1.get(m)[7].equals("0")){
                     s1="全部";
-                }if (v1.get(m)[4]=="1"){
+                }if (v1.get(m)[7].equals("1")){
                     s1="一室";
-                }if (v1.get(m)[4]=="2"){
+                }if (v1.get(m)[7].equals("2")){
                     s1="二室";
-                }if (v1.get(m)[4]=="3"){
+                }if (v1.get(m)[7].equals("3")){
                     s1="其他";
                 }
-                if (v1.get(m)[5]=="0"){
+                if (v1.get(m)[8].equals("0")){
                     s2="全部";
-                }if (v1.get(m)[5]=="1"){
+                }if (v1.get(m)[8].equals("1")){
                     s2="整租";
-                }if (v1.get(m)[5]=="2"){
+                }if (v1.get(m)[8].equals("2")){
                     s2="合租";
-                }if (v1.get(m)[6]=="1"){
+                }if (v1.get(m)[9].equals("1")){
                     b=true;
-                }if (v1.get(m)[6]=="0"){
+                }if (v1.get(m)[9].equals("0")){
                     b=false;
                 }
                 String s3=v1.get(m)[2]+v1.get(m)[3]+v1.get(m)[4]+v1.get(m)[5];
