@@ -1,4 +1,4 @@
-package com.mokelock.houseleasing.IPFS;
+﻿package com.mokelock.houseleasing.IPFS;
 import com.mokelock.houseleasing.model.HouseModel.House;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public interface Table {
     ArrayList<String[]> get_all(String[] key_to_get,String path);//得到整个表。
     void delete(House[] house_obj,String path);//删除指定房源。配合insert可以完成两张表之间的修改。
     void insert_into_more_info(House house_obj,String hash);
-    void insert_into_comment(String user_id,String comment ,String []comment_pic,String path);
+    void insert_into_comment(String user_id,String comment ,String []comment_pic,String house_level,String path);
     /*
     * comment的查询返回值如下：
     * 123 不错 ["asdagafas","wqeqwgqe","vcbsada"]
