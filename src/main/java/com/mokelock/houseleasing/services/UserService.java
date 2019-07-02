@@ -50,7 +50,7 @@ public interface UserService {
     //注册需要在以太坊上申请一个以太坊账户，并且在系统以太坊账户的用户*以太账户对应表上添加该数据
     //在数据库上添加账号*密码信息
     //在以太坊账户上存储该用户的个人信息
-    boolean register(String _username, String _password, String pay_password, String name, String phone,Image _profile_a,Image _profile_b,String _id,String _gender);
+    boolean register(String _username, String _password, String pay_password, String name, String phone,String _profile_a,String _profile_b,String _id,byte _gender);
 
     //获取目标用户账户的余额，查询失败返回-1
     //从以太坊返回账户的余额
@@ -112,7 +112,7 @@ public interface UserService {
 
 
     //修改一个用户的电话号码，成功返回true，失败返回false;需要输入用户密码，密码正确才能修改，密码错误则返回false;
-    boolean postPhone(User _old,String _password,String _phone);
+    boolean postPhone(String _username,String _password,String _phone);
 
     /*
     //传入一个User对象和一个modifyUser对象，将_modified对象的信息覆盖old的信息,成功返回true，失败返回false;
