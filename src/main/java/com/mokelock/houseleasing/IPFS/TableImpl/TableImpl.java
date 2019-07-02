@@ -153,7 +153,7 @@ public class TableImpl implements  Table{
         return value;
     }
     public void insert(House house_obj,String house_hash,String path){
-        String house_id=house_obj.getHouse_id();
+        String house_id=house_obj.getHouse_hash();
         String lease_inter=String.valueOf(house_obj.getLease_inter());
         String house_type=String.valueOf(house_obj.getHouse_type());
         String lease_type=String.valueOf(house_obj.getLease_type());
@@ -207,6 +207,9 @@ public class TableImpl implements  Table{
         String house_type=String.valueOf(house_obj.getHouse_type());
         String house_credit=String.valueOf(house_obj.getHouse_owner_credit());
         String house_level=String.valueOf(house_obj.getHouse_level());
+        String lon=String.valueOf(house_obj.getLon());
+        String lat=String.valueOf(house_obj.getLat());
+        String area=String.valueOf(house_obj.getArea());
         Map<String,String>map=new HashMap<>();
         map.put("house_id",house_hash);
         map.put("owner_id",owner_id);
@@ -226,6 +229,9 @@ public class TableImpl implements  Table{
         map.put("house_type",house_type);
         map.put("house_credit",house_credit);
         map.put("house_level",house_level);
+        map.put("lon",lon);
+        map.put("lat",lat);
+        map.put("area",area);
         String msg=JSON.toJSONString(map);
         String template=msg+"\r\n";
         try{
@@ -239,11 +245,12 @@ public class TableImpl implements  Table{
             e.printStackTrace();
         }
     }
-    public void insert_into_comment(String user_id,String comment ,String []comment_pic,String path){
+    public void insert_into_comment(String user_id,String comment ,String []comment_pic,String house_level,String path){
         Map<Object,Object>map=new HashMap<Object, Object>();
         map.put("user_id",user_id);
         map.put("comment",comment);
         map.put("comment_pic",comment_pic);
+        map.put("house_level",house_level);
         String msg=JSON.toJSONString(map);
         String template=msg+"\r\n";
         try{

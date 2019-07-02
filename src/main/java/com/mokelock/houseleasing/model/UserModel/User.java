@@ -17,8 +17,8 @@ public class User extends modifyUser{
     private String name;
     private String id;
     private String pay_password;
-    private Image profile_a; //本人身份证照片带脸，找一个合适的文件格式
-    private Image profile_b; //本人身份证照片带国徽，找一个合适的文件格式
+    private String profile_a; //本人身份证照片带脸，这是一个文件地址
+    private String profile_b; //本人身份证照片带国徽，这是一个文件地址
     private String IPFS_hash;
     //private String password;
     //private String phone;
@@ -35,6 +35,18 @@ public class User extends modifyUser{
         name = _name;
         id = _id;
         pay_password = _pay_password;
+    }
+    public User(String _username, String _password, String pay_password, String name, String phone, String _profile_a, String _profile_b, String _id, byte _gender)
+    {
+        username = _username;
+        super.setPassword(_password);
+        this.pay_password = pay_password;
+        this.name = name;
+        super.setPhone(phone);
+        profile_a = _profile_a;
+        profile_b = _profile_b;
+        id = _id;
+        super.setGender(_gender);
     }
 
     //依次使用姓名，身份证号，密码，电话，信誉值，性别创建User对象，用户名默认设置为null,暂时不用
@@ -70,7 +82,7 @@ public class User extends modifyUser{
         name = _name;
     }
 
-    public String getName(String _name)
+    public String getName()
     {
         return name;
     }
@@ -92,17 +104,17 @@ public class User extends modifyUser{
     }
     public String getPay_password(){ return pay_password;}
 
-    public void setProfile_a(Image _pro_a)
+    public void setProfile_a(String _pro_a)
     {
         profile_a = _pro_a;
     }
-    public Image getProfile_a(){return profile_a;}
+    public String getProfile_a(){return profile_a;}
 
-    public void setProfile_b(Image _pro_b)
+    public void setProfile_b(String _pro_b)
     {
         profile_b = _pro_b;
     }
-    public Image getProfile_b(){return profile_b;}
+    public String getProfile_b(){return profile_b;}
 
     public void setIPFS_hash(String _hash)
     {

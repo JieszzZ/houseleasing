@@ -234,6 +234,7 @@
                     “sector”:"历下区",
                     "commu_name":"奥龙官邸"
             }，
+         
            "specific_location":"2号楼3单元1801"
           },
 
@@ -291,6 +292,7 @@
           "sector":"历下区",
           "commu_name":"奥龙官邸",
       },
+      "low_str_location":"山东省济南市历下区奥龙官邸",
       "specific_location":"2号楼3单元1801",
       "floor":18
       "elevator":true
@@ -364,6 +366,7 @@ house：
 |state|number|可租用状态, 0 下线状态 1 发布状态 2 删除状态|  //删除状态也就是用户自己选择删除记录
 |role|number|调用接口人的身份 1用户 2管理员 0其他|
 |low_location|json|简略地址|
+|low_str_location|string|简略地址字符串形式|
 |specific_location|string|详细地址 "2号楼3单元1801"|
 |floor|number|楼层 eg. 18 |
 |elevator|boolean|true 有电梯 false 无电梯 |
@@ -375,7 +378,8 @@ house：
 |house_level|number|1~5 五个级别 |
 |house_comment|array| 房子评论  |
 |verify|boolean| 是否经过验证，true 通过了 false没通过  |
-
+|lon|string| 经度  eg "113.45"  |
+|lat|string| 纬度  eg "184.45"  |
 
 
 low_location：
@@ -389,6 +393,82 @@ low_location：
 
 注意：现在provi 默认为山东省 city 默认为 济南市 留着字段以后扩展
 前端向后端发的时候 不带commu_name 字段
+
+
+* #### 添加房源(u)
+  ```
+  GET /house/setUpHouse
+  ```
+  ##### parameters
+  |Name|Type|Description|
+  |---|---|---|
+  |house_id|string|房产证号|
+  |state|number| 1 |  //用户上传并展示房源
+  |low_location|json|简略地址|
+  |specific_location|string|详细地址 "2号楼3单元1801"|
+  |floor|number|楼层 eg. 18 |
+  |elevator|boolean|true 有电梯 false 无电梯 |
+  |lease|number|租金 5000 |
+  |lease_type|number| 0 全部 1 整租 2 合租 |
+  |house_type|number| 0 全部 1 一室 2 二室 3 其他 |
+  |lon|string| 经度  eg "113.45"  |
+  |lat|string| 纬度  eg "184.45"  |
+  |area|string|房屋面积  eg: '356'  |
+  |house_pic|file| 一系列图片|
+  ##### <a name="get-group-response">response</a>
+  **注：**
+
+  ```
+  {
+  "status":200,
+  "message":"success",
+  "data":{
+       "house_pic":[
+            "sdfadfasfasfasdfa" ，   //图片一的哈希值
+            “sdfadsfadsfasf”,
+            "sadfadsfasfsa"
+        ]
+      "house_hash":"sdfwenk31345",//房产证号
+      "owner_id":"37012506546564"，//房主身份证号
+      "verify":"true"   //经过验证
+      "owner":"quyanso111",//拥有者的账号
+      "owner_name":"曲延松",//拥有者的姓名
+      "role":1,     //调用这个接口的人是管理者还是用户
+      "state":0,    //可租用状态
+      "low_location":{
+          "provi":"山东省",
+          "city":"济南市",
+          "sector":"历下区",
+          "commu_name":"奥龙官邸",
+      },
+      low_str_location:"山东省济南市历下区奥龙官邸",
+      "specific_location":"2号楼3单元1801",
+      "floor":18,
+      "long":"113.45"   //房屋经度
+      "lat":"138.49"   //房屋纬度
+      "elevator":true
+      "lease":3800
+      "house_type":1  // 1 一室 2 二室 3 其他
+      "house_owner_credit":16,
+      "house_level":5 //房子五个等级
+      "house_comment":[
+        {
+          "user_id":"quyans111",   //评论人账号名
+          "comment":"这个房子挺不错适合居住",   //评论内容
+          "comment_pic":[
+                "sdfadfasfasfasdfa" ，   //图片一的哈希值
+                “sdfadsfadsfasf”,
+                "sadfadsfasfsa"
+          ],
+          ......
+        }
+      ]
+  }
+  }
+  ```
+
+
+
 
 * #### 获取房源详细信息(u|m)
   ```
@@ -418,18 +498,22 @@ low_location：
       "owner_name":"曲延松",//拥有者的姓名
       "role":1,     //调用这个接口的人是管理者还是用户
       "state":0,    //可租用状态
+      "area":356,    //房屋面积
       "low_location":{
           "provi":"山东省",
           "city":"济南市",
           "sector":"历下区",
           "commu_name":"奥龙官邸",
       },
+      low_str_location:"山东省济南市历下区奥龙官邸",
       "specific_location":"2号楼3单元1801",
-      "floor":18
+      "floor":18,
+      "long":"113.45"   //房屋经度
+      "lat":"138.49"   //房屋纬度
       "elevator":true
       "lease":3800
       "house_type":1  // 1 一室 2 二室 3 其他
-      "house_credit":16,
+      "house_owner_credit":16,
       "house_level":5 //房子五个等级
       "house_comment":[
         {
@@ -459,7 +543,7 @@ low_location：
   |lease_inter|number|0 全部 1 500元以下 2 500-1000元   3 1000-1500元 4 1500-2000元 5 2000元以上 |
   |house_type|number| 0 全部 1 一室 2 二室 3 其他 |
   |lease_type|number| 0 全部 1 整租 2 合租 |
-  |elevator|number| 0 全部 1 有电梯  |
+  |elevator|boolean| false 全部 true 有电梯  |
 
    #### response
   ```
@@ -468,11 +552,14 @@ low_location：
   "message":"success",
   "data":[
         {
-          "photo":"sadfadsfadf"   //一张图片的hash
-          "low_location":"山东省济南市历下区**小区",
+          "house_pic":"sadfadsfadf"   //一张图片的hash
+       
+          low_str_location:"山东省济南市历下区奥龙官邸",
           "lease":"5000",
           "house_type":"2",
           "lease_type":"1",
+          "elevator":true,
+          "house_hash":"sdfadfafsaf"   //房子房产证的哈希
         }，
         ...
     ]
@@ -598,27 +685,30 @@ low_location：
   "data":{
       "verified":[            //通过验证的房子
           {
-          "photo":"sadfadsfadf"   //一张图片的hash
-          "low_location":"山东省济南市历下区**小区",
+          "house_pic":"sadfadsfadf"   //一张图片的hash
+          "low_str_location":"山东省济南市历下区奥龙官邸",
           "lease":"5000",
           "house_type":"2",
           "lease_type":"1",
+          "house_hash":"asdfsdf",
          }，
          
          {
-          "photo":"sadfadsfadf"   //一张图片的hash
-          "low_location":"山东省济南市历下区**小区",
+          "house_pic":"sadfadsfadf"   //一张图片的hash
+          "low_str_location":"山东省济南市历下区奥龙官邸",
           "lease":"5000",
           "house_type":"2",
           "lease_type":"1",
+          "house_hash":"asdfsdf",
          }，
          
          {
-          "photo":"sadfadsfadf"   //一张图片的hash
-          "low_location":"山东省济南市历下区**小区",
+          "house_pic":"sadfadsfadf"   //一张图片的hash
+          "low_str_location":"山东省济南市历下区奥龙官邸",
           "lease":"5000",
           "house_type":"2",
           "lease_type":"1",
+          "house_hash":"asdfsdf",
          }，
          
         ],
@@ -626,27 +716,30 @@ low_location：
        
        "non_verified":[            //通过验证的房子
           {
-          "photo":"sadfadsfadf"   //一张图片的hash
-          "low_location":"山东省济南市历下区**小区",
+          "house_pic":"sadfadsfadf"   //一张图片的hash
+          "low_str_location":"山东省济南市历下区奥龙官邸",
           "lease":"5000",
           "house_type":"2",
           "lease_type":"1",
+          "house_hash":"asdfsdf",
          }，
          
          {
-          "photo":"sadfadsfadf"   //一张图片的hash
-          "low_location":"山东省济南市历下区**小区",
+          "house_pic":"sadfadsfadf"   //一张图片的hash
+          "low_str_location":"山东省济南市历下区奥龙官邸",
           "lease":"5000",
           "house_type":"2",
           "lease_type":"1",
+          "house_hash":"asdfsdf",
          }，
          
          {
-          "photo":"sadfadsfadf"   //一张图片的hash
-          "low_location":"山东省济南市历下区**小区",
+          "house_pic":"sadfadsfadf"   //一张图片的hash
+          "low_str_location":"山东省济南市历下区奥龙官邸",
           "lease":"5000",
           "house_type":"2",
           "lease_type":"1",
+          "house_hash":"asdfsdf",
          }，
         ],
   }
@@ -659,7 +752,7 @@ low_location：
 允许的请求者：1.用户
 
   ```
-  POST /tract/set
+  POST /tract/userSet
   ```
 
   ##### parmas
@@ -681,9 +774,9 @@ low_location：
   ```
   
 
-* #### 房主获取所有与他有关的签约请求(m)
+* #### 房主获取所有与他有关的签约请求(u)
  ```
-  GET /tract/get
+  GET /tract/ownerGet
   ```
 
 
@@ -693,13 +786,14 @@ low_location：
   "status":200,
   "message":"success",
   "data":{
-    leaves:[
+    tract:[
       {
       "requestID":"xxoo",
       "username":"xxdd"，   //请求的人的用户名
       "name":"曲延松",       //请求的人的姓名
       "house_hash":"adfafd",    //请求的房子hash
       "commu_name":"茗筑美嘉"，  //房子小区名
+      "state":0    //  0未回复  1 卖家同意买家未确认  2 买家确认卖家未确认 3、 卖家确认   
       },
       {
       "requestID":"xsxoo",
@@ -707,15 +801,16 @@ low_location：
       "name":"曲延松",       //请求的人的姓名
       "house_hash":"adfafd",    //请求的房子hash
       "commu_name":"奥龙官邸"，  //房子小区名
+      "state":0    //  0未回复  1 卖家同意买家未确认  2 买家确认卖家未确认 3、 卖家确认   
       },
     ]
   }
   }
   ```
 
-* #### 请假请求反馈(m)
+* #### 请假请求反馈(u)
  ```
-  POST /tract/acquire
+  POST /tract/ownerRes
   ```
   ##### params
 
@@ -733,13 +828,13 @@ low_location：
   }
   ```
   
-  * #### 请假反馈获取(u)
+  * #### 请求反馈获取(u)
  ```
-  GET /tract/{requestID}/feedback
+  GET /tract/userGet
   ```
   ```
   例如：
-  GET /tract/XIDJGE/feedback  
+  GET /tract/userGet
   ```
 
   #### response
@@ -748,12 +843,66 @@ low_location：
   "status":200,
   "message":"success",
   "data":{
-        "checkID":"aadfif",
-        "groupID":"xxoo",
-        "request_status":0,                 # 0：未处理  1：同意   2：拒绝
+      tract:[
+        {
+        "requestID":"xxoo",
+        "username":"xxdd"，   //请求的人的用户名
+        "name":"曲延松",       //请求的人的姓名
+        "house_hash":"adfafd",    //请求的房子hash
+        "commu_name":"茗筑美嘉"，  //房子小区名
+        "state":0    //  0未回复  1 卖家同意买家未确认  2 买家确认卖家未确认 3、 卖家确认   
+        },
+        {
+        "requestID":"xsxoo",
+        "username":"xxdd"，   //请求的人的用户名
+        "name":"曲延松",       //请求的人的姓名
+        "house_hash":"adfafd",    //请求的房子hash
+        "commu_name":"奥龙官邸"，  //房子小区名
+        "state":0    //  0未回复  1 卖家同意买家未确认  2 买家确认卖家未确认 3、 卖家确认（双方达成合约）  
+        },
+    ]
    },
   }
   ```
+  
+  * #### 用户确认交易(u)
+ ```
+  POST /tract/userIden
+  ```
+  ##### params
+
+  |Name|Type|Description|
+  |---|---|---|
+  |requestID|string|请求id|
+  |requestIdentify|boolean|请求反馈 true 同意签约  false 不同意签约|
+  |pay_password|string|用户的支付密码|
+  
+* #### 用户确认交易(u)
+ ```
+  POST /tract/userIden
+  ```
+  ##### params
+
+  |Name|Type|Description|
+  |---|---|---|
+  |requestID|string|请求id|
+  |requestIdentify|boolean|请求反馈 true 同意签约  false 不同意签约|
+  |pay_password|string|用户的支付密码|
+  
+  
+* #### 卖家确认交易(u)
+ ```
+  POST /tract/userIden
+  ```
+  ##### params
+
+  |Name|Type|Description|
+  |---|---|---|
+  |requestID|string|请求id|
+  |requestIdentify|boolean|请求反馈 true 同意签约  false 不同意签约|
+  |pay_password|string|用户的支付密码|
+
+
   
   
   
