@@ -36,7 +36,7 @@ public class UserServicesImpl implements UserService {
     private static String oneTable = "";//用户-账号表
     private static String twoTable = "";//能租的房子
     private static String threeTable = "";//不能租的房子
-
+    private static String contractAddress = "";//合约的地址
 
     @Override
     //使用用户和密码进行登录，成功返回true,失败返回false；
@@ -72,13 +72,7 @@ public class UserServicesImpl implements UserService {
                 String account = bc.creatCredentials(pay_password);
                 Table table = new TableImpl();
                 table.insert(_username,account,SK,path +"/" + oneTable);
-                //木有在区块链添加id和name的方法
-                //伪代码：在区块链添加id和name
-                // {
-                // 添加id和name
-                //
-                // }
-                bc.changeTelInfo(account,phone);
+
 
                 //将身份证照片存储在IPFS上
                 File pro_a = new File(_profile_a);
@@ -124,8 +118,15 @@ public class UserServicesImpl implements UserService {
                 String is = IPFS_SERVICE.upload(path+"/"+ipfs);
 
                 //把哈希值传给以太坊
-                bc.changeHashInfo(account,is);
+                //bc.changeHashInfo(account,is);
 
+                //木有在区块链添加id和name的方法
+                //伪代码：在区块链添加id和name
+                // {
+                // 添加id和name
+                //
+                // }
+                bc.changeTelInfo(account,contractAddress,pay_password,is,phone);
                 return true;
             }
 
@@ -164,16 +165,16 @@ public class UserServicesImpl implements UserService {
     //再从以太坊账户读取存储在区块链上的信息
     //存储在_one中
     @Override
-    public boolean getUser(User _one, String _username)
+    public boolean getUser(User _one, String _username,String _pay_password)
     {
         try
         {
             String account = findAccount(_username);
             BlockChain bc = new BlockChain();
-            String message = bc.getMessage(account);
+            String message = bc.getMessage(account,contractAddress,_pay_password);
             _one = readUser(message);
             _one.setUsername(_username);
-            IPFS_SERVICE.download(_one.getIPFS_hash(),path+"/"+ipfs);
+            IPFS_SERVICE.download(path,_one.getIPFS_hash(),ipfs);
 
             FileReader fr = new FileReader(path+"/"+ipfs);
             BufferedReader br = new BufferedReader(fr);
@@ -266,7 +267,7 @@ public class UserServicesImpl implements UserService {
 */
     @Override
     //需要比对密码,_phone 为修改后的电话号码
-    public boolean postPhone(String _username,String _password,String _phone)
+    public boolean postPhone(String _username,String _password,String _pay_password,String _phone)
     {
         BlockChain bc = new BlockChain();
         UserDao ud = new UserDaoImpl();
@@ -277,8 +278,10 @@ public class UserServicesImpl implements UserService {
         }
         try
         {
+
             account = findAccount(_username);
-            bc.changeTelInfo(account,_phone);
+            User user = readUser(bc.getMessage(account,contractAddress,_pay_password));
+            bc.changeTelInfo(account,contractAddress,_pay_password,user.getIPFS_hash(),_phone);
             return true;
         }catch (IOException e)
         {
@@ -361,11 +364,11 @@ public class UserServicesImpl implements UserService {
     }
 
 
-    private User readUsermessage(String _username) throws IOException
+    private User readUsermessage(String _username,String _pay_password) throws IOException
     {
         BlockChain bc = new BlockChain();
         String account = findAccount(_username);
-        String _json = bc.getMessage(account);
+        String _json = bc.getMessage(account,contractAddress,_pay_password);
         ArrayList<String> res = new ArrayList<String>();
         int begin = -1,end = 0;
         for(int i=0;i<_json.length();i++)
