@@ -1,7 +1,6 @@
 package com.mokelock.houseleasing.services.servicesImpl;
 
 import com.mokelock.houseleasing.IPFS.IPFS_SERVICE;
-import com.mokelock.houseleasing.IPFS.IPFS_SERVICE_IMPL;
 import com.mokelock.houseleasing.IPFS.Table;
 import com.mokelock.houseleasing.IPFS.TableImpl.TableImpl;
 import com.mokelock.houseleasing.blockchain.BlockChain;
@@ -9,7 +8,6 @@ import com.mokelock.houseleasing.dao.UserDao;
 import com.mokelock.houseleasing.dao.UserDaoImpl.UserDaoImpl;
 import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.UserModel.User;
-import com.mokelock.houseleasing.model.UserModel.modifyUser;
 import com.mokelock.houseleasing.model.UserModel.record;
 import com.mokelock.houseleasing.services.HouseService;
 import com.mokelock.houseleasing.services.UserService;
@@ -21,6 +19,7 @@ import java.util.*;
 import java.util.ArrayList;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +36,9 @@ public class UserServicesImpl implements UserService {
     private static String twoTable = "";//能租的房子
     private static String threeTable = "";//不能租的房子
     private static String contractAddress = "";//合约的地址
+
+    @Resources
+    private UserDao userDao;
 
     @Override
     //使用用户和密码进行登录，成功返回true,失败返回false；
@@ -65,8 +67,7 @@ public class UserServicesImpl implements UserService {
         User user = new User(_username,_password,pay_password,name,phone,_profile_a,_profile_b,_id,_gender);
         try
         {
-            UserDao ud =new UserDaoImpl();
-            if(ud.checkUser(_username) <= 0 && ud.insertUser(_username,_password) > 0)
+            if(userDao.checkUser(_username) <= 0 && userDao.insertUser(_username,_password) > 0)
             {
                 BlockChain bc = new BlockChain();
                 String account = bc.creatCredentials(pay_password);
@@ -165,8 +166,9 @@ public class UserServicesImpl implements UserService {
     //再从以太坊账户读取存储在区块链上的信息
     //存储在_one中
     @Override
-    public boolean getUser(User _one, String _username,String _pay_password)
+    public User getUser(String _username,String _pay_password)
     {
+        User _one;
         try
         {
             String account = findAccount(_username);
@@ -211,14 +213,14 @@ public class UserServicesImpl implements UserService {
 
             _one.setProfile_a(path+"/"+profile_a);
             _one.setProfile_b(path+"/"+profile_b);
-            return true;
+            return _one;
         }catch(IOException e)
         {
             System.out.println("getUser() is error!");
         }
         finally
         {
-            return false;
+            return null;
         }
 
 
@@ -229,6 +231,11 @@ public class UserServicesImpl implements UserService {
         return false;
     }
 
+
+
+    //*********
+    //待修改；
+    //*********
     @Override
     public ArrayList<record> getRecords(String _username) {
         ArrayList<record> alr = new ArrayList<record>();
@@ -237,8 +244,8 @@ public class UserServicesImpl implements UserService {
 
             String account = findAccount(_username);
             BlockChain bc = new BlockChain();
-            String message = bc.replayFilter(account);
-            alr  = readRecords(message);
+           // String message = bc.replayFilter(account);
+          //  alr  = readRecords(message);
 
 
         }catch(IOException e)
@@ -267,6 +274,9 @@ public class UserServicesImpl implements UserService {
 */
     @Override
     //需要比对密码,_phone 为修改后的电话号码
+    //************************************
+    //待完善！！！
+    //************************************
     public boolean postPhone(String _username,String _password,String _pay_password,String _phone)
     {
         BlockChain bc = new BlockChain();

@@ -62,7 +62,7 @@ public interface UserService {
     //根据用户名查询系统以太坊账户的用户账户*以太坊账户的表
     //再从以太坊账户读取存储在区块链上的信息
     //存储在_one中
-    boolean getUser(User _one, String _username,String _pay_password);
+    User getUser(String _username,String _pay_password);
 
     //向目标账户进行充值，成功返回true，失败返回false；
     //先从系统账户寻找用户账户*以太坊账户的表，找到用户的以太坊账户
@@ -112,7 +112,7 @@ public interface UserService {
 
 
     //修改一个用户的电话号码，成功返回true，失败返回false;需要输入用户密码，密码正确才能修改，密码错误则返回false;
-    boolean postPhone(String _username,String _password,String _phone);
+    boolean postPhone(String _username,String _password,String _pay_password,String _phone);
 
     /*
     //传入一个User对象和一个modifyUser对象，将_modified对象的信息覆盖old的信息,成功返回true，失败返回false;
