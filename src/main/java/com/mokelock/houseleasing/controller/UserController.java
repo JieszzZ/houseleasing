@@ -185,8 +185,8 @@ public class UserController {
      * @param house_hash 房子的唯一hash
      */
     @RequestMapping(value = "/myHouse", method = RequestMethod.POST)
-    public void setMyHouse(String house_hash){
-
+    public boolean setMyHouse(String house_hash, int state , boolean elevator, int lease, String phone){
+        return userService.postHouse(house_hash, state, elevator, lease, phone);
     }
 
     /**
@@ -195,8 +195,13 @@ public class UserController {
      * @param phone 电话
      */
     @RequestMapping(value = "/info", method = RequestMethod.POST)
-    public void info (String password, String phone) {
-
+    public boolean info (HttpServletRequest request, String password, String phone) {
+        String username = request.getParameter("username");
+        if (username == null) {
+            HttpSession session = request.getSession();
+            username = (String) session.getAttribute("username");
+        }
+        return userService.postPhone(username, password, phone);
     }
 
     /**
@@ -206,7 +211,7 @@ public class UserController {
      */
     @RequestMapping(value = "/contact_owner", method = RequestMethod.POST)
     public String contactOwner(String house_hash) {
-        return "";
+        return userService.getUser();
     }
 
     /**
@@ -216,7 +221,7 @@ public class UserController {
     @RequestMapping(value = "/all_info", method = RequestMethod.GET)
     public JSON allInfo() {
         JSON json = new JSONArray();
-        return json;
+        return userService.;
     }
 
     /**
