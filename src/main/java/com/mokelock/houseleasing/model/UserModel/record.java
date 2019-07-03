@@ -23,6 +23,8 @@ public class record {
     private low_location lowLocation;
     private String specific_location;
 
+    private String house_hash;
+
     public enum Sign{signed,unsigned,refused}
     public enum Role{submiter,responder}
     public enum State{submiting,effecting,finished,refused,failed}
@@ -77,5 +79,6 @@ public class record {
     public void setSpecific_location(String _specific_location){specific_location = _specific_location;}
     public String getSpecific_location(){return specific_location;}
 
-
+    public void setHouse_hash(String house_hash){this.house_hash = house_hash;}
+    public String getHouse_hash(){return  house_hash;}
 }

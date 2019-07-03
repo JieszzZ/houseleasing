@@ -39,7 +39,7 @@ public class UserServicesImpl implements UserService {
     private static String contractAddress = "";//合约的地址
     private static String adminEthPassword = "";
     private static String adminFilePath = "";
-
+    private static final int InitialCredit = 10;
     //@Resources
     private UserDao userDao;
 
@@ -64,6 +64,8 @@ public class UserServicesImpl implements UserService {
 */
     @Override
     //注册账号;注册的信息分别为用户名，密码，支付口令，姓名，电话，身份证照片正，反，身份证号，性别;
+    //信誉值用初始化的值
+    //差以太坊钱包地址
     public boolean register(String _username, String _password, String pay_password, String name, String phone, File _profile_a, File _profile_b, String _id, byte _gender)
     {
         User user = new User(_username,_password,pay_password,name,phone,_profile_a,_profile_b,_id,_gender);
@@ -134,7 +136,8 @@ public class UserServicesImpl implements UserService {
                 // 添加id和name
                 //
                 // }
-                bc.changeTelInfo(account,contractAddress,pay_password,is,phone);
+
+                bc.addUser(account,SK,pay_password,_username,_id,is,phone,_gender,InitialCredit);
                 return true;
             }
 
@@ -308,7 +311,7 @@ public class UserServicesImpl implements UserService {
     public boolean postPhone(String _username,String _password,String _pay_password,String _phone)
     {
         BlockChain bc = new BlockChain();
-        String account;
+        String account,ethFile;
         if(_password != userDao.getPasswordByUsername(_username))
         {
             return false;
@@ -317,8 +320,9 @@ public class UserServicesImpl implements UserService {
         {
 
             account = findAccount(_username);
+            ethFile = findEthFile(_username);
             User user = readUser(bc.getMessage(account,contractAddress,_pay_password));
-            bc.changeTelInfo(account,contractAddress,_pay_password,user.getIPFS_hash(),_phone);
+            bc.changeTelInfo(account,ethFile, _pay_password,_phone);
             return true;
         }catch (IOException e)
         {
@@ -390,12 +394,12 @@ public class UserServicesImpl implements UserService {
     {
         int where = 0;
         String hash = findUser_Account_hash();
-        IPFS_SERVICE.download(path,hash,path);
+        IPFS_SERVICE.download(tablepath,hash,oneTable);
         Table table = new TableImpl();
         String[] user_name = {"username"};
         String[] _user = {_username};
         String[] eth_id = {"eth_id"};
-        ArrayList<String[]> result = table.query(user_name,_user,eth_id,path);
+        ArrayList<String[]> result = table.query(user_name,_user,eth_id,tablepath+"/"+oneTable);
         String res = result.get(where)[where];
 
         return res;
@@ -631,6 +635,22 @@ public class UserServicesImpl implements UserService {
         return bc.getHash(User_Account_TYPE);
     }
 
+    public String findEthFile(String _username) throws  IOException
+    {
+        int where = 0;
+        String hash = findUser_Account_hash();
+        IPFS_SERVICE.download(tablepath,hash,oneTable);
+        Table table = new TableImpl();
+        String[] user_name = {"username"};
+        String[] _user = {_username};
+        String[] SK = {"SK"};
+        ArrayList<String[]> result = table.query(user_name,_user,SK,tablepath+"/"+oneTable);
+        String res = result.get(where)[where];
+
+        return res;
+
+    }
+
     private record.Sign tranlateSign(String sign)
     {
         if(sign == "Sign.signed")
@@ -723,4 +743,6 @@ public class UserServicesImpl implements UserService {
         }
         return  alr;
     }
+
+
 }
