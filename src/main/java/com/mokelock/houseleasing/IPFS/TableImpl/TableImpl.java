@@ -209,7 +209,7 @@ public class TableImpl implements  Table{
         String house_level=String.valueOf(house_obj.getHouse_level());
         String lon=String.valueOf(house_obj.getLon());
         String lat=String.valueOf(house_obj.getLat());
-        String area=String.valueOf(house_obj.getArea());
+       // String area=String.valueOf(house_obj.getArea());
         Map<String,String>map=new HashMap<>();
         map.put("house_id",house_hash);
         map.put("owner_id",owner_id);
@@ -231,7 +231,7 @@ public class TableImpl implements  Table{
         map.put("house_level",house_level);
         map.put("lon",lon);
         map.put("lat",lat);
-        map.put("area",area);
+       // map.put("area",area);
         String msg=JSON.toJSONString(map);
         String template=msg+"\r\n";
         try{

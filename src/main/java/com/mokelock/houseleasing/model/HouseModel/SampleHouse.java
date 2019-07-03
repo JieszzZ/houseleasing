@@ -26,13 +26,14 @@ public class SampleHouse {
     }
     /*************************************************************************************************/
     //返回前端用到的构造函数
-    public SampleHouse(String house_pic, String low_str_location, String lease, String house_type, String lease_type, boolean elevator) {
+    public SampleHouse(String house_pic, String low_str_location, String lease, String house_type, String lease_type, boolean elevator ,String house_hash) {
         this.house_pic = house_pic;
         this.low_str_location = low_str_location;
         this.lease = lease;
         this.house_type = house_type;
         this.lease_type = lease_type;
         this.elevator = elevator;
+        this.house_hash = house_hash;
     }
 
     //将SampleHouse对象转换为json对象的形式
@@ -45,6 +46,7 @@ public class SampleHouse {
         josh.put("house_type",this.house_type);
         josh.put("lease_type",this.lease_type);
         josh.put("elevator",this.elevator);
+        josh.put("house_hash",this.house_hash);
 
         return josh;
     }
@@ -58,6 +60,16 @@ public class SampleHouse {
     }
     public void setUse_id(String use_id) {
         this.use_id = use_id;
+    }
+
+    //hash
+    private String house_hash;
+
+    public String getHouse_hash() {
+        return house_hash;
+    }
+    public void setHouse_hash(String house_hash) {
+        this.house_hash = house_hash;
     }
 
     //照片

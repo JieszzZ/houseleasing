@@ -17,10 +17,11 @@ public interface HouseService {
     JSON search(String low_location, String leaser_inter, String house_type, String lease_type, boolean elevator);
 
     //评价房子
-    JSONObject valuation(String house_hash, int house_level, String comment, String[] comment_pic);
+    JSONObject valuation(String user_id,String house_id_hash,String comment, String[] comment_pic);
 
     //获取房屋列表
     JSON allInfo();
+    JSON myHouse(String house_id_hash, int state, boolean elevator, int lease);
 
 }
 

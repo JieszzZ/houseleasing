@@ -238,8 +238,8 @@ public class HouseServiceImpl implements HouseService {
                         lease_type_single = "合租";
                         break;
                 }
-                sh = new SampleHouse(house_pic,provi_single+city_single+sector_single+commu_name_single,lease_single,house_type_single,lease_type_single,elevator_single);
-                allsh.add(sh.SHtoJson());
+               // sh = new SampleHouse(house_pic,provi_single+city_single+sector_single+commu_name_single,lease_single,house_type_single,lease_type_single,elevator_single);
+                //allsh.add(sh.SHtoJson());
         }
         Response resOfSearchSH = new Response(200,"success",allsh);
 
@@ -248,17 +248,29 @@ public class HouseServiceImpl implements HouseService {
 
     @Override
     //评价房子
-    public JSONObject valuation(String house_hash, int house_level, String comment, String[] comment_pic) {
+    public JSONObject valuation(String user_id,String house_id_hash,String comment, String[] comment_pic) {
         /*
          * 获取用户账号、文字评论和图片评论、房屋等级
          * 根据房源hash找到该房源的详细信息并将房源评论添加上
          * 返回状态消息
          * */
-        String user_ID="123456";
-        String p="123";
+/*
+        String h_level="house_level";
+        //String p="123";
         TableImpl t=new TableImpl();
-        t.insert_into_comment(user_ID,comment,comment_pic,p);
 
+        BlockChain b=new BlockChain();
+        String  verified_house= b.getHash(1);
+        String[] key_for_search={"house_id_hash"};
+        String[] value_for_search={"house_id_hash"};
+        String[] key_to_get={"house_hash"};
+        ArrayList<String[]> a1=t.query(key_for_search,value_for_search,key_to_get,verified_house);
+        String[] hash1 = a1.toArray(new String[a1.size()]);
+        String p="hash1[0]";
+
+
+        t.insert_into_comment(user_id,comment,comment_pic,h_level,p);
+*/
         return null;
     }
 
@@ -271,75 +283,131 @@ public class HouseServiceImpl implements HouseService {
          * 遍历房源hash，每个都写为JSON的形式，并把verify=1的放入verified，verify=0的放入non_verified
          * 最后将整个json返回
          * */
-        String[] hash = {"123", "456"};
-        String[] key_for_search={"house_hash"};
+        /*TableImpl thouse=new TableImpl();
+
+        String[] key_for_search={"house_id_hash"};
+        BlockChain chain=new BlockChain();
+        String  verified_house= chain.getHash(1);
+        String non_verified_house=chain.getHash(2);
+        ArrayList<String[]> a1=thouse.get_all(key_for_search,verified_house);
+        ArrayList<String[]> a2=thouse.get_all(key_for_search,non_verified_house);
+        String[] hash1 = a1.toArray(new String[a1.size()]);
+        String[] hash2 = a1.toArray(new String[a2.size()]);
 
         JSONArray verified = new JSONArray();
         JSONArray non_verified = new JSONArray();
-        JSONArray all=new JSONArray();
-        JSONObject j=new JSONObject();
-        String path="123";
-        TableImpl thouse=new TableImpl();
-        String[] key_to_get = {"verify","photo", "provi","city","sector" ,"commu_name","lease", "house_type", "lease_type","elevator"};
 
-        for (int i = 0; i < hash.length; i++)
+        JSONObject data=new JSONObject();
+
+        // String path="C:\\Users\\1\\Desktop\\demo.txt";
+
+        String[] key_to_get = {"provi","city","sector" ,"commu_name","lease", "house_type", "lease_type","elevator","house_hash"};
+
+
+        for (int i = 0; i < hash1.length; i++)
         {
 
-            String[] value_for_search={hash[i]};
-            //thouse.query(key_for_search,value_for_search,key_to_get,path);
-            ArrayList<String[]> v1=thouse.query(key_for_search,value_for_search,key_to_get,path);
+            String[] value_for_search={hash1[i]};
+            ArrayList<String[]> v1=thouse.query(key_for_search,value_for_search,key_to_get,verified_house);
 
             for(int m=0;m<v1.size();m++){
                 String s1="0";
                 String s2="0";
-                Boolean b=true;
+                Boolean b=Boolean.valueOf(v1.get(m)[7]);
+
                 String s=v1.get(m)[2];
-                if(v1.get(m)[7].equals("0")){
+                if(v1.get(m)[5].equals("0")){
                     s1="全部";
-                }if (v1.get(m)[7].equals("1")){
+                }if (v1.get(m)[5].equals("1")){
                     s1="一室";
-                }if (v1.get(m)[7].equals("2")){
+                }if (v1.get(m)[5].equals("2")){
                     s1="二室";
-                }if (v1.get(m)[7].equals("3")){
+                }if (v1.get(m)[5].equals("3")){
                     s1="其他";
                 }
-                if (v1.get(m)[8].equals("0")){
+                if (v1.get(m)[6].equals("0")){
                     s2="全部";
-                }if (v1.get(m)[8].equals("1")){
+                }if (v1.get(m)[6].equals("1")){
                     s2="整租";
-                }if (v1.get(m)[8].equals("2")){
+                }if (v1.get(m)[6].equals("2")){
                     s2="合租";
-                }if (v1.get(m)[9].equals("1")){
-                    b=true;
-                }if (v1.get(m)[9].equals("0")){
-                    b=false;
                 }
-                String s3=v1.get(m)[2]+v1.get(m)[3]+v1.get(m)[4]+v1.get(m)[5];
-                String lease=v1.get(m)[3];
-                if(v1.get(m)[0]=="1"){
+                String photo="v1.get(m)[6]\\1.jpg";
+                String s3=v1.get(m)[0]+v1.get(m)[1]+v1.get(m)[2]+v1.get(m)[3];
+                String lease=v1.get(m)[4];
+                SampleHouse shouse1 = new SampleHouse(photo,s3,lease,s1,s2,b,hash1[i]);
+                shouse1.SHtoJson();
+                verified.add(shouse1);
+                //System.out.print(v1.get(m)[b]+" ");
 
-                    SampleHouse shouse1 = new SampleHouse(v1.get(m)[1],s3,lease,s1,s2,b);
-                    shouse1.SHtoJson();
-                    verified.add(shouse1);
-                    //System.out.print(v1.get(m)[b]+" ");
-                }
-                if(v1.get(m)[0]=="0"){
-                    SampleHouse shouse2=new SampleHouse(v1.get(m)[1],s3,lease,s1,s2,b);
-                    shouse2.SHtoJson();
-                    non_verified.add(shouse2);
 
-                }
-                System.out.println();
+
             }
+            data.put("verified",verified);
+            //data.put("non_verified",non_verified);
 
-            all.add( verified);
-            all.add(non_verified);
-            j.put("status",200);
-            j.put("message","success");
-            j.put("data",all);
+        }
+        for (int j=0;j<hash2.length;j++){
+            String[] value_for_search={hash2[j]};
+            ArrayList<String[]> v2=thouse.query(key_for_search,value_for_search,key_to_get,non_verified_house);
+
+            for(int m=0;m<v2.size();m++){
+                String s1="0";
+                String s2="0";
+                Boolean b=Boolean.valueOf(v2.get(m)[7]);
+
+                String s=v2.get(m)[2];
+                if(v2.get(m)[5].equals("0")){
+                    s1="全部";
+                }if (v2.get(m)[5].equals("1")){
+                    s1="一室";
+                }if (v2.get(m)[5].equals("2")){
+                    s1="二室";
+                }if (v2.get(m)[5].equals("3")){
+                    s1="其他";
+                }
+                if (v2.get(m)[6].equals("0")){
+                    s2="全部";
+                }if (v2.get(m)[6].equals("1")){
+                    s2="整租";
+                }if (v2.get(m)[6].equals("2")){
+                    s2="合租";
+                }
+                String photo="v2.get(m)[6]\\1.jpg";
+                String s3=v2.get(m)[0]+v2.get(m)[1]+v2.get(m)[2]+v2.get(m)[3];
+                String lease=v2.get(m)[4];
+                SampleHouse shouse2 = new SampleHouse(photo,s3,lease,s1,s2,b,hash2[j]);
+                shouse2.SHtoJson();
+                non_verified.add(shouse2);
+
+
+
+
+            }
+            data.put("non_verified",non_verified);
+
+
+
 
         }
 
-        return j;
+
+
+        Response r=new Response(200,"success",data);
+        return r.RestoJson3();*/
+        return null;
+    }
+
+    @Override
+    public JSON myHouse(String house_id_hash, int state, boolean elevator, int lease) {
+
+        TableImpl t=new TableImpl();
+        String[] key_for_search={"house_hash"};
+        String[] value_for_search={"house_hash"};
+        String[] key_to_get={"house_id",};
+        String path="123";
+        ArrayList<String[]> v1=t.query(key_for_search,value_for_search,key_to_get,path);
+
+        return null;
     }
 }
