@@ -5,9 +5,9 @@ import com.mokelock.houseleasing.IPFS.Table;
 import com.mokelock.houseleasing.IPFS.TableImpl.TableImpl;
 import com.mokelock.houseleasing.blockchain.BlockChain;
 import com.mokelock.houseleasing.dao.UserDao;
-import com.mokelock.houseleasing.dao.UserDaoImpl.UserDaoImpl;
 import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.UserModel.User;
+import com.mokelock.houseleasing.model.UserModel.front_record;
 import com.mokelock.houseleasing.model.UserModel.record;
 import com.mokelock.houseleasing.services.HouseService;
 import com.mokelock.houseleasing.services.UserService;
@@ -21,13 +21,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
-import org.springframework.stereotype.Service;
+//import org.springframework.stereotype.Service;
 
-@Service
+//@Service
 public class UserServicesImpl implements UserService {
 
     private static final int User_Account_TYPE = 1;
     private static String path= "" ;//文件下载和上传路径
+    private static String tablepath = "";
     private static String SK = "";
     private static String profile_a = "";//身份证正面位置
     private static String profile_b = "";//身份证背面位置
@@ -36,22 +37,23 @@ public class UserServicesImpl implements UserService {
     private static String twoTable = "";//能租的房子
     private static String threeTable = "";//不能租的房子
     private static String contractAddress = "";//合约的地址
+    private static String adminEthPassword = "";
+    private static String adminFilePath = "";
 
-    @Resources
+    //@Resources
     private UserDao userDao;
 
     @Override
     //使用用户和密码进行登录，成功返回true,失败返回false；
     public boolean login(String _username,String _password)
     {
-        UserDao ud = new UserDaoImpl();
-        if(ud.getPasswordByUsername(_username) == _password)
+        if(userDao.getPasswordByUsername(_username) == _password)
         {
             return true;
         }
         return false;
     }
-
+/*
     @Override
     //检测某用户名的账号是否已登录;
     public boolean hasLoggedIn(String _username){return true;}
@@ -59,10 +61,10 @@ public class UserServicesImpl implements UserService {
     @Override
     //注销某用户名的账号
     public boolean logout(String _username){return true;}
-
+*/
     @Override
     //注册账号;注册的信息分别为用户名，密码，支付口令，姓名，电话，身份证照片正，反，身份证号，性别;
-    public boolean register(String _username, String _password, String pay_password, String name, String phone, String _profile_a, String _profile_b, String _id, byte _gender)
+    public boolean register(String _username, String _password, String pay_password, String name, String phone, File _profile_a, File _profile_b, String _id, byte _gender)
     {
         User user = new User(_username,_password,pay_password,name,phone,_profile_a,_profile_b,_id,_gender);
         try
@@ -72,36 +74,41 @@ public class UserServicesImpl implements UserService {
                 BlockChain bc = new BlockChain();
                 String account = bc.creatCredentials(pay_password);
                 Table table = new TableImpl();
-                table.insert(_username,account,SK,path +"/" + oneTable);
+                table.insert(_username,account,SK,tablepath +"/" + oneTable);
 
 
                 //将身份证照片存储在IPFS上
-                File pro_a = new File(_profile_a);
-                File pro_b = new File(_profile_b);
+                File pro_a = new File(path+"/"+profile_a);
+                File pro_b = new File(path+"/"+profile_b);
                 String pro_a_binary = "";
                 String pro_b_binary = "";
-                FileInputStream inputStream_a = new FileInputStream(pro_a);
+                FileInputStream fis = new FileInputStream(_profile_a);
+                FileOutputStream fos = new FileOutputStream(pro_a);
 
-                int ch = inputStream_a.read();
+                int ch = fis.read();
                 while(ch!=-1) {
-                    pro_a_binary += ch;
-                    ch = inputStream_a.read();
+                    fos.write(ch);
+                    ch = fis.read();
                 }
-                inputStream_a.close();
-                FileInputStream inputStream_b = new FileInputStream(pro_b);
-                ch = inputStream_b.read();
+                fis.close();
+                fos.close();
+
+                fis = new FileInputStream(_profile_b);
+                fos = new FileOutputStream(pro_b);
+                ch = fis.read();
                 while(ch != -1)
                 {
-                    pro_b_binary +=ch;
-                    ch = inputStream_b.read();
+                    fos.write(ch);
+                    ch = fis.read();
                 }
-                inputStream_b.close();
-
+                fis.close();
+                fos.close();
+                /*
                 String _json =" { ";
                 _json += "\""+"username"+"\""+":"+"\""+_username+"\", ";
                 _json += "\""+"name"+"\""+":"+"\""+name+"\", ";
                 _json += "\""+"profile_a"+"\""+":"+pro_a_binary+", ";
-                _json += "\""+"profile_b"+"\""+":"+pro_b_binary+", ";
+                _json += "\""+"profile_b"+"\""+"    :"+pro_b_binary+", ";
                 _json += "\""+"gender"+"\""+":"+_gender+" ";
 
                 _json += " } ";
@@ -115,8 +122,8 @@ public class UserServicesImpl implements UserService {
                 fos.write(_json);
                 fos.flush();
                 fos.close();
-
-                String is = IPFS_SERVICE.upload(path+"/"+ipfs);
+                */
+                String is = IPFS_SERVICE.upload(path);
 
                 //把哈希值传给以太坊
                 //bc.changeHashInfo(account,is);
@@ -176,6 +183,7 @@ public class UserServicesImpl implements UserService {
             String message = bc.getMessage(account,contractAddress,_pay_password);
             _one = readUser(message);
             _one.setUsername(_username);
+            /*
             IPFS_SERVICE.download(path,_one.getIPFS_hash(),ipfs);
 
             FileReader fr = new FileReader(path+"/"+ipfs);
@@ -189,7 +197,7 @@ public class UserServicesImpl implements UserService {
             User user = (User)JSONObject.parseObject(str,User.class);
             _one.setName(user.getName());
             _one.setGender(user.getGender());
-
+/*
             File pro_a = new File(path+"/"+profile_a);
             File pro_b = new File(path+"/"+profile_b);
             String pro_a_str = user.getProfile_a();
@@ -213,6 +221,8 @@ public class UserServicesImpl implements UserService {
 
             _one.setProfile_a(path+"/"+profile_a);
             _one.setProfile_b(path+"/"+profile_b);
+*/
+
             return _one;
         }catch(IOException e)
         {
@@ -226,19 +236,36 @@ public class UserServicesImpl implements UserService {
 
     }
 
+
+
+    //向目标账户进行充值
     @Override
-    public boolean postAccount(String _username, int _money) {
-        return false;
+    public boolean postAccount(String _username,int _money) {
+        try
+        {
+            BlockChain bc = new BlockChain();
+            String account = findAccount(_username);
+            bc.transaction(adminEthPassword,adminFilePath,account);
+            return true;
+
+        }catch (Exception e)
+        {
+            System.out.println("postAccount() is error");
+        }
+        finally {
+            return false;
+        }
+
     }
 
 
 
     //*********
-    //待修改；
+    //待修改；现在无法获取订单的信息
     //*********
     @Override
-    public ArrayList<record> getRecords(String _username) {
-        ArrayList<record> alr = new ArrayList<record>();
+    public ArrayList<front_record> getRecords(String _username) {
+        ArrayList<front_record> alr = new ArrayList<front_record>();
         try
         {
 
@@ -276,13 +303,13 @@ public class UserServicesImpl implements UserService {
     //需要比对密码,_phone 为修改后的电话号码
     //************************************
     //待完善！！！
+    //等BlockChain那里修改号码的的方法修改后我再把这里完善
     //************************************
     public boolean postPhone(String _username,String _password,String _pay_password,String _phone)
     {
         BlockChain bc = new BlockChain();
-        UserDao ud = new UserDaoImpl();
         String account;
-        if(_password != ud.getPasswordByUsername(_username))
+        if(_password != userDao.getPasswordByUsername(_username))
         {
             return false;
         }
@@ -350,6 +377,7 @@ public class UserServicesImpl implements UserService {
 */
     @Override
     //修改一个房子的信息;_house_hash为需要修改的房子的哈希地址；成功返回true，失败返回false；
+    //需要等到李晓婷把这部分接口完成我才能修改房源
     public boolean postHouse(String _house_hash,int _state,boolean _elevator,int _lease,String _phone){return true;}
 
 
