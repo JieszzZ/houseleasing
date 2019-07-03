@@ -2,6 +2,11 @@ package com.mokelock.houseleasing.blockchain;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mokelock.houseleasing.model.HouseModel.House;
+import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
+import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Uint256;
+import org.web3j.abi.datatypes.generated.Uint32;
 import org.web3j.crypto.*;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -9,6 +14,7 @@ import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tuples.generated.Tuple4;
+import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tx.Transfer;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
@@ -29,6 +35,10 @@ public class BlockChain {
     private static Web3j web3j = Web3j.build(new HttpService(url));
 
     private final static String filePath = "E:\\Geth\\data\\keystore";
+    private final static String rootAddress = "";
+    private final static String rootPassword = "";
+    private final static String rootFile = "";
+    private final static String contractAddress = "";
 
     /**
      * 创建用户账户
@@ -97,6 +107,7 @@ public class BlockChain {
      * @param toAddress   收款人地址
      * @return 交易hash
      */
+    //充值
     public String transaction(String ethPassword, String fileName, String toAddress) {
         Credentials credentials = null;
         TransactionReceipt transactionReceipt = null;
@@ -153,10 +164,10 @@ public class BlockChain {
         return JSONObject.toJSONString(receipt);
     }
 
-    /**
-     * 查询历史记录
-     * @return 历史hash
-     */
+//    /**
+//     * 查询历史记录
+//     * @return 历史hash
+//     */
 //    public String replayFilter(String userAddress) {
 //        Web3j web3j = Web3j.build(new HttpService(url));
 //        BigInteger startBlock = BigInteger.valueOf(0);
@@ -198,28 +209,60 @@ public class BlockChain {
      * @param userAddress 用户账户
      * @return 用户信息
      */
-    public String getMessage(String userAddress, String contractAddress, String ethPassword) {
-        HouseContract houseContract = loadContract(userAddress, contractAddress, ethPassword);
-        Tuple4<String, String, String, String> tuple4 = null;
+    public String getMessage(String userAddress, String ethFile, String ethPassword) {
+        HouseContract houseContract = loadContract(userAddress, ethFile, contractAddress, ethPassword);
+        Tuple6<Utf8String, Utf8String, Utf8String, Utf8String, Uint256, Uint256> tuple6 = null;
+        Address address = new Address(userAddress);
         try {
-            tuple4 = houseContract.findUser(userAddress).send();
+            tuple6 = houseContract.findUser(address).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String username = tuple4 != null ? tuple4.getValue1() : null;
-        String id = tuple4 != null ? tuple4.getValue2() : null;
-        String IPFS_hash = tuple4 != null ? tuple4.getValue3() : null;
-        String phone = tuple4 != null ? tuple4.getValue4() : null;
+        Utf8String username = tuple6 != null ? tuple6.getValue1() : null;
+        Utf8String id = tuple6 != null ? tuple6.getValue2() : null;
+        Utf8String IPFS_hash = tuple6 != null ? tuple6.getValue3() : null;
+        Utf8String phone = tuple6 != null ? tuple6.getValue4() : null;
+        Uint256 gender = tuple6 != null ? tuple6.getValue5() : null;
+        Uint256 credit = tuple6 != null ? tuple6.getValue6() : null;
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
         jsonObject.put("id", id);
         jsonObject.put("IPFS_hash", IPFS_hash);
         jsonObject.put("phone", phone);
+        jsonObject.put("gender", gender);
+        jsonObject.put("credit", credit);
         return jsonObject.toJSONString();
     }
 
-    public void postUser(String userAddress, String contractAddress, String ethPassword){
-
+    /**
+     * 添加用户信息
+     *
+     * @param userAddress
+     * @param ethFile
+     * @param ethPassword
+     * @param username
+     * @param id
+     * @param IPFS_hash
+     * @param tel
+     * @param gender
+     * @param credit
+     */
+    public void addUser(String userAddress, String ethFile, String ethPassword,
+                        String username, String id, String IPFS_hash, String tel, int gender, int credit) {
+        HouseContract houseContract = loadContract(userAddress, ethFile, contractAddress, ethPassword);
+        Address address = new Address(userAddress);
+        Utf8String _username = new Utf8String(username);
+        Utf8String _id = new Utf8String(id);
+        Utf8String _IPFS_hash = new Utf8String(IPFS_hash);
+        Utf8String _tel = new Utf8String(tel);
+        Uint256 _gender = new Uint256(gender);
+        Uint256 _credit = new Uint256(credit);
+        try {
+            TransactionReceipt receipt =
+                    houseContract.addUser(address, _username, _id, _IPFS_hash, _tel, _gender, _credit).send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -229,12 +272,14 @@ public class BlockChain {
      * @param ownerAddress 房主地址
      * @param coins        押金
      */
-    public void submitOrder(String userAddress, String contractAddress, String ethPassword, String ownerAddress, BigInteger coins) {
+    public void submitOrder(String userAddress, String ethFile, String ethPassword, String ownerAddress, BigInteger coins) {
 
-        HouseContract houseContract = loadContract(userAddress, contractAddress, ethPassword);
+        HouseContract houseContract = loadContract(userAddress, ethFile, contractAddress, ethPassword);
+        Address address = new Address(userAddress);
+        Uint32 coin = new Uint32(coins);
         //???wei value是个啥么东西
         try {
-            TransactionReceipt receipt = houseContract.submitOrder(ownerAddress, coins, BigInteger.valueOf(100L)).send();
+            TransactionReceipt receipt = houseContract.submitOrder(address, coin, BigInteger.valueOf(1L)).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -247,11 +292,12 @@ public class BlockChain {
      * @param userAddress  租客地址
      * @param coins        押金
      */
-    public void responseOrder(String ownerAddress, String contractAddress, String ethPassword, String userAddress,
-                              BigInteger coins) {
-        HouseContract houseContract = loadContract(ownerAddress, contractAddress, ethPassword);
+    public void responseOrder(String ownerAddress, String ethFile, String ethPassword, String userAddress, BigInteger coins) {
+        HouseContract houseContract = loadContract(ownerAddress, ethFile, contractAddress, ethPassword);
+        Address address = new Address(userAddress);
+        Uint32 coin = new Uint32(coins);
         try {
-            TransactionReceipt receipt = houseContract.respondOrder(userAddress, coins, BigInteger.valueOf(100L)).send();
+            TransactionReceipt receipt = houseContract.respondOrder(address, coin, BigInteger.valueOf(1L)).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -263,10 +309,11 @@ public class BlockChain {
      * @param ownerAddress 房主地址
      * @param userAddress  租客地址
      */
-    public void rejectOrder(String ownerAddress, String contractAddress, String ethPassword, String userAddress) {
-        HouseContract houseContract = loadContract(ownerAddress, contractAddress, ethPassword);
+    public void rejectOrder(String ownerAddress, String ethFile, String ethPassword, String userAddress) {
+        HouseContract houseContract = loadContract(ownerAddress, ethFile, contractAddress, ethPassword);
+        Address address = new Address(userAddress);
         try {
-            TransactionReceipt receipt = houseContract.rejectOrder(userAddress).send();
+            TransactionReceipt receipt = houseContract.rejectOrder(address).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -279,15 +326,18 @@ public class BlockChain {
      * @param ownerAddress 房主地址
      * @param userAddress  租客地址
      */
-    public void confirmSecond(int i, String ownerAddress, String userAddress, String contractAddress, String ethPassword) {
+    public void confirmSecond(int i, String ownerAddress, String ethFile, String userAddress, String ethPassword) {
         HouseContract houseContract = null;
         if (i == 0) {
-            houseContract = loadContract(ownerAddress, contractAddress, ethPassword);
+            houseContract = loadContract(ownerAddress, ethFile, contractAddress, ethPassword);
         } else if (i == 1) {
-            houseContract = loadContract(userAddress, contractAddress, ethPassword);
+            houseContract = loadContract(userAddress, ethFile, contractAddress, ethPassword);
         }
+        Address u_address = new Address(userAddress);
+        Address o_address = new Address(ownerAddress);
         try {
-            TransactionReceipt receipt = houseContract != null ? houseContract.confirmSecond(userAddress, ownerAddress).send() : null;
+            TransactionReceipt receipt = houseContract != null ? houseContract.confirmSecond(u_address, o_address).send()
+                    : null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -300,15 +350,17 @@ public class BlockChain {
      * @param ownerAddress 房主地址
      * @param userAddress  租客地址
      */
-    public void withdraw(int i, String ownerAddress, String userAddress, String contractAddress, String ethPassword) {
+    public void withdraw(int i, String ownerAddress, String ethFile, String userAddress, String ethPassword) {
         HouseContract houseContract = null;
         if (i == 0) {
-            houseContract = loadContract(ownerAddress, contractAddress, ethPassword);
+            houseContract = loadContract(ownerAddress, ethFile, contractAddress, ethPassword);
         } else if (i == 1) {
-            houseContract = loadContract(userAddress, contractAddress, ethPassword);
+            houseContract = loadContract(userAddress, ethFile, contractAddress, ethPassword);
         }
+        Address u_address = new Address(userAddress);
+        Address o_address = new Address(ownerAddress);
         try {
-            TransactionReceipt receipt = houseContract != null ? houseContract.withdraw(userAddress, ownerAddress).send() : null;
+            TransactionReceipt receipt = houseContract != null ? houseContract.withdraw(u_address, o_address).send() : null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -317,26 +369,34 @@ public class BlockChain {
     /**
      * 待修改
      */
-    public void withdrawAppeal(){
-
+    public void withdrawAppeal(String userAddress, String ownerAddress, String _Address) {
+        HouseContract houseContract = loadContract(rootAddress, rootFile, contractAddress, rootPassword);
+        Address u_address = new Address(userAddress);
+        Address o_address = new Address(ownerAddress);
+        Address __address = new Address(_Address);
+        try {
+            TransactionReceipt receipt = houseContract.withdrawAppeal(u_address, o_address, __address).send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * 获取ipfs数据表地址
      *
-     * @param type 0: 账户-账户对应表| 1: 在线房子概要信息表| 2: 下线房子概要信息表| 3: 房子详细信息表
+     * @param type 0: 账户-账户对应表| 1: 在线房子概要信息表| 2: 下线房子概要信息表
      * @return hash地址 | error
      */
     public String getHash(int type) {
-        Credentials credentials = null;
-        try {
-            credentials = WalletUtils.loadCredentials("123456", "E:\\Geth\\data\\keystore\\UTC--2019-06-20T02-55-19" +
-                    ".079955800Z--5e283b353b65baf5f18640e8a3228c8e764a9c29");
-        } catch (IOException | CipherException e) {
-            e.printStackTrace();
-        }
-        HouseContract houseContract = HouseContract.load("aaaaaaaaaaaaaa", web3j, credentials, Convert.toWei("10",
-                Convert.Unit.GWEI).toBigInteger(), BigInteger.valueOf(100000));
+        HouseContract houseContract = loadContract(rootAddress, rootFile, contractAddress, rootPassword);
+//        Credentials credentials = null;
+//        try {
+//            credentials = WalletUtils.loadCredentials(rootPassword, rootFile);
+//        } catch (IOException | CipherException e) {
+//            e.printStackTrace();
+//        }
+//        HouseContract houseContract = HouseContract.load(contractAddress, web3j, credentials, Convert.toWei("10",
+//                Convert.Unit.GWEI).toBigInteger(), BigInteger.valueOf(100000));
         Tuple3 tuple3 = null;
         try {
             tuple3 = houseContract.findAdminTable().send();
@@ -362,16 +422,43 @@ public class BlockChain {
     }
 
     /**
+     * 修改ipfs数据表地址f
+     *
+     * @param type 0: 账户-账户对应表| 1: 在线房子概要信息表| 2: 下线房子概要信息表
+     */
+    public void changeTable(int type, String hash) {
+        HouseContract houseContract = loadContract(rootAddress, rootFile, contractAddress, rootPassword);
+        Utf8String _hash = new Utf8String(hash);
+        TransactionReceipt receipt = null;
+        try {
+            switch (type) {
+                case 0:
+                    receipt = houseContract.postUser_account(_hash).send();
+                    break;
+                case 1:
+                    receipt = houseContract.postAccount_house_online(_hash).send();
+                    break;
+                case 2:
+                    receipt = houseContract.postAccount_house_downline(_hash).send();
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 修改用户电话信息
      *
      * @param ownerAddress 房主地址
-     * @param phone          电话
+     * @param phone        电话
      */
-    public void changeTelInfo(String ownerAddress, String contractAddress, String ethPassword,
-                              String IPFS_hash, String phone) {
-        HouseContract houseContract = loadContract(ownerAddress, contractAddress, ethPassword);
+    public void changeTelInfo(String ownerAddress, String ethFile, String ethPassword, String phone) {
+        HouseContract houseContract = loadContract(ownerAddress, ethFile, contractAddress, ethPassword);
+        Address address = new Address(ownerAddress);
+        Utf8String _phone = new Utf8String(phone);
         try {
-            TransactionReceipt receipt = houseContract.postUser(ownerAddress, IPFS_hash, phone).send();
+            TransactionReceipt receipt = houseContract.postUserPhone(address, _phone).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -383,8 +470,26 @@ public class BlockChain {
      * @param ownerAddress 房主地址
      * @param hash         hash
      */
-    public void changeHashInfo(String ownerAddress, String hash) {
+    public void changeHashInfo(String ownerAddress, String ethFile, String ethPassword, String hash) {
+        HouseContract houseContract = loadContract(ownerAddress, ethFile, contractAddress, ethPassword);
+        Utf8String _hash = new Utf8String(hash);
+        Address address = new Address(ownerAddress);
+        try {
+            TransactionReceipt receipt = houseContract.postUserPhone(address, _hash).send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public String findOrders(String ownerAddress, String ethFile, String ethPassword) {
+        HouseContract houseContract = loadContract(ownerAddress, ethFile, contractAddress, ethPassword);
+        Address address = new Address(ownerAddress);
+        try {
+            TransactionReceipt receipt = houseContract.findOrdersNum(address).send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     /**
@@ -419,10 +524,11 @@ public class BlockChain {
      * @param ethPassword     账户密码
      * @return HouseContract对象
      */
-    private HouseContract loadContract(String userAddress, String contractAddress, String ethPassword) {
+    private HouseContract loadContract(String userAddress, String userFile, String contractAddress,
+                                       String ethPassword) {
         Credentials credentials = null;
         try {
-            credentials = WalletUtils.loadCredentials(ethPassword, filePath + "???");
+            credentials = WalletUtils.loadCredentials(ethPassword, userFile);
         } catch (IOException | CipherException e) {
             e.printStackTrace();
         }

@@ -1,5 +1,6 @@
 package com.mokelock.houseleasing.model.UserModel;
 import java.awt.Image;
+import java.io.File;
 
 /*
 * 编写人：袁虎
@@ -17,8 +18,8 @@ public class User extends modifyUser{
     private String name;
     private String id;
     private String pay_password;
-    private String profile_a; //本人身份证照片带脸，这是一个文件地址
-    private String profile_b; //本人身份证照片带国徽，这是一个文件地址
+    private File profile_a; //本人身份证照片带脸，这是一个文件地址
+    private File profile_b; //本人身份证照片带国徽，这是一个文件地址
     private String IPFS_hash;
     //private String password;
     //private String phone;
@@ -36,7 +37,7 @@ public class User extends modifyUser{
         id = _id;
         pay_password = _pay_password;
     }
-    public User(String _username, String _password, String pay_password, String name, String phone, String _profile_a, String _profile_b, String _id, byte _gender)
+    public User(String _username, String _password, String pay_password, String name, String phone, File _profile_a, File _profile_b, String _id, byte _gender)
     {
         username = _username;
         super.setPassword(_password);
@@ -104,17 +105,17 @@ public class User extends modifyUser{
     }
     public String getPay_password(){ return pay_password;}
 
-    public void setProfile_a(String _pro_a)
+    public void setProfile_a(File _pro_a)
     {
         profile_a = _pro_a;
     }
-    public String getProfile_a(){return profile_a;}
+    public File getProfile_a(){return profile_a;}
 
-    public void setProfile_b(String _pro_b)
+    public void setProfile_b(File _pro_b)
     {
         profile_b = _pro_b;
     }
-    public String getProfile_b(){return profile_b;}
+    public File getProfile_b(){return profile_b;}
 
     public void setIPFS_hash(String _hash)
     {
