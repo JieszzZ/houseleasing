@@ -255,7 +255,7 @@ public class HouseModeTest {
                 ", owner_name='" + owner_name + '\'' +
                 ", role='" + role + '\'' +
                 ", state='" + state + '\'' +
-                ", LowLocation='" + low_location.toJson() + '\'' +
+               // ", LowLocation='" + low_location.toJson() + '\'' +
                 ", specific_location='" + specific_location + '\'' +
                 ", floor='" + floor + '\'' +
                 ", elevator='" + elevator + '\'' +
@@ -265,9 +265,9 @@ public class HouseModeTest {
                 ", house_type='" + house_type + '\'' +
                 ", house_owner_credit='" + house_owner_credit + '\'' +
                 ", house_level='" + house_level + '\'' +
-                ", house_comment=" + house_comment[0].toJson() + '\'' +
-                house_comment[1].toJson() + '\'' +
-                house_comment[2].toJson() + '\'' +
+                //", house_comment=" + house_comment[0].toJson() + '\'' +
+              //  house_comment[1].toJson() + '\'' +
+                //house_comment[2].toJson() + '\'' +
                 '}';
     }
 

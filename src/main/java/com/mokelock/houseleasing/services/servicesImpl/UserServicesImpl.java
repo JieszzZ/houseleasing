@@ -5,7 +5,7 @@ import com.mokelock.houseleasing.IPFS.Table;
 import com.mokelock.houseleasing.IPFS.TableImpl.TableImpl;
 import com.mokelock.houseleasing.blockchain.BlockChain;
 import com.mokelock.houseleasing.dao.UserDao;
-import com.mokelock.houseleasing.dao.UserDaoImpl.UserDaoImpl;
+//import com.mokelock.houseleasing.dao.UserDaoImpl.UserDaoImpl;
 import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.UserModel.User;
 import com.mokelock.houseleasing.model.UserModel.record;
@@ -19,8 +19,8 @@ import java.util.*;
 import java.util.ArrayList;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
+//import org.junit.jupiter.api.parallel.ResourceLock;
+//import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,19 +37,19 @@ public class UserServicesImpl implements UserService {
     private static String threeTable = "";//不能租的房子
     private static String contractAddress = "";//合约的地址
 
-    @Resources
+   // @Resources
     private UserDao userDao;
 
     @Override
     //使用用户和密码进行登录，成功返回true,失败返回false；
     public boolean login(String _username,String _password)
     {
-        UserDao ud = new UserDaoImpl();
-        if(ud.getPasswordByUsername(_username) == _password)
-        {
+       // UserDao ud = new UserDaoImpl();
+       // if(ud.getPasswordByUsername(_username) == _password)
+        //{
             return true;
-        }
-        return false;
+        //}
+        //return false;
     }
 
     @Override
@@ -280,16 +280,16 @@ public class UserServicesImpl implements UserService {
     public boolean postPhone(String _username,String _password,String _pay_password,String _phone)
     {
         BlockChain bc = new BlockChain();
-        UserDao ud = new UserDaoImpl();
+        //UserDao ud = new UserDaoImpl();
         String account;
-        if(_password != ud.getPasswordByUsername(_username))
-        {
+        //if(_password != ud.getPasswordByUsername(_username))
+        ////{
             return false;
-        }
+        //}
         try
         {
 
-            account = findAccount(_username);
+          //  account = findAccount(_username);
             User user = readUser(bc.getMessage(account,contractAddress,_pay_password));
             bc.changeTelInfo(account,contractAddress,_pay_password,user.getIPFS_hash(),_phone);
             return true;

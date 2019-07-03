@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.mokelock.houseleasing.IPFS.IPFS_SERVICE;
 import com.mokelock.houseleasing.IPFS.IpfsImpl.IPFS_SERVICE_IMPL;
 import com.mokelock.houseleasing.IPFS.TableImpl.TableImpl;
+import com.mokelock.houseleasing.blockchain.BlockChain;
 import com.mokelock.houseleasing.model.HouseModel.*;
 
 
@@ -254,7 +255,7 @@ public class HouseServiceImpl implements HouseService {
          * 根据房源hash找到该房源的详细信息并将房源评论添加上
          * 返回状态消息
          * */
-/*
+
         String h_level="house_level";
         //String p="123";
         TableImpl t=new TableImpl();
@@ -270,7 +271,7 @@ public class HouseServiceImpl implements HouseService {
 
 
         t.insert_into_comment(user_id,comment,comment_pic,h_level,p);
-*/
+
         return null;
     }
 
@@ -283,7 +284,7 @@ public class HouseServiceImpl implements HouseService {
          * 遍历房源hash，每个都写为JSON的形式，并把verify=1的放入verified，verify=0的放入non_verified
          * 最后将整个json返回
          * */
-        /*TableImpl thouse=new TableImpl();
+        TableImpl thouse=new TableImpl();
 
         String[] key_for_search={"house_id_hash"};
         BlockChain chain=new BlockChain();
@@ -394,8 +395,8 @@ public class HouseServiceImpl implements HouseService {
 
 
         Response r=new Response(200,"success",data);
-        return r.RestoJson3();*/
-        return null;
+        return r.RestoJson3();
+
     }
 
     @Override
