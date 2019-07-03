@@ -153,14 +153,17 @@ public class BlockChain {
         return JSONObject.toJSONString(receipt);
     }
 
-//    /**
-//     * 查询历史记录
-//     * @return 历史hash
-//     */
+    /**
+     * 查询历史记录
+     * @return 历史hash
+     */
 //    public String replayFilter(String userAddress) {
 //        Web3j web3j = Web3j.build(new HttpService(url));
 //        BigInteger startBlock = BigInteger.valueOf(0);
 //        BigInteger endBlock = BigInteger.valueOf(2010000);
+//        Subscription subscription = web3j.transactionFlowable().subscribe(tx ->{
+//
+//        });
 ////        /**
 ////         * 遍历旧区块
 ////         */
