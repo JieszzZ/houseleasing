@@ -244,32 +244,32 @@ public class HouseModeTest {
         this.house_comment = house_comment;
     }
 
-    public String toString(){
-        return "HouseModel{" +
-                "house_pic='" + house_pic + '\'' +
-                ", house_id='" + house_id + '\'' +
-                ", house_hash='" + house_hash + '\'' +
-                ", owner_id='" + owner_id + '\'' +
-                ", verify='" + verify + '\'' +
-                ", owner='" + owner + '\'' +
-                ", owner_name='" + owner_name + '\'' +
-                ", role='" + role + '\'' +
-                ", state='" + state + '\'' +
-                ", LowLocation='" + low_location.toJson() + '\'' +
-                ", specific_location='" + specific_location + '\'' +
-                ", floor='" + floor + '\'' +
-                ", elevator='" + elevator + '\'' +
-                ", lease='" + lease + '\'' +
-                ", lease_inter='" + lease_inter + '\'' +
-                ", lease_type='" + lease_type + '\'' +
-                ", house_type='" + house_type + '\'' +
-                ", house_owner_credit='" + house_owner_credit + '\'' +
-                ", house_level='" + house_level + '\'' +
-                ", house_comment=" + house_comment[0].toJson() + '\'' +
-                house_comment[1].toJson() + '\'' +
-                house_comment[2].toJson() + '\'' +
-                '}';
-    }
+//    public String toString(){
+//        return "HouseModel{" +
+//                "house_pic='" + house_pic + '\'' +
+//                ", house_id='" + house_id + '\'' +
+//                ", house_hash='" + house_hash + '\'' +
+//                ", owner_id='" + owner_id + '\'' +
+//                ", verify='" + verify + '\'' +
+//                ", owner='" + owner + '\'' +
+//                ", owner_name='" + owner_name + '\'' +
+//                ", role='" + role + '\'' +
+//                ", state='" + state + '\'' +
+//                ", LowLocation='" + low_location.toJson() + '\'' +
+//                ", specific_location='" + specific_location + '\'' +
+//                ", floor='" + floor + '\'' +
+//                ", elevator='" + elevator + '\'' +
+//                ", lease='" + lease + '\'' +
+//                ", lease_inter='" + lease_inter + '\'' +
+//                ", lease_type='" + lease_type + '\'' +
+//                ", house_type='" + house_type + '\'' +
+//                ", house_owner_credit='" + house_owner_credit + '\'' +
+//                ", house_level='" + house_level + '\'' +
+//                ", house_comment=" + house_comment[0].toJson() + '\'' +
+//                house_comment[1].toJson() + '\'' +
+//                house_comment[2].toJson() + '\'' +
+//                '}';
+//    }
 
 }
 
