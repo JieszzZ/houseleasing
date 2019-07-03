@@ -1,7 +1,6 @@
 package com.mokelock.houseleasing.services.servicesImpl;
 
 import com.mokelock.houseleasing.IPFS.IPFS_SERVICE;
-import com.mokelock.houseleasing.IPFS.IPFS_SERVICE_IMPL;
 import com.mokelock.houseleasing.IPFS.Table;
 import com.mokelock.houseleasing.IPFS.TableImpl.TableImpl;
 import com.mokelock.houseleasing.blockchain.BlockChain;
@@ -9,7 +8,6 @@ import com.mokelock.houseleasing.dao.UserDao;
 import com.mokelock.houseleasing.dao.UserDaoImpl.UserDaoImpl;
 import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.UserModel.User;
-import com.mokelock.houseleasing.model.UserModel.modifyUser;
 import com.mokelock.houseleasing.model.UserModel.record;
 import com.mokelock.houseleasing.services.HouseService;
 import com.mokelock.houseleasing.services.UserService;
@@ -21,6 +19,7 @@ import java.util.*;
 import java.util.ArrayList;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +35,10 @@ public class UserServicesImpl implements UserService {
     private static String oneTable = "";//用户-账号表
     private static String twoTable = "";//能租的房子
     private static String threeTable = "";//不能租的房子
+    private static String contractAddress = "";//合约的地址
 
+    @Resources
+    private UserDao userDao;
 
     @Override
     //使用用户和密码进行登录，成功返回true,失败返回false；
@@ -65,20 +67,13 @@ public class UserServicesImpl implements UserService {
         User user = new User(_username,_password,pay_password,name,phone,_profile_a,_profile_b,_id,_gender);
         try
         {
-            UserDao ud =new UserDaoImpl();
-            if(ud.checkUser(_username) <= 0 && ud.insertUser(_username,_password) > 0)
+            if(userDao.checkUser(_username) <= 0 && userDao.insertUser(_username,_password) > 0)
             {
                 BlockChain bc = new BlockChain();
                 String account = bc.creatCredentials(pay_password);
                 Table table = new TableImpl();
                 table.insert(_username,account,SK,path +"/" + oneTable);
-                //木有在区块链添加id和name的方法
-                //伪代码：在区块链添加id和name
-                // {
-                // 添加id和name
-                //
-                // }
-                bc.changeTelInfo(account,phone);
+
 
                 //将身份证照片存储在IPFS上
                 File pro_a = new File(_profile_a);
@@ -124,8 +119,15 @@ public class UserServicesImpl implements UserService {
                 String is = IPFS_SERVICE.upload(path+"/"+ipfs);
 
                 //把哈希值传给以太坊
-                bc.changeHashInfo(account,is);
+                //bc.changeHashInfo(account,is);
 
+                //木有在区块链添加id和name的方法
+                //伪代码：在区块链添加id和name
+                // {
+                // 添加id和name
+                //
+                // }
+                bc.changeTelInfo(account,contractAddress,pay_password,is,phone);
                 return true;
             }
 
@@ -164,16 +166,17 @@ public class UserServicesImpl implements UserService {
     //再从以太坊账户读取存储在区块链上的信息
     //存储在_one中
     @Override
-    public boolean getUser(User _one, String _username)
+    public User getUser(String _username,String _pay_password)
     {
+        User _one;
         try
         {
             String account = findAccount(_username);
             BlockChain bc = new BlockChain();
-            String message = bc.getMessage(account);
+            String message = bc.getMessage(account,contractAddress,_pay_password);
             _one = readUser(message);
             _one.setUsername(_username);
-            IPFS_SERVICE.download(_one.getIPFS_hash(),path+"/"+ipfs);
+            IPFS_SERVICE.download(path,_one.getIPFS_hash(),ipfs);
 
             FileReader fr = new FileReader(path+"/"+ipfs);
             BufferedReader br = new BufferedReader(fr);
@@ -210,14 +213,14 @@ public class UserServicesImpl implements UserService {
 
             _one.setProfile_a(path+"/"+profile_a);
             _one.setProfile_b(path+"/"+profile_b);
-            return true;
+            return _one;
         }catch(IOException e)
         {
             System.out.println("getUser() is error!");
         }
         finally
         {
-            return false;
+            return null;
         }
 
 
@@ -228,6 +231,11 @@ public class UserServicesImpl implements UserService {
         return false;
     }
 
+
+
+    //*********
+    //待修改；
+    //*********
     @Override
     public ArrayList<record> getRecords(String _username) {
         ArrayList<record> alr = new ArrayList<record>();
@@ -236,8 +244,8 @@ public class UserServicesImpl implements UserService {
 
             String account = findAccount(_username);
             BlockChain bc = new BlockChain();
-            String message = bc.replayFilter(account);
-            alr  = readRecords(message);
+           // String message = bc.replayFilter(account);
+          //  alr  = readRecords(message);
 
 
         }catch(IOException e)
@@ -266,7 +274,10 @@ public class UserServicesImpl implements UserService {
 */
     @Override
     //需要比对密码,_phone 为修改后的电话号码
-    public boolean postPhone(String _username,String _password,String _phone)
+    //************************************
+    //待完善！！！
+    //************************************
+    public boolean postPhone(String _username,String _password,String _pay_password,String _phone)
     {
         BlockChain bc = new BlockChain();
         UserDao ud = new UserDaoImpl();
@@ -277,8 +288,10 @@ public class UserServicesImpl implements UserService {
         }
         try
         {
+
             account = findAccount(_username);
-            bc.changeTelInfo(account,_phone);
+            User user = readUser(bc.getMessage(account,contractAddress,_pay_password));
+            bc.changeTelInfo(account,contractAddress,_pay_password,user.getIPFS_hash(),_phone);
             return true;
         }catch (IOException e)
         {
@@ -361,11 +374,11 @@ public class UserServicesImpl implements UserService {
     }
 
 
-    private User readUsermessage(String _username) throws IOException
+    private User readUsermessage(String _username,String _pay_password) throws IOException
     {
         BlockChain bc = new BlockChain();
         String account = findAccount(_username);
-        String _json = bc.getMessage(account);
+        String _json = bc.getMessage(account,contractAddress,_pay_password);
         ArrayList<String> res = new ArrayList<String>();
         int begin = -1,end = 0;
         for(int i=0;i<_json.length();i++)
