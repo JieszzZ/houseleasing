@@ -91,7 +91,7 @@ public class UserController {
         }
         logger.debug("/user/user " + username);
         User user = new User();
-        userService.getUser(user, username);
+        user = userService.getUser(username, "");
         return user;
     }
 
@@ -108,7 +108,7 @@ public class UserController {
         }
         User user = new User();
         int balance = userService.getBalance(username);
-        userService.getUser(user, username);
+        user = userService.getUser(username, "");
         JSONObject json = new JSONObject();
         json.put("username", username);
         json.put("name", user.getName());
@@ -133,7 +133,7 @@ public class UserController {
         if (result) {
             User user = new User();
             int balance = userService.getBalance(username);
-            userService.getUser(user, username);
+            user = userService.getUser(username, "");
             json.put("username", username);
             json.put("name", user.getName());
             json.put("balance", balance);
@@ -201,7 +201,7 @@ public class UserController {
             HttpSession session = request.getSession();
             username = (String) session.getAttribute("username");
         }
-        return userService.postPhone(username, password, phone);
+        return userService.postPhone(username,"", password, phone);
     }
 
     /**
@@ -211,7 +211,7 @@ public class UserController {
      */
     @RequestMapping(value = "/contact_owner", method = RequestMethod.POST)
     public String contactOwner(String house_hash) {
-        return userService.getUser();
+        return userService.getUser("", "").getPhone();
     }
 
     /**
@@ -221,7 +221,7 @@ public class UserController {
     @RequestMapping(value = "/all_info", method = RequestMethod.GET)
     public JSON allInfo() {
         JSON json = new JSONArray();
-        return userService.;
+        return json;
     }
 
     /**
