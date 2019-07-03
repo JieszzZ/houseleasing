@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/api/user")
 public class UserController {
 
     private final static Logger logger = Logger.getLogger(UserController.class);
@@ -67,7 +67,8 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public void register(User user, HttpServletResponse response) {
-        boolean result = userService.register(user);
+        boolean result = userService.register(user.getUsername(), user.getPassword(), user.getPay_password(),
+                user.getName(), user.getPhone(), user.getProfile_a(), user.getProfile_b(), user.getId(), user.getGender());
         if(!result) {
             try {
                 response.getWriter().append("fail");
@@ -110,7 +111,7 @@ public class UserController {
         userService.getUser(user, username);
         JSONObject json = new JSONObject();
         json.put("username", username);
-        json.put("name", user.getName(username));
+        json.put("name", user.getName());
         json.put("balance", balance);
         return json;
     }
@@ -134,7 +135,7 @@ public class UserController {
             int balance = userService.getBalance(username);
             userService.getUser(user, username);
             json.put("username", username);
-            json.put("name", user.getName(username));
+            json.put("name", user.getName());
             json.put("balance", balance);
         } else {
             json.put("result", false);
