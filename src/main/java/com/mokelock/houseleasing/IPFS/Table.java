@@ -22,11 +22,11 @@ public interface Table {
     * a.get(i)为结果的第i行,a.get(i)[0]为第i行的lease_inter值，为字符串形式。
     *  */
     void insert(House house_obj,String house_hash,String path);//插入查重必须在前面完成，插入之前要先运行一次query house_id，并判断返回值的size是否为0
-    void update(House house_obj,String new_hash,String path);//更新hash。
+    void update(House house_obj,String[]key_to_update,String[] new_value,String path);//更新hash。
     ArrayList<String[]> get_all(String[] key_to_get,String path);//得到整个表。
     void delete(House[] house_obj,String path);//删除指定房源。配合insert可以完成两张表之间的修改。
     void insert_into_more_info(House house_obj,String hash);
-    void insert_into_comment(String user_id,String comment ,String []comment_pic,String house_level,String path);
+    void insert_into_comment(String user_id,String comment ,String []comment_pic,String path);
     /*
     * comment的查询返回值如下：
     * 123 不错 ["asdagafas","wqeqwgqe","vcbsada"]
