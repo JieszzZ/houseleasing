@@ -40,6 +40,7 @@ public class UserServicesImpl implements UserService {
     private static String adminEthPassword = "";
     private static String adminFilePath = "";
     private static final int InitialCredit = 10;
+    private static final int InitialGive = 100;
     //@Resources
     private UserDao userDao;
 
@@ -78,6 +79,7 @@ public class UserServicesImpl implements UserService {
                 Table table = new TableImpl();
                 table.insert(_username,account,SK,tablepath +"/" + oneTable);
 
+                postAccount(_username,InitialGive);
 
                 //将身份证照片存储在IPFS上
                 File pro_a = new File(path+"/"+profile_a);
@@ -182,8 +184,9 @@ public class UserServicesImpl implements UserService {
         try
         {
             String account = findAccount(_username);
+            String sk = findEthFile(_username);
             BlockChain bc = new BlockChain();
-            String message = bc.getMessage(account,contractAddress,_pay_password);
+            String message = bc.getMessage(account,sk,_pay_password);
             _one = readUser(message);
             _one.setUsername(_username);
             /*
@@ -239,6 +242,34 @@ public class UserServicesImpl implements UserService {
 
     }
 
+    public ArrayList<User> getAllUser()
+    {
+        try
+        {
+            Table table = new TableImpl();
+            BlockChain bc = new BlockChain();
+            String one_hash = bc.getHash(User_Account_TYPE);
+            IPFS_SERVICE.download(tablepath,one_hash,oneTable);
+            String[] key = {"eth-id"};
+            ArrayList<String []> res = table.get_all(key,table+"/"+oneTable);
+            ArrayList<User> ans = new ArrayList<User>();
+            for(int i=0;i<res.size();i++)
+            {
+                User one;
+                String message = bc.getMessage(res.get(i)[0],adminFilePath,adminEthPassword);
+                one = readUser(message);
+                ans.add(one);
+            }
+
+            return ans;
+
+        }catch (IOException e)
+        {
+            e.printStackTrace();
+        }finally {
+            return null;
+        }
+    }
 
 
     //向目标账户进行充值
@@ -307,6 +338,8 @@ public class UserServicesImpl implements UserService {
     //************************************
     //待完善！！！
     //等BlockChain那里修改号码的的方法修改后我再把这里完善
+    //************************************
+    //已完善；
     //************************************
     public boolean postPhone(String _username,String _password,String _pay_password,String _phone)
     {
@@ -394,7 +427,11 @@ public class UserServicesImpl implements UserService {
     {
         int where = 0;
         String hash = findUser_Account_hash();
+
+
         IPFS_SERVICE.download(tablepath,hash,oneTable);
+
+
         Table table = new TableImpl();
         String[] user_name = {"username"};
         String[] _user = {_username};
@@ -726,7 +763,7 @@ public class UserServicesImpl implements UserService {
         return null;
     }
 
-    private User readUser(String userStr)
+    public User readUser(String userStr)
     {
         User user  =(User) JSONObject.parseObject(userStr,User.class);
         return user;
