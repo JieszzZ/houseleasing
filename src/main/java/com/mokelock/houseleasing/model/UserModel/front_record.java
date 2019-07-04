@@ -22,6 +22,7 @@ public class front_record {
     private low_location lowLocation;
     private String specific_location;
 
+    private String house_hash;
     public front_record() {}
 
     public front_record(record record)
@@ -45,7 +46,7 @@ public class front_record {
         gas = record.getGas();
         lowLocation = record.getLowLocation();
         specific_location = record.getSpecific_location();
-
+        house_hash = record.getHouse_hash();
 
     }
 
@@ -91,6 +92,8 @@ public class front_record {
     public void setSpecific_location(String _specific_location){specific_location = _specific_location;}
     public String getSpecific_location(){return specific_location;}
 
+    public void setHouse_hash(String house_hash){this.house_hash = house_hash;}
+    public String getHouse_hash(){return house_hash;}
 
     private String translateSign(record.Sign sign)
     {

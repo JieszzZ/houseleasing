@@ -39,7 +39,8 @@ public class UserServicesImpl implements UserService {
     private static String contractAddress = "";//合约的地址
     private static String adminEthPassword = "";
     private static String adminFilePath = "";
-
+    private static final int InitialCredit = 10;
+    private static final int InitialGive = 100;
     //@Resources
     private UserDao userDao;
 
@@ -64,6 +65,8 @@ public class UserServicesImpl implements UserService {
 */
     @Override
     //注册账号;注册的信息分别为用户名，密码，支付口令，姓名，电话，身份证照片正，反，身份证号，性别;
+    //信誉值用初始化的值
+    //差以太坊钱包地址
     public boolean register(String _username, String _password, String pay_password, String name, String phone, File _profile_a, File _profile_b, String _id, byte _gender)
     {
         User user = new User(_username,_password,pay_password,name,phone,_profile_a,_profile_b,_id,_gender);
@@ -76,6 +79,7 @@ public class UserServicesImpl implements UserService {
                 Table table = new TableImpl();
                 table.insert(_username,account,SK,tablepath +"/" + oneTable);
 
+                postAccount(_username,InitialGive);
 
                 //将身份证照片存储在IPFS上
                 File pro_a = new File(path+"/"+profile_a);
@@ -134,7 +138,8 @@ public class UserServicesImpl implements UserService {
                 // 添加id和name
                 //
                 // }
-                bc.changeTelInfo(account,contractAddress,pay_password,is,phone);
+
+                bc.addUser(account,SK,pay_password,_username,_id,is,phone,_gender,InitialCredit);
                 return true;
             }
 
@@ -179,8 +184,9 @@ public class UserServicesImpl implements UserService {
         try
         {
             String account = findAccount(_username);
+            String sk = findEthFile(_username);
             BlockChain bc = new BlockChain();
-            String message = bc.getMessage(account,contractAddress,_pay_password);
+            String message = bc.getMessage(account,sk,_pay_password);
             _one = readUser(message);
             _one.setUsername(_username);
             /*
@@ -236,6 +242,34 @@ public class UserServicesImpl implements UserService {
 
     }
 
+    public ArrayList<User> getAllUser()
+    {
+        try
+        {
+            Table table = new TableImpl();
+            BlockChain bc = new BlockChain();
+            String one_hash = bc.getHash(User_Account_TYPE);
+            IPFS_SERVICE.download(tablepath,one_hash,oneTable);
+            String[] key = {"eth-id"};
+            ArrayList<String []> res = table.get_all(key,table+"/"+oneTable);
+            ArrayList<User> ans = new ArrayList<User>();
+            for(int i=0;i<res.size();i++)
+            {
+                User one;
+                String message = bc.getMessage(res.get(i)[0],adminFilePath,adminEthPassword);
+                one = readUser(message);
+                ans.add(one);
+            }
+
+            return ans;
+
+        }catch (IOException e)
+        {
+            e.printStackTrace();
+        }finally {
+            return null;
+        }
+    }
 
 
     //向目标账户进行充值
@@ -305,10 +339,12 @@ public class UserServicesImpl implements UserService {
     //待完善！！！
     //等BlockChain那里修改号码的的方法修改后我再把这里完善
     //************************************
+    //已完善；
+    //************************************
     public boolean postPhone(String _username,String _password,String _pay_password,String _phone)
     {
         BlockChain bc = new BlockChain();
-        String account;
+        String account,ethFile;
         if(_password != userDao.getPasswordByUsername(_username))
         {
             return false;
@@ -317,8 +353,9 @@ public class UserServicesImpl implements UserService {
         {
 
             account = findAccount(_username);
-            User user = readUser(bc.getMessage(account,contractAddress,_pay_password));
-            bc.changeTelInfo(account,contractAddress,_pay_password,user.getIPFS_hash(),_phone);
+            ethFile = findEthFile(_username);
+            //User user = readUser(bc.getMessage(account,ethFile,_pay_password));
+            bc.changeTelInfo(account,ethFile, _pay_password,_phone);
             return true;
         }catch (IOException e)
         {
@@ -390,12 +427,16 @@ public class UserServicesImpl implements UserService {
     {
         int where = 0;
         String hash = findUser_Account_hash();
-        IPFS_SERVICE.download(path,hash,path);
+
+
+        IPFS_SERVICE.download(tablepath,hash,oneTable);
+
+
         Table table = new TableImpl();
         String[] user_name = {"username"};
         String[] _user = {_username};
         String[] eth_id = {"eth_id"};
-        ArrayList<String[]> result = table.query(user_name,_user,eth_id,path);
+        ArrayList<String[]> result = table.query(user_name,_user,eth_id,tablepath+"/"+oneTable);
         String res = result.get(where)[where];
 
         return res;
@@ -406,7 +447,8 @@ public class UserServicesImpl implements UserService {
     {
         BlockChain bc = new BlockChain();
         String account = findAccount(_username);
-        String _json = bc.getMessage(account,contractAddress,_pay_password);
+        String ethFile = findEthFile(_username);
+        String _json = bc.getMessage(account,ethFile,_pay_password);
         ArrayList<String> res = new ArrayList<String>();
         int begin = -1,end = 0;
         for(int i=0;i<_json.length();i++)
@@ -631,6 +673,22 @@ public class UserServicesImpl implements UserService {
         return bc.getHash(User_Account_TYPE);
     }
 
+    public String findEthFile(String _username) throws  IOException
+    {
+        int where = 0;
+        String hash = findUser_Account_hash();
+        IPFS_SERVICE.download(tablepath,hash,oneTable);
+        Table table = new TableImpl();
+        String[] user_name = {"username"};
+        String[] _user = {_username};
+        String[] SK = {"SK"};
+        ArrayList<String[]> result = table.query(user_name,_user,SK,tablepath+"/"+oneTable);
+        String res = result.get(where)[where];
+
+        return res;
+
+    }
+
     private record.Sign tranlateSign(String sign)
     {
         if(sign == "Sign.signed")
@@ -706,7 +764,7 @@ public class UserServicesImpl implements UserService {
         return null;
     }
 
-    private User readUser(String userStr)
+    public User readUser(String userStr)
     {
         User user  =(User) JSONObject.parseObject(userStr,User.class);
         return user;
@@ -723,4 +781,6 @@ public class UserServicesImpl implements UserService {
         }
         return  alr;
     }
+
+
 }

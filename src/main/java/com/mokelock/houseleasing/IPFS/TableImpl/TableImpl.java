@@ -3,6 +3,7 @@ import com.mokelock.houseleasing.IPFS.Table;
 import com.mokelock.houseleasing.model.HouseModel.House;
 import com.alibaba.fastjson.*;
 
+
 import java.util.*;
 
 import java.io.*;
@@ -56,6 +57,7 @@ public class TableImpl implements  Table{
             e.printStackTrace();
         }
     }
+
     public void update(House house_obj,String[]key_to_update,String[] new_value,String path){
         File file=new File(path);
         List<String> list=new ArrayList<>();
@@ -64,6 +66,7 @@ public class TableImpl implements  Table{
             BufferedReader br=new BufferedReader(new FileReader(path));
             while((str=br.readLine())!=null){
                 JSONObject jsonObject=JSONObject.parseObject(str);
+
                 if(jsonObject.getString("house_id_hash").equals(house_obj.getHouse_hash())){
                     for(int i=0;i<key_to_update.length;i++){
                         jsonObject.put(key_to_update[i],new_value[i]);
@@ -152,12 +155,14 @@ public class TableImpl implements  Table{
         return value;
     }
     public void insert(House house_obj,String house_hash,String path){
+
         String house_id=house_obj.getHouse_id();
         String house_id_hash=house_obj.getHouse_hash();
         String lease_inter=String.valueOf(house_obj.getLease_inter());
         String house_type=String.valueOf(house_obj.getHouse_type());
         String lease_type=String.valueOf(house_obj.getLease_type());
         String lease=String.valueOf(house_obj.getLease());
+
         String elevator=String.valueOf(house_obj.isElevator());
 //        String house_hash=String.valueOf(house_obj.getHouse_hash());
         JSONObject loc=house_obj.getLow_location();
@@ -309,6 +314,7 @@ public class TableImpl implements  Table{
                 System.out.println(v.get(i)[j]);
             }
         }
+
 
 
 

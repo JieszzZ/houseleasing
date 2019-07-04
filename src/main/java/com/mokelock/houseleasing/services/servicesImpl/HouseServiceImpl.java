@@ -63,6 +63,7 @@ public class HouseServiceImpl implements HouseService {
 
         if(HashToHouse.size() != 0){
 
+
             house_hash = HashToHouse.get(0)[0];
 
         }else if(HashToHouse2.size() != 0){
