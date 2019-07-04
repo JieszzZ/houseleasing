@@ -354,7 +354,7 @@ public class UserServicesImpl implements UserService {
 
             account = findAccount(_username);
             ethFile = findEthFile(_username);
-            User user = readUser(bc.getMessage(account,contractAddress,_pay_password));
+            //User user = readUser(bc.getMessage(account,ethFile,_pay_password));
             bc.changeTelInfo(account,ethFile, _pay_password,_phone);
             return true;
         }catch (IOException e)
@@ -447,7 +447,8 @@ public class UserServicesImpl implements UserService {
     {
         BlockChain bc = new BlockChain();
         String account = findAccount(_username);
-        String _json = bc.getMessage(account,contractAddress,_pay_password);
+        String ethFile = findEthFile(_username);
+        String _json = bc.getMessage(account,ethFile,_pay_password);
         ArrayList<String> res = new ArrayList<String>();
         int begin = -1,end = 0;
         for(int i=0;i<_json.length();i++)
