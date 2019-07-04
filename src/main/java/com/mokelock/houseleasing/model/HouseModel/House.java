@@ -13,17 +13,18 @@ public class House{
 
     public House() {
     }
-    public House(String user_id, String[] house_pic, String house_id, String house_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, JSONObject low_location, String low_str_location, String specific_location, int floor, String lon, String lat, boolean elevator, int lease, int lease_inter, int lease_type, int house_type, int house_owner_credit, double house_level, JSONArray house_comment) {
+    public House(String user_id, String[] house_pic, String house_id, String house_id_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, String area, JSONObject low_location, String low_str_location, String specific_location, int floor, String lon, String lat, boolean elevator, int lease, int lease_inter, int lease_type, int house_type, int house_owner_credit, JSONArray house_comment) {
         this.user_id = user_id;
         this.house_pic = house_pic;
         this.house_id = house_id;
-        this.house_hash = house_hash;
+        this.house_id_hash = house_id_hash;
         this.owner_id = owner_id;
         this.verify = verify;
         this.owner = owner;
         this.owner_name = owner_name;
         this.role = role;
         this.state = state;
+        this.area = area;
         this.low_location = low_location;
         this.low_str_location = low_str_location;
         this.specific_location = specific_location;
@@ -36,21 +37,21 @@ public class House{
         this.lease_type = lease_type;
         this.house_type = house_type;
         this.house_owner_credit = house_owner_credit;
-        this.house_level = house_level;
         this.house_comment = house_comment;
     }
 
     /**********************************************************************/
     //包含了所有需要返回给前端的信息
-    public House(String[] house_pic, String house_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, JSONObject low_location, String low_str_location, String specific_location, int floor, String lon, String lat, boolean elevator, int lease, int house_type, int house_owner_credit, double house_level, JSONArray house_comment) {
+    public House(String[] house_pic, String house_id_hash, String owner_id, boolean verify, String owner, String owner_name, int role, int state, String area, JSONObject low_location, String low_str_location, String specific_location, int floor, String lon, String lat, boolean elevator, int lease, int house_type, int house_owner_credit, JSONArray house_comment) {
         this.house_pic = house_pic;
-        this.house_hash = house_hash;
+        this.house_id_hash = house_id_hash;
         this.owner_id = owner_id;
         this.verify = verify;
         this.owner = owner;
         this.owner_name = owner_name;
         this.role = role;
         this.state = state;
+        this.area = area;
         this.low_location = low_location;
         this.low_str_location = low_str_location;
         this.specific_location = specific_location;
@@ -61,7 +62,6 @@ public class House{
         this.lease = lease;
         this.house_type = house_type;
         this.house_owner_credit = house_owner_credit;
-        this.house_level = house_level;
         this.house_comment = house_comment;
     }
     //将House对象转换为json对象的形式
@@ -69,13 +69,14 @@ public class House{
         JSONObject hjo = new JSONObject(true);
 
         hjo.put("house_pic",this.house_pic);
-        hjo.put("house_hash",this.house_hash);
+        hjo.put("house_id_hash",this.house_id_hash);
         hjo.put("owner_id",this.owner_id);
         hjo.put("verify",this.verify);
         hjo.put("owner",this.owner);
         hjo.put("owner_name",this.owner_name);
         hjo.put("role",this.role);
         hjo.put("state",this.state);
+        hjo.put("area",this.area);
         hjo.put("low_location",this.low_location);
         hjo.put("low_str_location",this.low_str_location);
         hjo.put("specific_location",this.specific_location);
@@ -86,7 +87,6 @@ public class House{
         hjo.put("lease",this.lease);
         hjo.put("house_type",this.house_type);
         hjo.put("house_owner_credit",this.house_owner_credit);
-        hjo.put("house_level",this.house_level);
         hjo.put("house_comment",this.house_comment);
 
         return hjo;
@@ -124,13 +124,13 @@ public class House{
     }
 
     //房产证号HASH
-    private String house_hash;
+    private String house_id_hash;
 
-    public String getHouse_hash() {
-        return house_hash;
+    public String getHouse_id_hash() {
+        return house_id_hash;
     }
-    public void setHouse_hash(String house_hash) {
-        this.house_hash = house_hash;
+    public void setHouse_id_hash(String house_id_hash) {
+        this.house_id_hash = house_id_hash;
     }
 
 
@@ -196,6 +196,15 @@ public class House{
     }
     public void setState(int state) {
         this.state = state;
+    }
+
+    public String area;
+
+    public String getArea() {
+        return area;
+    }
+    public void setArea(String area) {
+        this.area = area;
     }
 
     //简略地址JSON
