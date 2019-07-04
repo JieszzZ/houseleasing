@@ -16,7 +16,7 @@ import java.util.List;
 public class IPFS_SERVICE_IMPL implements IPFS_SERVICE {
 
     public static String upload(String filePathName) throws IOException {
-        IPFS ipfs = new IPFS("/ip4/211.87.230.12/tcp/5001");//ipfs的服务器地址和端口
+        IPFS ipfs = new IPFS("/ip4/211.87.230.14/tcp/5001");//ipfs的服务器地址和端口
         //filePathName指的是文件(夹)的上传路径+文件名，如D:/1.png
         NamedStreamable.FileWrapper file = new NamedStreamable.FileWrapper(new File(filePathName));
         //添加文件到IPFS返回HASH值
@@ -26,7 +26,7 @@ public class IPFS_SERVICE_IMPL implements IPFS_SERVICE {
         return addResult.hash.toString();
     }
     public static void download(String filePathName,String hash,String fileName) throws IOException {
-        IPFS ipfs = new IPFS("/ip4/211.87.230.12/tcp/8080");//ipfs的服务器地址和端口
+        IPFS ipfs = new IPFS("/ip4/211.87.230.14/tcp/8080");//ipfs的服务器地址和端口
         Multihash filePointer = Multihash.fromBase58(hash);
         byte[] data=null;
         //通过HASH值查询文件转为byte[]
