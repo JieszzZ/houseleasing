@@ -2,20 +2,24 @@ package com.mokelock.houseleasing.services;
 
 public interface TractService2 {
     /**
-     *用户二次签名确认交易
-     * @param _username 用户名
-     * @param _password 密码
-     * @param _ownername 房主的用户名
-     * @param _requestIdentify 请求反馈 true 同意确认结束 false 不同意确认结束
+     * 用户二次签名交易
+     * @param _i
+     * @param _ethFile
+     * @param _userAddress
+     * @param _ethPassword
+     * @param _ownerAddress
      */
-    public void postUserIden(String _username,String _password,String _ownername,boolean _requestIdentify);
+    public void postUserIden(int _i, String _ethFile, String _userAddress, String _ethPassword,String _ownerAddress);
 
     /**
-     * 向后台打印卖家是否确认交易
-     * @param _username 这个交易的房客的用户名
-     * @param _requestIdentify true签约成功完成 false签约失败结束
+     * 卖家二次签名交易
+     * @param _i
+     * @param _ethFile
+     * @param _userAddress
+     * @param _ethPassword
+     * @param _ownerAddress
      */
-    public void postOwnerIden(String _username,boolean _requestIdentify);
+    public void postOwnerIden(int _i, String _ethFile, String _userAddress, String _ethPassword,String _ownerAddress);
 
     /**
      * 支付密码的输入

@@ -8,9 +8,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping(value = "/api/tract")
 public class TractController {
+
+    @RequestMapping(value = "/payPass")
+    public void setPayPassword(HttpSession session, String payPassword) {
+        session.setAttribute("payPassword", payPassword);
+    }
 
     /**
      * 用户发起租住请求
