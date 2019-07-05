@@ -44,8 +44,8 @@ public class IPFS_TEST {
 
 //
         IPFS_SERVICE_IMPL demo = new IPFS_SERVICE_IMPL();
-        String hash = demo.upload("C:\\Users\\10922\\Desktop\\kejian.zip");
-        demo.download("D:\\ipfs_downloads\\1.zip",hash,"HouseState0.txt");
+        String hash = demo.upload("C:\\Users\\10922\\Desktop\\code");
+        demo.download("D:\\ipfs_downloads\\2",hash,"HouseState0.txt");
         System.out.println(hash);
 
 
