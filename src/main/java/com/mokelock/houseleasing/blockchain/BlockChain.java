@@ -1,9 +1,11 @@
 package com.mokelock.houseleasing.blockchain;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mokelock.houseleasing.model.HouseModel.House;
-//import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
+import org.web3j.abi.FunctionEncoder;
+import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.abi.datatypes.generated.Uint32;
@@ -11,21 +13,20 @@ import org.web3j.crypto.*;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.*;
+import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tuples.generated.Tuple3;
-import org.web3j.tuples.generated.Tuple4;
 import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tx.Transfer;
-import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
-import rx.Subscription;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -35,9 +36,9 @@ public class BlockChain {
     private static Web3j web3j = Web3j.build(new HttpService(url));
 
     private final static String filePath = "E:\\Geth\\data\\keystore";
-    private final static String rootAddress = "";
-    private final static String rootPassword = "";
-    private final static String rootFile = "";
+    private final static String rootAddress = "0x5e283b353b65baf5f18640e8a3228c8e764a9c29";
+    private final static String rootPassword = "123456";
+    private final static String rootFile = "E:\\Geth\\data\\keystore\\UTC--2019-06-20T02-55-19.079955800Z--5e283b353b65baf5f18640e8a3228c8e764a9c29";
     private final static String contractAddress = "";
 
     /**
@@ -484,25 +485,40 @@ public class BlockChain {
     public String findOrders(String ownerAddress, String ethFile, String ethPassword) {
         HouseContract houseContract = loadContract(ownerAddress, ethFile, contractAddress, ethPassword);
         Address address = new Address(ownerAddress);
+        List<Type> inputParameters = new ArrayList<>();
+        inputParameters.add(address);
+        Function function = new Function("findOrdersNum", inputParameters, Collections.<TypeReference<?>>emptyList());
+        String encodedFunction = FunctionEncoder.encode(function);
+        EthCall response = null;
         try {
-            TransactionReceipt receipt = houseContract.findOrdersNum(address).send();
-        } catch (Exception e) {
+            response = web3j.ethCall(
+                    Transaction.createEthCallTransaction(ownerAddress, contractAddress, encodedFunction),
+                    DefaultBlockParameterName.LATEST)
+                    .sendAsync().get();
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+        assert response != null;
+        if(response.getValue().equals("0x")){
+
+        }
+//        try {
+//            TransactionReceipt receipt = houseContract.findOrdersNum(address).send();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         return "";
     }
 
     /**
      * 部署智能合约
      *
-     * @param userAddress 用户地址
-     * @param ethPassword eth密码
      * @return 合约地址
      */
-    public String deplay(String userAddress, String ethPassword) {
+    protected String deploy() {
         Credentials credentials = null;
         try {
-            credentials = WalletUtils.loadCredentials(ethPassword, filePath + "???");
+            credentials = WalletUtils.loadCredentials(rootPassword, rootFile);
         } catch (IOException | CipherException e) {
             e.printStackTrace();
         }
@@ -524,8 +540,7 @@ public class BlockChain {
      * @param ethPassword     账户密码
      * @return HouseContract对象
      */
-    private HouseContract loadContract(String userAddress, String userFile, String contractAddress,
-                                       String ethPassword) {
+    private HouseContract loadContract(String userAddress, String userFile, String contractAddress, String ethPassword) {
         Credentials credentials = null;
         try {
             credentials = WalletUtils.loadCredentials(ethPassword, userFile);
@@ -534,5 +549,11 @@ public class BlockChain {
         }
         return HouseContract.load(contractAddress, web3j, credentials, Convert.toWei("10",
                 Convert.Unit.GWEI).toBigInteger(), BigInteger.valueOf(100000));
+    }
+
+    public static void main(String[] args) {
+        BlockChain blockChain = new BlockChain();
+        String contractAddress = blockChain.deploy();
+        System.out.println(contractAddress);
     }
 }
