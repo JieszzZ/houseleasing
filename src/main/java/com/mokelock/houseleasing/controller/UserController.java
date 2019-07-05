@@ -7,6 +7,7 @@ import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.UserModel.User;
 import com.mokelock.houseleasing.services.UserService;
 import org.apache.log4j.Logger;
+import org.springframework.session.Session;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +30,7 @@ public class UserController {
 
     /**
      * 用户登录
+     *
      * @param username 用户名
      * @param password 用户密码
      * @return 返回状态 0 用户 | 1 管理员 | 2 账户不存在 | 3 密码错误
@@ -46,6 +48,7 @@ public class UserController {
 
     /**
      * 检测用户登录状态
+     *
      * @return true 已登录 | false 未登录
      */
     @RequestMapping(value = "/hasLoggedIn", method = RequestMethod.POST)
@@ -55,10 +58,11 @@ public class UserController {
 
     /**
      * 注销
+     *
      * @return true 成功注销 | false 失败
      */
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
-    public boolean logout (HttpSession session) {
+    public boolean logout(HttpSession session) {
         logger.debug(session.getAttribute("username") + " logout");
         session.removeAttribute("username");
         session.invalidate();
@@ -69,7 +73,7 @@ public class UserController {
     public void register(User user, HttpServletResponse response) {
         boolean result = userService.register(user.getUsername(), user.getPassword(), user.getPay_password(),
                 user.getName(), user.getPhone(), user.getProfile_a(), user.getProfile_b(), user.getId(), user.getGender());
-        if(!result) {
+        if (!result) {
             try {
                 response.getWriter().append("fail");
             } catch (IOException e) {
@@ -80,35 +84,43 @@ public class UserController {
 
     /**
      * 获取用户信息
+     *
      * @return 包含用户信息的Model
      */
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public User user(HttpServletRequest request) {
+    public User user(HttpServletRequest request, HttpServletResponse response) {
         String username = request.getParameter("username");
+        HttpSession session = request.getSession();
         if (username == null) {
-            HttpSession session = request.getSession();
             username = (String) session.getAttribute("username");
         }
+        if (session.getAttribute("payPassword") == null) {
+            response.setStatus(201);
+            return null;
+        }
         logger.debug("/user/user " + username);
-        User user = new User();
-        user = userService.getUser(username, "");
-        return user;
+        return userService.getUser(username, (String) session.getAttribute("payPassword"));
     }
 
     /**
      * 获取用户余额
+     *
      * @return 用户信息 {"username":"000","name":"000","balance":"000"}
      */
     @RequestMapping(value = "/balance", method = RequestMethod.GET)
-    public JSON getBalance(HttpServletRequest request) {
+    public JSON getBalance(HttpServletRequest request, HttpServletResponse response) {
         String username = request.getParameter("username");
+        HttpSession session = request.getSession();
         if (username == null) {
-            HttpSession session = request.getSession();
             username = (String) session.getAttribute("username");
+        }
+        if (session.getAttribute("payPassword") == null) {
+            response.setStatus(201);
+            return null;
         }
         User user = new User();
         int balance = userService.getBalance(username);
-        user = userService.getUser(username, "");
+        user = userService.getUser(username, (String) session.getAttribute("payPassword"));
         JSONObject json = new JSONObject();
         json.put("username", username);
         json.put("name", user.getName());
@@ -118,22 +130,27 @@ public class UserController {
 
     /**
      * 充值
+     *
      * @param money 充值金额
      * @return 用户信息 {"username":"000","name":"000","balance":"000"}
      */
     @RequestMapping(value = "/account", method = RequestMethod.POST)
-    public JSON account(HttpServletRequest request, int money) {
+    public JSON account(HttpServletRequest request,HttpServletResponse response, int money) {
         String username = request.getParameter("username");
+        HttpSession session = request.getSession();
         if (username == null) {
-            HttpSession session = request.getSession();
             username = (String) session.getAttribute("username");
+        }
+        if (session.getAttribute("payPassword") == null) {
+            response.setStatus(201);
+            return null;
         }
         boolean result = userService.postAccount(username, money);
         JSONObject json = new JSONObject();
         if (result) {
             User user = new User();
             int balance = userService.getBalance(username);
-            user = userService.getUser(username, "");
+            user = userService.getUser(username, (String) session.getAttribute("payPassword"));
             json.put("username", username);
             json.put("name", user.getName());
             json.put("balance", balance);
@@ -145,20 +162,21 @@ public class UserController {
 
     /**
      * 交易历史
+     *
      * @return "username":"liupenghao",//用户名
-     *   "name":"刘鹏昊",//姓名
-     *   “record”:[
-     *       {
-     *       "time": 2019-1-13    //交易时间
-     *       "gas": 500  //花费的手续费
-     *       “LowLocation”：{
-     *               “provi”:"山东省"，
-     *               “city”："济南市"，
-     *               “sector”:"历下区",
-     *               "commu_name":"奥龙官邸"
-     *       }，
-     *      "specific_location":"2号楼3单元1801",
-     *      }]
+     * "name":"刘鹏昊",//姓名
+     * “record”:[
+     * {
+     * "time": 2019-1-13    //交易时间
+     * "gas": 500  //花费的手续费
+     * “LowLocation”：{
+     * “provi”:"山东省"，
+     * “city”："济南市"，
+     * “sector”:"历下区",
+     * "commu_name":"奥龙官邸"
+     * }，
+     * "specific_location":"2号楼3单元1801",
+     * }]
      */
     @RequestMapping(value = "/trans_record", method = RequestMethod.GET)
     public ArrayList trans_record(HttpServletRequest request) {
@@ -172,40 +190,44 @@ public class UserController {
 
     /**
      * 获取我的房子的详细信息
+     *
      * @param house_hash 房子的hash
      * @return 见接口文档。。。好长
      */
     @RequestMapping(value = "/myHouse", method = RequestMethod.GET)
-    public House getMyHouse(String house_hash){
+    public House getMyHouse(String house_hash) {
         return userService.getHouses(house_hash);
     }
 
     /**
      * 修改我的房子的信息
+     *
      * @param house_hash 房子的唯一hash
      */
     @RequestMapping(value = "/myHouse", method = RequestMethod.POST)
-    public boolean setMyHouse(String house_hash, int state , boolean elevator, int lease, String phone){
+    public boolean setMyHouse(String house_hash, int state, boolean elevator, int lease, String phone) {
         return userService.postHouse(house_hash, state, elevator, lease, phone);
     }
 
     /**
      * 修改用户信息
+     *
      * @param password 密码
-     * @param phone 电话
+     * @param phone    电话
      */
     @RequestMapping(value = "/info", method = RequestMethod.POST)
-    public boolean info (HttpServletRequest request, String password, String phone) {
+    public boolean info(HttpServletRequest request, String password, String phone) {
         String username = request.getParameter("username");
         if (username == null) {
             HttpSession session = request.getSession();
             username = (String) session.getAttribute("username");
         }
-        return userService.postPhone(username,"", password, phone);
+        return userService.postPhone(username, "", password, phone);
     }
 
     /**
      * 联系房主
+     *
      * @param house_hash 房子hash
      * @return 房主电话
      */
@@ -216,6 +238,7 @@ public class UserController {
 
     /**
      * 获取所有用户信息
+     *
      * @return 用户信息列表
      */
     @RequestMapping(value = "/all_info", method = RequestMethod.GET)
@@ -226,11 +249,12 @@ public class UserController {
 
     /**
      * 修改用户信息
+     *
      * @param username 用户账户
-     * @param credit 信誉值
+     * @param credit   信誉值
      */
     @RequestMapping(value = "/changeinfo", method = RequestMethod.POST)
-    public void changeInfo(String username, String credit){
+    public void changeInfo(String username, String credit) {
 
     }
 
