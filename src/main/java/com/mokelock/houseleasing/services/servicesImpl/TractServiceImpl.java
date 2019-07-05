@@ -1,23 +1,17 @@
 package com.mokelock.houseleasing.services.servicesImpl;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.mokelock.houseleasing.IPFS.IPFS_SERVICE;
 import com.mokelock.houseleasing.IPFS.IpfsImpl.IPFS_SERVICE_IMPL;
 import com.mokelock.houseleasing.IPFS.Table;
 import com.mokelock.houseleasing.IPFS.TableImpl.TableImpl;
 import com.mokelock.houseleasing.blockchain.BlockChain;
-import com.mokelock.houseleasing.services.tract_part1;
-import io.ipfs.api.IPFS;
+import com.mokelock.houseleasing.services.TractService;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
-public class tract_part1_Impl implements tract_part1{
+public class TractServiceImpl implements TractService {
     BlockChain bc=new BlockChain();
     Table table=new TableImpl();
     String path="";
@@ -72,4 +66,23 @@ public class tract_part1_Impl implements tract_part1{
             bc.rejectOrder(owner_addr,contractAddress,ethPassword,user_addr);
     }
 
+    public void userIden(String ownername,boolean requestIdentify,String username,String ethPassword){
+        String hash=download();
+        String user_addr=get_addr(username,hash);
+        String owner_addr=get_addr(ownername,hash);
+        bc.confirmSecond(1,owner_addr,contractAddress,user_addr,ethPassword);
+    }
+
+    public void ownerIden(String username,boolean requestIdentify,String ownername,String ethPassword){
+        String hash=download();
+        String user_addr=get_addr(username,hash);
+        String owner_addr=get_addr(ownername,hash);
+        bc.confirmSecond(0,owner_addr,contractAddress,user_addr,ethPassword);
+    }
+
+    public void payPass(String paypass1,String username,String ethpassword){
+        String hash=download();
+        String user_addr=get_addr(username,hash);
+        bc.deplay(user_addr,ethpassword);
+    }
 }
