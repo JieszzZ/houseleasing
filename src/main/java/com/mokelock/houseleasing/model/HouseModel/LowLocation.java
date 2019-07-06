@@ -30,7 +30,7 @@ public class LowLocation{
         fjo.put("provi",this.provi);
         fjo.put("city",this.city);
         fjo.put("sector",this.sector);
-        fjo.put("commu_name",this.provi);
+        fjo.put("commu_name",this.commu_name);
 
         return fjo;
     }
@@ -47,53 +47,31 @@ public class LowLocation{
     //将String格式的lowlocation对象转化回来
     public void StoLL(String llstr){
         //山东省济南市++区++小区
-        int p = llstr.indexOf("省");
-        int c = llstr.indexOf("市");
-        int s = llstr.indexOf("区");
-
-        int length = llstr.length();
-
-        if(p > -1)
-            this.setProvi(llstr.substring(0,p)+"省");
-        else if(p <= -1)
+        if(llstr.length()<=0){
             this.setProvi("");
-
-        if((p > -1) && (c > -1))
-            this.setCity(llstr.substring(p+1,c)+"市");
-        else if((p <= -1) && (c > -1))
-            this.setCity(llstr.substring(0,c)+"市");
-        else if(c <= -1)
             this.setCity("");
-
-        if((c > -1) && (s > -1))
-            this.setSector(llstr.substring(c+1,s)+"区");
-        else if((c <= -1) && (s > -1) && (p > -1))
-            this.setSector(llstr.substring(p+1,s)+"区");
-        else if((c <= -1) && (s > -1) && (p <= -1))
-            this.setSector(llstr.substring(0,s)+"区");
-        else if(s <= -1)
             this.setSector("");
-
-        if(s > -1){
-            if(length > (s+1))
-                this.setCommu_name(llstr.substring(s+1));
-            else
-                this.setCommu_name("");
-        }else if((s <= -1) && (c > -1)){
-            if(length > (c+1))
-                this.setCommu_name(llstr.substring(c+1));
-            else
-                this.setCommu_name("");
-        }else if((s <= -1) && (c <= -1) && (p > -1)){
-            if(length > (p+1))
-                this.setCommu_name(llstr.substring(p+1));
-            else
-                this.setCommu_name("");
-        }else if((s <= -1) && (c <= -1) && (p <= -1)) {
-            if(length > 0)
-                this.setCommu_name(llstr);
-            else
-                this.setCommu_name("");
+            this.setCommu_name("");
+        }else if(llstr.length()>0 && llstr.length()<=3){
+            this.setProvi("山东省");
+            this.setCity("");
+            this.setSector("");
+            this.setCommu_name("");
+        }else if(llstr.length()>=4 && llstr.length()<=6){
+            this.setProvi("山东省");
+            this.setCity("济南市");
+            this.setSector("");
+            this.setCommu_name("");
+        }else if(llstr.length()>=7 && llstr.length() <= 9){
+            this.setProvi("山东省");
+            this.setCity("济南市");
+            this.setSector(llstr.substring(6));
+            this.setCommu_name("");
+        }else if(llstr.length() >= 10){
+            this.setProvi("山东省");
+            this.setCity("济南市");
+            this.setSector(llstr.substring(6,9));
+            this.setCommu_name(llstr.substring(9));
         }
     }
 

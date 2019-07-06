@@ -3,6 +3,8 @@ package com.mokelock.houseleasing.services;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import java.io.File;
+
 /*
  * 李晓婷
  * 20190624
@@ -17,10 +19,16 @@ public interface HouseService {
     JSON search(String low_location, String leaser_inter, String house_type, String lease_type, boolean elevator);
 
     //评价房子
-    JSONObject valuation(String house_hash, int house_level, String comment, String[] comment_pic);
+    JSONObject valuation(String user_id, String house_id_hash, String comment, String[] comment_pic);
 
     //获取房屋列表
     JSON allInfo();
+
+    //添加房源
+    JSONObject setUpHouse(String user_id, String user_name, String user, int house_owner_credit, String house_id, int state, JSONObject low_location, String specific_location, int floor, boolean elevator, int lease, int lease_type, int house_type, String lon, String lat, String area, File[] house_pic);
+
+
+    JSON myHouse(String house_id_hash, int state, boolean elevator, int lease);
 
 }
 
