@@ -109,8 +109,8 @@ public class UserController {
      */
     @RequestMapping(value = "/balance", method = RequestMethod.GET)
     public JSON getBalance(HttpServletRequest request, HttpServletResponse response) {
-        String username = request.getParameter("username");
         HttpSession session = request.getSession();
+        String username = request.getParameter("username");
         if (username == null) {
             username = (String) session.getAttribute("username");
         }
@@ -216,13 +216,17 @@ public class UserController {
      * @param phone    电话
      */
     @RequestMapping(value = "/info", method = RequestMethod.POST)
-    public boolean info(HttpServletRequest request, String password, String phone) {
+    public boolean info(HttpServletRequest request,HttpServletResponse response, String password, String phone) {
+        HttpSession session = request.getSession();
         String username = request.getParameter("username");
         if (username == null) {
-            HttpSession session = request.getSession();
             username = (String) session.getAttribute("username");
         }
-        return userService.postPhone(username, "", password, phone);
+        if (session.getAttribute("payPassword") == null) {
+            response.setStatus(201);
+            return false;
+        }
+        return userService.postPhone(username, password, (String) session.getAttribute("payPassword"), phone);
     }
 
     /**
@@ -232,8 +236,14 @@ public class UserController {
      * @return 房主电话
      */
     @RequestMapping(value = "/contact_owner", method = RequestMethod.POST)
-    public String contactOwner(String house_hash) {
-        return userService.getUser("", "").getPhone();
+    public String contactOwner(HttpServletRequest request, HttpServletResponse response, String house_hash) {
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("username");
+        if (session.getAttribute("payPassword") == null) {
+            response.setStatus(201);
+            return null;
+        }
+        return userService.getUser(username, (String) session.getAttribute("payPassword")).getPhone();
     }
 
     /**
@@ -254,8 +264,7 @@ public class UserController {
      * @param credit   信誉值
      */
     @RequestMapping(value = "/changeinfo", method = RequestMethod.POST)
-    public void changeInfo(String username, String credit) {
-
+    public void changeInfo(HttpServletRequest request, HttpServletResponse response, String username, String credit) {
     }
 
 }

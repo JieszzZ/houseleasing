@@ -16,7 +16,7 @@ import java.util.List;
 public class IPFS_SERVICE_IMPL implements IPFS_SERVICE {
 
     public static String upload(String filePathName) throws IOException {
-        IPFS ipfs = new IPFS("/ip4/211.87.230.14/tcp/5001");//ipfs的服务器地址和端口
+        IPFS ipfs = new IPFS("/ip4/211.87.230.5/tcp/5001");//ipfs的服务器地址和端口
         //filePathName指的是文件(夹)的上传路径+文件名，如D:/1.png
         NamedStreamable.FileWrapper file = new NamedStreamable.FileWrapper(new File(filePathName));
         //添加文件到IPFS返回HASH值
@@ -25,29 +25,30 @@ public class IPFS_SERVICE_IMPL implements IPFS_SERVICE {
         //输出hash值
         return addResult.hash.toString();
     }
-    public static void download(String filePathName,String hash,String fileName) throws IOException {
-        IPFS ipfs = new IPFS("/ip4/211.87.230.14/tcp/8080");//ipfs的服务器地址和端口
-        Multihash filePointer = Multihash.fromBase58(hash);
-        byte[] data=null;
+    public static void download(String filePathName,String hash,String filehash) throws IOException {
+//        IPFS ipfs = new IPFS("/ip4/211.87.230.13/tcp/8080");//ipfs的服务器地址和端口
+//        Multihash filePointer = Multihash.fromBase58(hash);
+//        byte[] data=null;
         //通过HASH值查询文件转为byte[]
-        try {
-            //fileName指的是下载文件的名字，如hello.txt
-            data = ipfs.cat(filePointer, "/" + fileName);
-        }catch (Exception e){
-            data = ipfs.cat(filePointer);
-        }finally {
-        File file;
-        if(data != null){
-            file  = new File(filePathName);
-            if(file.exists()){
-                file.delete();
-            }
-            //通过文件流输出.
-            FileOutputStream fos = new FileOutputStream(file);
-            fos.write(data,0,data.length);
-            fos.flush();
-            fos.close();
-        }
-        }
+        Runtime.getRuntime().exec("cmd.exe /c ipfs get -o "+filePathName+" "+hash);
+//        try {
+//            //fileName指的是下载文件的名字，如hello.txt
+//            data = ipfs.get(filePointer);
+//        }catch (Exception e){
+//            data = ipfs.cat(filePointer);
+//        }finally {
+//        File file;
+//        if(data != null){
+//            file  = new File(filePathName);
+//            if(file.exists()){
+//                file.delete();
+//            }
+//            //通过文件流输出.
+//            FileOutputStream fos = new FileOutputStream(file);
+//            fos.write(data,0,data.length);
+//            fos.flush();
+//            fos.close();
+//        }
+//        }
     }
 }

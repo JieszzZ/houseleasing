@@ -104,7 +104,7 @@ public class House{
     }
 
     //房子图片
-    private String[] house_pic = new String[3];
+    private String[] house_pic;
 
     public String[] getHouse_pic() {
         return house_pic;
