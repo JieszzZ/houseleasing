@@ -29,7 +29,8 @@ public class User extends modifyUser{
     //不使用任何参数创建一个空的User对象
     public User(){}
     //依次使用用户名，姓名，身份证号，支付密码，密码，电话，信誉值，性别创建User对象
-    public User(String _username,String _name,String _id,String _pay_password,String _password,String _phone,short _credit,byte _gender)
+    public User(String _username,String _name,String _id,String _pay_password,String _password,String _phone,
+                short _credit,int _gender)
     {
         super(_password,_phone,_credit,_gender);
         username = _username;
@@ -37,7 +38,8 @@ public class User extends modifyUser{
         id = _id;
         pay_password = _pay_password;
     }
-    public User(String _username, String _password, String pay_password, String name, String phone, File _profile_a, File _profile_b, String _id, byte _gender)
+    public User(String _username, String _password, String pay_password, String name, String phone, File _profile_a,
+                File _profile_b, String _id, int _gender)
     {
         username = _username;
         super.setPassword(_password);

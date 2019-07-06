@@ -83,6 +83,6 @@ public class TractServiceImpl implements TractService {
     public void payPass(String paypass1,String username,String ethpassword){
         String hash=download();
         String user_addr=get_addr(username,hash);
-        bc.deplay(user_addr,ethpassword);
+//        bc.deplay(user_addr,ethpassword);
     }
 }

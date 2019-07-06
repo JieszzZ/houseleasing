@@ -16,7 +16,7 @@ import java.util.List;
 public class IPFS_SERVICE_IMPL implements IPFS_SERVICE {
 
     public static String upload(String filePathName) throws IOException {
-        IPFS ipfs = new IPFS("/ip4/211.87.230.5/tcp/5001");//ipfs的服务器地址和端口
+        IPFS ipfs = new IPFS("/ip4/127.0.0.1/tcp/5001");//ipfs的服务器地址和端口
         //filePathName指的是文件(夹)的上传路径+文件名，如D:/1.png
         NamedStreamable.FileWrapper file = new NamedStreamable.FileWrapper(new File(filePathName));
         //添加文件到IPFS返回HASH值

@@ -3,19 +3,23 @@ package com.mokelock.houseleasing.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.UserModel.User;
+import com.mokelock.houseleasing.model.UserModel.UserTemp;
 import com.mokelock.houseleasing.services.UserService;
 import org.apache.log4j.Logger;
-import org.springframework.session.Session;
+import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -70,15 +74,37 @@ public class UserController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public void register(User user, HttpServletResponse response) {
+    public void register(UserTemp user, HttpServletResponse response) throws IOException {
+        logger.debug("userTemp = " + user.toString());
+        // 获取文件名
+        String fileName = user.getProfile_a().getOriginalFilename();
+        String fileName1 = user.getProfile_a().getOriginalFilename();
+        // 获取文件后缀
+        String prefix = fileName.substring(fileName.lastIndexOf("."));
+        String prefix1 = fileName1.substring(fileName.lastIndexOf("."));
+        // 用uuid作为文件名，防止生成的临时文件重复
+        final File excelFile = File.createTempFile(user.getId() + "a", prefix);
+        final File excelFile1 = File.createTempFile(user.getId() + "b", prefix1);
+        // MultipartFile to File
+        user.getProfile_a().transferTo(excelFile);
+        user.getProfile_b().transferTo(excelFile1);
         boolean result = userService.register(user.getUsername(), user.getPassword(), user.getPay_password(),
-                user.getName(), user.getPhone(), user.getProfile_a(), user.getProfile_b(), user.getId(), user.getGender());
+                user.getName(), user.getPhone(), excelFile, excelFile1, user.getId(), Integer.parseInt(user.getGender()));
         if (!result) {
+            logger.debug("register failed");
             try {
                 response.getWriter().append("fail");
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            logger.debug(user.toString());
+        }
+        if (excelFile.exists()){
+            excelFile.delete();
+        }
+        if (excelFile1.exists()){
+            excelFile1.delete();
         }
     }
 
@@ -108,7 +134,7 @@ public class UserController {
      * @return 用户信息 {"username":"000","name":"000","balance":"000"}
      */
     @RequestMapping(value = "/balance", method = RequestMethod.GET)
-    public JSON getBalance(HttpServletRequest request, HttpServletResponse response) {
+    public String getBalance(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
         String username = request.getParameter("username");
         if (username == null) {
@@ -118,14 +144,15 @@ public class UserController {
             response.setStatus(201);
             return null;
         }
-        User user = new User();
-        int balance = userService.getBalance(username);
-        user = userService.getUser(username, (String) session.getAttribute("payPassword"));
-        JSONObject json = new JSONObject();
-        json.put("username", username);
-        json.put("name", user.getName());
-        json.put("balance", balance);
-        return json;
+//        User user = new User();
+//        int balance = userService.getBalance(username);
+//        user = userService.getUser(username, (String) session.getAttribute("payPassword"));
+//        JSONObject json = new JSONObject();
+//        json.put("username", username);
+//        json.put("name", user.getName());
+//        json.put("balance", balance);
+//        return json;
+        return "{\"username\":\"liupenghao\",\"name\":\"刘鹏昊\",\"balance\":85500}";
     }
 
     /**
@@ -135,7 +162,7 @@ public class UserController {
      * @return 用户信息 {"username":"000","name":"000","balance":"000"}
      */
     @RequestMapping(value = "/account", method = RequestMethod.POST)
-    public JSON account(HttpServletRequest request,HttpServletResponse response, int money) {
+    public JSON account(HttpServletRequest request, HttpServletResponse response, int money) {
         String username = request.getParameter("username");
         HttpSession session = request.getSession();
         if (username == null) {
@@ -194,9 +221,12 @@ public class UserController {
      * @param house_hash 房子的hash
      * @return 见接口文档。。。好长
      */
-    @RequestMapping(value = "/myHouse", method = RequestMethod.GET)
-    public House getMyHouse(String house_hash) {
-        return userService.getHouses(house_hash);
+    @RequestMapping(value = "/myhouse", method = RequestMethod.GET)
+    public String getMyHouse(String house_hash) {
+//        return userService.getHouses(house_hash);
+        return "{\"house_pic\":[\"sdfadfasfasfasdfa\",\"sdfadsfadsfasf\",\"sadfadsfasfsa\"]," +
+                "\"house_id_hash\":\"sdfaafadsfasd\",\"owner_id\":\"37012506546564\",\"verify\":\"true\"," +
+                "\"owner\":\"quyanso111\",\"owner_name\":\"曲延松\",\"role\":1,\"state\":0,\"low_location\":{\"provi\":\"山东省\",\"city\":\"济南市\",\"sector\":\"历下区\",\"commu_name\":\"奥龙官邸\"},\"specific_location\":\"2号楼3单元1801\",\"floor\":18,\"elevator\":true,\"lease\":3800,\"house_type\":1,\"house_owner_credit\":16,\"house_comment\":[{\"user_id\":\"quyans111\",\"comment\":\"这个房子挺不错适合居住\",\"comment_pic\":[\"sdfadfasfasfasdfa\",\"sdfadfasfasfasdfa\",\"sdfadfasfasfasdfa\"]},{\"user_id\":\"quyans111\",\"comment\":\"这个房子挺不错适合居住\",\"comment_pic\":[\"sdfadfasfasfasdfa\",\"sdfadfasfasfasdfa\",\"sdfadfasfasfasdfa\"]}]}";
     }
 
     /**
@@ -216,7 +246,7 @@ public class UserController {
      * @param phone    电话
      */
     @RequestMapping(value = "/info", method = RequestMethod.POST)
-    public boolean info(HttpServletRequest request,HttpServletResponse response, String password, String phone) {
+    public boolean info(HttpServletRequest request, HttpServletResponse response, String password, String phone) {
         HttpSession session = request.getSession();
         String username = request.getParameter("username");
         if (username == null) {

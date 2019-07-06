@@ -39,7 +39,7 @@ public class BlockChain {
     private final static String rootAddress = "0x5e283b353b65baf5f18640e8a3228c8e764a9c29";
     private final static String rootPassword = "123456";
     private final static String rootFile = "E:\\Geth\\data\\keystore\\UTC--2019-06-20T02-55-19.079955800Z--5e283b353b65baf5f18640e8a3228c8e764a9c29";
-    private final static String contractAddress = "";
+    private final static String contractAddress = "0xA802412997277907849B29f7ea1361CEdc2E224D";
 
     /**
      * 创建用户账户

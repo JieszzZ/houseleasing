@@ -45,32 +45,52 @@ public class LowLocation{
         return this.provi+this.city+this.sector+this.commu_name;
     }
     //将String格式的lowlocation对象转化回来
-    public void StoLL(String llstr){
+    public void StoLL2(JSONObject llstr){
         //山东省济南市++区++小区
-        if(llstr.length()<=0){
+        if (llstr.getString("provi") != null && !llstr.getString("provi").equals("0")) {
+            this.provi = llstr.getString("provi");
+        } else {
+            this.provi = "0";
+        }
+        if (llstr.getString("city") != null  && !llstr.getString("city").equals("0")) {
+            this.city = llstr.getString("city");
+        } else {
+            this.city = "0";
+        }
+        if (llstr.getString("site_select") != null  && !llstr.getString("site_select").equals("0")) {
+            this.sector = llstr.getString("site_select");
+        } else {
+            this.sector = "0";
+        }
+        this.commu_name = "0";
+        System.out.println(LLtoJson().toJSONString());
+    }
+    public void StoLL(String llstr) {
+        //山东省济南市++区++小区
+        if (llstr.length() <= 0) {
             this.setProvi("");
             this.setCity("");
             this.setSector("");
             this.setCommu_name("");
-        }else if(llstr.length()>0 && llstr.length()<=3){
+        } else if (llstr.length() > 0 && llstr.length() <= 3) {
             this.setProvi("山东省");
             this.setCity("");
             this.setSector("");
             this.setCommu_name("");
-        }else if(llstr.length()>=4 && llstr.length()<=6){
+        } else if (llstr.length() >= 4 && llstr.length() <= 6) {
             this.setProvi("山东省");
             this.setCity("济南市");
             this.setSector("");
             this.setCommu_name("");
-        }else if(llstr.length()>=7 && llstr.length() <= 9){
+        } else if (llstr.length() >= 7 && llstr.length() <= 9) {
             this.setProvi("山东省");
             this.setCity("济南市");
             this.setSector(llstr.substring(6));
             this.setCommu_name("");
-        }else if(llstr.length() >= 10){
+        } else if (llstr.length() >= 10) {
             this.setProvi("山东省");
             this.setCity("济南市");
-            this.setSector(llstr.substring(6,9));
+            this.setSector(llstr.substring(6, 9));
             this.setCommu_name(llstr.substring(9));
         }
     }

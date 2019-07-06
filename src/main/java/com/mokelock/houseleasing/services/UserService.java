@@ -53,7 +53,8 @@ public interface UserService {
     //注册需要在以太坊上申请一个以太坊账户，并且在系统以太坊账户的用户*以太账户对应表上添加该数据
     //在数据库上添加账号*密码信息
     //在以太坊账户上存储该用户的个人信息
-    boolean register(String _username, String _password, String pay_password, String name, String phone, File _profile_a, File _profile_b, String _id, byte _gender);
+    boolean register(String _username, String _password, String pay_password, String name, String phone,
+                     File _profile_a, File _profile_b, String _id, int _gender);
 
     //获取目标用户账户的余额，查询失败返回-1
     //从以太坊返回账户的余额
