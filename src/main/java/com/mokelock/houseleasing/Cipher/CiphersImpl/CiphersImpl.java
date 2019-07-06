@@ -233,7 +233,7 @@ public class CiphersImpl implements Ciphers {
         String text=encoder.encodeToString(messageDigest.digest());
         return text;
     }
-    public static void main(String args[]){
+    /*public static void main(String args[]){
         System.out.println("1");
-    }
+    }*/
 }

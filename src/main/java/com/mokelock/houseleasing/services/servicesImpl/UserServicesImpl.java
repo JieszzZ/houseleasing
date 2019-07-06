@@ -1,5 +1,7 @@
 package com.mokelock.houseleasing.services.servicesImpl;
 
+import com.mokelock.houseleasing.Cipher.Ciphers;
+import com.mokelock.houseleasing.Cipher.CiphersImpl.CiphersImpl;
 import com.mokelock.houseleasing.IPFS.IPFS_SERVICE;
 import com.mokelock.houseleasing.IPFS.Table;
 import com.mokelock.houseleasing.IPFS.TableImpl.TableImpl;
@@ -18,21 +20,24 @@ import java.io.*;
 import java.util.ArrayList;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
+import javax.crypto.*;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
+
+import javax.crypto.Cipher;
 //import org.springframework.stereotype.Service;
 
 //@Service
 public class UserServicesImpl implements UserService {
 
     private static final int User_Account_TYPE = 1;
-    private static String path= "" ;//文件下载和上传路径
-    private static String tablepath = "";
+    private static String path= "./file" ;//文件下载和上传路径
+    private static String tablepath = "./table";
     private static String SK = "";
-    private static String profile_a = "";//身份证正面位置
-    private static String profile_b = "";//身份证背面位置
+    private static String profile_a = "profile_a.png";//身份证正面位置
+    private static String profile_b = "profile_b.png";//身份证背面位置
     private static String ipfs = "";//用户信息的位置
-    private static String oneTable = "";//用户-账号表
+    private static String oneTable = "onetable";//用户-账号表
     private static String twoTable = "";//能租的房子
     private static String threeTable = "";//不能租的房子
     private static String contractAddress = "";//合约的地址
@@ -75,8 +80,9 @@ public class UserServicesImpl implements UserService {
             {
                 BlockChain bc = new BlockChain();
                 String account = bc.creatCredentials(pay_password);
+                String filepath = "";
                 Table table = new TableImpl();
-                table.insert(_username,account,SK,tablepath +"/" + oneTable);
+                table.insert(_username,account,filepath,tablepath +"/" + oneTable);
 
                 postAccount(_username,InitialGive);
 
@@ -137,8 +143,10 @@ public class UserServicesImpl implements UserService {
                 // 添加id和name
                 //
                 // }
+                Ciphers ci = new CiphersImpl();
 
-                bc.addUser(account,SK,pay_password,_username,_id,is,phone,_gender,InitialCredit);
+                String id_hash = ci.encryHASH(_id);
+                bc.addUser(account,filepath,pay_password,_username,id_hash,is,phone,_gender,InitialCredit);
                 return true;
             }
 
@@ -450,9 +458,9 @@ public class UserServicesImpl implements UserService {
         String _json = bc.getMessage(account,ethFile,_pay_password);
         ArrayList<String> res = new ArrayList<String>();
         int begin = -1,end = 0;
-        for(int i=0;i<_json.length();i++)
+        for(int i=0;i<_json.length()-1;i++)
         {
-            if(_json.substring(i,i+1) == "\"")
+            if(_json.charAt(i) == '\"' || Character.isDigit(_json.charAt(i)))
             {
                 if(begin == -1)
                 {
@@ -485,6 +493,15 @@ public class UserServicesImpl implements UserService {
                 case "IPFS_hash":
                     user.setIPFS_hash(res.get(++i));
                     break;
+                case "phone":
+                    user.setPhone(res.get(++i));
+                    break;
+                case "gender":
+                    user.setGender(Byte.parseByte(res.get(++i)));
+                    break;
+                case "credit":
+                    user.setCredit(Short.parseShort(res.get(++i)));
+                    break;
             }
         }
 
@@ -501,7 +518,7 @@ public class UserServicesImpl implements UserService {
 
         for(int i=0;i<_json.length();i++)
         {
-            if(_json.substring(i,i+1) == "\"")
+            if(_json.charAt(i) == '\"' || Character.isDigit(_json.charAt(i)))
             {
                 if(begin == -1)
                 {
@@ -655,6 +672,15 @@ public class UserServicesImpl implements UserService {
                         alr.add(rd);
                     }
                     break;
+
+                case "house_hash":
+                    rd.setHouse_hash(als.get(++i));
+                    num++;
+                    if(num == NUMS)
+                    {
+                        num = 0;
+                        alr.add(rd);
+                    }
             }
 
             i++;
