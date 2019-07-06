@@ -141,12 +141,12 @@
     "myhouse":[
         {
             "commu_name":"奥龙官邸"，
-            "house_hash"："sdfaafadsfasd"
+            "house_id_hash"："sdfaafadsfasd"
         },
         
         {
             "commu_name":"茗筑美嘉"，
-            "house_hash"："sdfsdafsdfadf"
+            "house_id_hash"："sdfsdafsdfadf"
         },
         。。。
     ]
@@ -258,13 +258,13 @@
 
 
   ```
-  GET /user/myhouse
+  POST /user/myhouse
   ```
-   ##### params
+   ##### input
   
   |Name|Type|Description|
   |---|---|---|
-  |house_hash|string|房子哈希|
+  |house_id_hash|string|房子房产证哈希|
 
  #### response
  ```
@@ -279,7 +279,7 @@
             “sdfadsfadsfasf”,
             "sadfadsfasfsa"
         ]
-      "house_hash":"sdfwenk31345",//房产证号
+      "house_id_hash":"sdfwenk31345",//房产证号
       "owner_id":"37012506546564"，//房主身份证号
       "verify":"true"   //经过验证
       "owner":"quyanso111",//拥有者的账号
@@ -292,6 +292,7 @@
           "sector":"历下区",
           "commu_name":"奥龙官邸",
       },
+      "area":180   //房屋面积
       "low_str_location":"山东省济南市历下区奥龙官邸",
       "specific_location":"2号楼3单元1801",
       "floor":18
@@ -325,12 +326,10 @@
   
   |Name|Type|Description|
   |---|---|---|
-  |house_hash|string|要修改的房子的哈希|
+  |house_id_hash|string|要修改的房子的房产证号的哈希|
   |state|number|可租用状态 0 不可租用 1可租用|
   |elevator|boolean|有无电梯|
   |lease|3800|租金|
-  |phone|string|电话号码|
-  
   
   //不可添加图片
   
@@ -359,7 +358,7 @@ house：
 |key|type|Description|
 |---|---|---|
 |house_id|string|房产证号|
-|house_hash|string|房产证号hash|
+|house_id_hash|string|房产证号hash|
 |owner_id|string|拥有者的身份证号|
 |owner_name|string|拥有者的姓名|
 |owner|string|拥有者的账号|
@@ -375,7 +374,6 @@ house：
 |lease_type|number| 0 全部 1 整租 2 合租 |
 |house_type|number| 0 全部 1 一室 2 二室 3 其他 |
 |house_owner_credit|number| 房主信誉值  eg: 16 |
-|house_level|number|1~5 五个级别 |
 |house_comment|array| 房子评论  |
 |verify|boolean| 是否经过验证，true 通过了 false没通过  |
 |lon|string| 经度  eg "113.45"  |
@@ -397,7 +395,7 @@ low_location：
 
 * #### 添加房源(u)
   ```
-  GET /house/setUpHouse
+  POST /house/setUpHouse
   ```
   ##### parameters
   |Name|Type|Description|
@@ -428,7 +426,7 @@ low_location：
             “sdfadsfadsfasf”,
             "sadfadsfasfsa"
         ]
-      "house_hash":"sdfwenk31345",//房产证号
+      "house_id_hash":"sdfwenk31345",//房产证号
       "owner_id":"37012506546564"，//房主身份证号
       "verify":"true"   //经过验证
       "owner":"quyanso111",//拥有者的账号
@@ -450,7 +448,6 @@ low_location：
       "lease":3800
       "house_type":1  // 1 一室 2 二室 3 其他
       "house_owner_credit":16,
-      "house_level":5 //房子五个等级
       "house_comment":[
         {
           "user_id":"quyans111",   //评论人账号名
@@ -472,12 +469,12 @@ low_location：
 
 * #### 获取房源详细信息(u|m)
   ```
-  GET /house/speinfo
+  POST /house/speinfo
   ```
-  ##### parameters
+  ##### input
   |Name|Type|Description|
   |---|---|---|
-  |house_hash|string|房产证号|
+  |house_id_hash|string|房产证号|
   ##### <a name="get-group-response">response</a>
   **注：**
 
@@ -491,7 +488,7 @@ low_location：
             “sdfadsfadsfasf”,
             "sadfadsfasfsa"
         ]
-      "house_hash":"sdfwenk31345",//房产证号
+      "house_id_hash":"sdfwenk31345",//房产证号
       "owner_id":"37012506546564"，//房主身份证号
       "verify":"true"   //经过验证
       "owner":"quyanso111",//拥有者的账号
@@ -514,7 +511,6 @@ low_location：
       "lease":3800
       "house_type":1  // 1 一室 2 二室 3 其他
       "house_owner_credit":16,
-      "house_level":5 //房子五个等级
       "house_comment":[
         {
           "user_id":"quyans111",   //评论人账号名
@@ -559,7 +555,7 @@ low_location：
           "house_type":"2",
           "lease_type":"1",
           "elevator":true,
-          "house_hash":"sdfadfafsaf"   //房子房产证的哈希
+          "house_id_hash":"sdfadfafsaf"   //房子房产证的哈希
         }，
         ...
     ]
@@ -573,7 +569,7 @@ low_location：
   ##### input
   |Name|Type|Description|
   |---|---|---|
-  |house_hash|string|房子房产证hash|
+  |owner|string|房主的账号|
    #### response
   ```
   {
@@ -593,8 +589,7 @@ low_location：
   ##### input
   |Name|Type|Description|
   |---|---|---|
-  |house_hash|string|房子房产证hash|
-  |house_level|number|1~5 五个级别|
+  |house_id_hash|string|房子房产证hash|
   |comment_word|string|文字评价|
   |comment_pic|file|图片评价|
    #### response
@@ -690,7 +685,7 @@ low_location：
           "lease":"5000",
           "house_type":"2",
           "lease_type":"1",
-          "house_hash":"asdfsdf",
+          "house_id_hash":"asdfsdf",
          }，
          
          {
@@ -699,7 +694,7 @@ low_location：
           "lease":"5000",
           "house_type":"2",
           "lease_type":"1",
-          "house_hash":"asdfsdf",
+          "house_id_hash":"asdfsdf",
          }，
          
          {
@@ -708,7 +703,7 @@ low_location：
           "lease":"5000",
           "house_type":"2",
           "lease_type":"1",
-          "house_hash":"asdfsdf",
+          "house_id_hash":"asdfsdf",
          }，
          
         ],
@@ -721,7 +716,7 @@ low_location：
           "lease":"5000",
           "house_type":"2",
           "lease_type":"1",
-          "house_hash":"asdfsdf",
+          "house_id_hash":"asdfsdf",
          }，
          
          {
@@ -730,7 +725,7 @@ low_location：
           "lease":"5000",
           "house_type":"2",
           "lease_type":"1",
-          "house_hash":"asdfsdf",
+          "house_id_hash":"asdfsdf",
          }，
          
          {
@@ -739,7 +734,7 @@ low_location：
           "lease":"5000",
           "house_type":"2",
           "lease_type":"1",
-          "house_hash":"asdfsdf",
+          "house_id_hash":"asdfsdf",
          }，
         ],
   }
@@ -759,7 +754,7 @@ low_location：
 
   |Name|Type|Description|
   |---|---|---|
-  |house_hash|string|房产证的哈希|
+  |house_id_hash|string|房产证的哈希|
   |owner|string|房主账号|
   
   ##### response
@@ -778,7 +773,8 @@ low_location：
  ```
   GET /tract/ownerGet
   ```
-
+注意  tract_statue有七个状态
+//  submit 提交中 effect 生效中 refused 被拒绝 finish 已完成 fail 失败  ownerIden 房主确认了房客未确认，userIden 房客确认房主没确认 
 
   #### response
   ```
@@ -788,27 +784,42 @@ low_location：
   "data":{
     tract:[
       {
-      "requestID":"xxoo",
       "username":"xxdd"，   //请求的人的用户名
       "name":"曲延松",       //请求的人的姓名
-      "house_hash":"adfafd",    //请求的房子hash
+      "house_id_hash":"adfafd",    //请求的房子hash
       "commu_name":"茗筑美嘉"，  //房子小区名
-      "state":0    //  0未回复  1 卖家同意买家未确认  2 买家确认卖家未确认 3、 卖家确认   
+      "tract_status":'submit'    
+   
       },
       {
-      "requestID":"xsxoo",
       "username":"xxdd"，   //请求的人的用户名
       "name":"曲延松",       //请求的人的姓名
-      "house_hash":"adfafd",    //请求的房子hash
+      "house_id_hash":"adfafd",    //请求的房子hash
       "commu_name":"奥龙官邸"，  //房子小区名
-      "state":0    //  0未回复  1 卖家同意买家未确认  2 买家确认卖家未确认 3、 卖家确认   
+      "tract_status":'effect'
+     
+      },
+      {
+      "username":"xxdd"，   //请求的人的用户名
+      "name":"曲延松",       //请求的人的姓名
+      "house_id_hash":"adfafd",    //请求的房子hash
+      "commu_name":"茗筑美嘉"，  //房子小区名
+      "tract_status":'ownerIden' 
+
+      },
+      {
+      "username":"xxdd"，   //请求的人的用户名
+      "name":"曲延松",       //请求的人的姓名
+      "house_id_hash":"adfafd",    //请求的房子hash
+      "commu_name":"茗筑美嘉"，  //房子小区名
+      "tract_status":'finish'
       },
     ]
   }
   }
   ```
 
-* #### 请假请求反馈(u)
+* #### 请求反馈(u)
  ```
   POST /tract/ownerRes
   ```
@@ -816,9 +827,9 @@ low_location：
 
   |Name|Type|Description|
   |---|---|---|
-  |requestID|string|请求id|
+  |username|string|房客的用户名|
   |request_response|boolean|请求反馈 true 同意签约  false 不同意签约|
-  |pay_password|string|请求反馈 true 同意签约  false 不同意签约|
+  
 
   #### response
   ```
@@ -829,13 +840,14 @@ low_location：
   ```
   
   * #### 请求反馈获取(u)
+  这是用户获取与他相关的所有请求  和房主的不一样
  ```
   GET /tract/userGet
   ```
-  ```
-  例如：
-  GET /tract/userGet
-  ```
+
+注意  tract_statue有七个状态
+//  submit 提交中 effect 生效中 refused 被拒绝 finish 已完成 fail 失败  ownerIden 房主确认了房客未确认，userIden 房客确认房主没确认 
+
 
   #### response
   ```
@@ -845,21 +857,35 @@ low_location：
   "data":{
       tract:[
         {
-        "requestID":"xxoo",
-        "username":"xxdd"，   //请求的人的用户名
+        "ownername":"xxdd"，   //请求房主的名字
         "name":"曲延松",       //请求的人的姓名
-        "house_hash":"adfafd",    //请求的房子hash
+        "house_id_hash":"adfafd",    //请求的房子hash
         "commu_name":"茗筑美嘉"，  //房子小区名
-        "state":0    //  0未回复  1 卖家同意买家未确认  2 买家确认卖家未确认 3、 卖家确认   
+        "tract_status":'submit'    
         },
         {
-        "requestID":"xsxoo",
-        "username":"xxdd"，   //请求的人的用户名
-        "name":"曲延松",       //请求的人的姓名
-        "house_hash":"adfafd",    //请求的房子hash
-        "commu_name":"奥龙官邸"，  //房子小区名
-        "state":0    //  0未回复  1 卖家同意买家未确认  2 买家确认卖家未确认 3、 卖家确认（双方达成合约）  
-        },
+      "ownername":"xxdd"，   //请求房主的名字
+      "name":"曲延松",       //请求的人的姓名
+      "house_id_hash":"adfafd",    //请求的房子hash
+      "commu_name":"奥龙官邸"，  //房子小区名
+      "tract_status":'effect'  
+
+      },
+      {
+      "ownername":"xxdd"，   //请求房主的名字
+      "name":"曲延松",       //请求的人的姓名
+      "house_id_hash":"adfafd",    //请求的房子hash
+      "commu_name":"茗筑美嘉"，  //房子小区名
+      "tract_status":'finish'  
+      },
+      {
+      "ownername":"xxdd"，   //请求房主的名字
+      "name":"曲延松",       //请求的人的姓名
+      "house_id_hash":"adfafd",    //请求的房子hash
+      "commu_name":"茗筑美嘉"，  //房子小区名
+      "tract_status":'ownerIden'   
+   
+      },
     ]
    },
   }
@@ -873,36 +899,84 @@ low_location：
 
   |Name|Type|Description|
   |---|---|---|
-  |requestID|string|请求id|
-  |requestIdentify|boolean|请求反馈 true 同意签约  false 不同意签约|
-  |pay_password|string|用户的支付密码|
+  |ownername|string|房主的用户名|
+  |requestIdentify|boolean|请求反馈 true 同意确认结束  false 不同意确认结束|
   
-* #### 用户确认交易(u)
- ```
-  POST /tract/userIden
-  ```
-  ##### params
 
-  |Name|Type|Description|
-  |---|---|---|
-  |requestID|string|请求id|
-  |requestIdentify|boolean|请求反馈 true 同意签约  false 不同意签约|
-  |pay_password|string|用户的支付密码|
   
   
 * #### 卖家确认交易(u)
  ```
-  POST /tract/userIden
+  POST /tract/ownerIden
   ```
   ##### params
 
   |Name|Type|Description|
   |---|---|---|
-  |requestID|string|请求id|
-  |requestIdentify|boolean|请求反馈 true 同意签约  false 不同意签约|
-  |pay_password|string|用户的支付密码|
+  |username|string|这个交易的房客的用户名|
+  |requestIdentify|boolean|请求反馈 true 同意确认结束  false 不同意确认结束|
+
+ 
+ * #### 支付密码的输入(u)
+ ```
+  POST /tract/payPass
+  ```
+  ##### params
+
+  |Name|Type|Description|
+  |---|---|---|
+  |payPass|string|支付密码|
 
 
+  * #### 管理员获取所有冲突的合约进行仲裁(m)
+ 
+ ```
+  GET /tract/managerGet
+  ```
+
+
+
+  #### response
+  ```
+  {
+  "status":200,
+  "message":"success",
+  "data":{
+      tract:[
+        {
+        "ownername":"xxdd"，   //请求房主的名字
+        "owner":"曲延松",       //请求的房主的姓名
+        "username":"xxasfddd"，   //请求房客的名字
+        "user":"刘鹏昊",       //请求的房客的的姓名
+        "house_id_hash":"adfafd",    //请求的房子房产证的hash
+        "commu_name":"茗筑美嘉"，  //房子小区名
+        },
+      
+      {
+        "ownername":"sdfadfsa"，   //请求房主的名字
+        "owner":"郭松岳",       //请求的房主的姓名
+        "username":"xxasfddd"，   //请求房客的名字
+        "user":"王亚平",       //请求的房客的的姓名
+        "house_id_hash":"sfd",    //请求的房子房产证的hash
+        "commu_name":"江南水城"，  //房子小区名
+        },
+   
+    ]
+   },
+  }
+  ```
+  
+  * #### 冲突仲裁返回(m)
+ ```
+  POST /tract/managerRes
+  ```
+  ##### params
+
+  |Name|Type|Description|
+  |---|---|---|
+  |username|string|房客的用户名|
+  |ownername|string|房主的用户名|
+  |request_response|number|请求反馈 1 房主违约  2 房客违约 |
   
   
   
