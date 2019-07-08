@@ -4,10 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
 /*
-* 李晓婷
-* 20190624
-* 房屋概要地址
-*/
+ * 李晓婷
+ * 20190624
+ * 房屋概要地址
+ */
 //继承
 public class LowLocation{
 

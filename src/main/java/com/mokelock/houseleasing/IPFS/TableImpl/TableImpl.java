@@ -137,7 +137,7 @@ public class TableImpl implements  Table{
                     for (int i = 0; i < key_to_get.length; i++) {
                         element[i] = jsonObject.getString(key_to_get[i]);
                     }
-                     value.add(element);
+                    value.add(element);
                 }
             }
             return value;
@@ -238,7 +238,7 @@ public class TableImpl implements  Table{
         String msg=JSON.toJSONString(map);
         String template=msg+"\r\n";
         try{
-            FileOutputStream fos=new FileOutputStream(path,true);
+            FileOutputStream fos=new FileOutputStream(path,false);
             fos.write( template.getBytes("utf-8") );
         }catch (FileNotFoundException e){
             System.out.println("输入正确的文件路径");
