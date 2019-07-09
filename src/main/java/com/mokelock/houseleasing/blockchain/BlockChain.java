@@ -59,6 +59,7 @@ public class BlockChain {
         assert credentials != null;
         String ethAddress =  credentials.getAddress();
         String ethPath = filePath + "/" + fileName_local;
+        
         Map<String, String> map = new HashMap<String, String>();
         map.put("ethAddress", ethAddress);
         map.put("ethPath", ethPath);
