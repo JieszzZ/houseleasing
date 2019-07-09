@@ -2,17 +2,22 @@ package com.mokelock.houseleasing.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.HouseModel.HouseTemp;
 import com.mokelock.houseleasing.services.HouseService;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/house")
@@ -50,10 +55,9 @@ public class HouseController {
     }
 
     /**
-     *
-     * @param lease_inter  价格范围：0 全部 1 500元以下 2 500-1000元 3 1000-1500元 4 1500-2000元 5 2000元以上
-     * @param house_type   房子类型：0 全部 1 一室 2 二室 3 其他
-     * @param lease_type   租住类型：0 全部 1 整租 2 合租
+     * @param lease_inter 价格范围：0 全部 1 500元以下 2 500-1000元 3 1000-1500元 4 1500-2000元 5 2000元以上
+     * @param house_type  房子类型：0 全部 1 一室 2 二室 3 其他
+     * @param lease_type  租住类型：0 全部 1 整租 2 合租
      * @return 房子列表
      */
     @RequestMapping(value = "/search", method = RequestMethod.POST)
@@ -77,12 +81,23 @@ public class HouseController {
      * @param house_hash   房子hash
      * @param house_level  1-5共五个级别
      * @param comment_word 文字评价
-     * @param comment_pic  图片评价
      */
     @RequestMapping(value = "/valuation", method = RequestMethod.POST)
-    public String valuation(String house_hash, String house_level, String comment_word, String comment_pic[]) {
-
-        return houseService.valuation(house_hash, house_level, comment_word, comment_pic);
+    public String valuation(HttpServletRequest request, String house_hash, String house_level, String comment_word) throws IOException {
+        List<MultipartFile> multipartFiles = ((MultipartHttpServletRequest) request).getFiles("file");
+        File[] files = new File[multipartFiles.size()];
+        String path = System.getProperty("user.dir") + "\\src\\main\\file\\temp\\";
+        for (int i = 0; i < multipartFiles.size(); i++) {
+            files[i] = new File(path + multipartFiles.get(i).getOriginalFilename());
+            multipartFiles.get(i).transferTo(files[i]);
+        }
+        String result =  houseService.valuation(house_hash, house_level, comment_word, files);
+        for (File file : files) {
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+        return result;
     }
 
     /**
@@ -96,10 +111,36 @@ public class HouseController {
     }
 
     @RequestMapping(value = "/setUpHouse", method = RequestMethod.GET)
-    public String setUpHouse(HttpServletRequest request, HouseTemp house) {
-
-//        return houseService.setUpHouse(house.getUser_id(), house.(), );
-        return "";
+    public String setUpHouse(HttpServletRequest request, HttpServletResponse response, HouseTemp house) throws IOException {
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            return "notLogin";
+        }
+        String ethPassword = (String) session.getAttribute("payPassword");
+        if ( ethPassword== null) {
+            response.setStatus(201);
+            return null;
+        }
+        List<MultipartFile> multipartFiles = ((MultipartHttpServletRequest) request).getFiles("file");
+        File[] files = new File[multipartFiles.size()];
+        String path = System.getProperty("user.dir") + "\\src\\main\\file\\temp\\";
+        for (int i = 0; i < multipartFiles.size(); i++) {
+            files[i] = new File(path + multipartFiles.get(i).getOriginalFilename());
+            multipartFiles.get(i).transferTo(files[i]);
+        }
+        JSONObject jsonObject = houseService.setUpHouse(username, ethPassword, Integer.parseInt(house.getHouse_owner_credit()),
+                house.getHouse_id(), Integer.parseInt(house.getState()),JSON.parseObject( house.getLow_location()),
+                house.getSpecific_location(), Integer.parseInt( house.getFloor()), house.isElevator(),
+                Integer.parseInt(house.getLease()), Integer.parseInt(house.getLease_type()),
+                Integer.parseInt(house.getHouse_type()), house.getLon(), house.getLat(), house.getArea(),
+                house.getAccessory(), files);
+        for (File file : files) {
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+        return jsonObject.toJSONString();
     }
 
 }

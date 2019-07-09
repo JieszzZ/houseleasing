@@ -17,11 +17,12 @@ public class HouseTemp {
     private String lon;
     private String lat;
     private String area;
+    private String accessory;
 
     public HouseTemp() {
     }
 
-    public HouseTemp(String user_id, String user, String house_owner_credit, String house_id, String state, String low_location, String specific_location, String floor, boolean elevator, String lease, String lease_type, String house_type, String lon, String lat, String area) {
+    public HouseTemp(String user_id, String user, String house_owner_credit, String house_id, String state, String low_location, String specific_location, String floor, boolean elevator, String lease, String lease_type, String house_type, String lon, String lat, String area, String accessory) {
         this.user_id = user_id;
         this.user = user;
         this.house_owner_credit = house_owner_credit;
@@ -37,6 +38,7 @@ public class HouseTemp {
         this.lon = lon;
         this.lat = lat;
         this.area = area;
+        this.accessory = accessory;
     }
 
     public String getUser_id() {
@@ -157,5 +159,13 @@ public class HouseTemp {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public String getAccessory() {
+        return accessory;
+    }
+
+    public void setAccessory(String accessory) {
+        this.accessory = accessory;
     }
 }
