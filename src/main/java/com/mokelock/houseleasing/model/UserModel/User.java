@@ -13,7 +13,7 @@ import java.io.File;
 * */
 
 
-public class User extends modifyUser{
+public class User{
     private String username = "null";
     private String name;
     private String id;
@@ -21,35 +21,48 @@ public class User extends modifyUser{
     private File profile_a; //本人身份证照片带脸，这是一个文件地址
     private File profile_b; //本人身份证照片带国徽，这是一个文件地址
     private String IPFS_hash;
-    //private String password;
-    //private String phone;
-    //private short credit;
-    //private byte gender;
+    private String password;
+    private String phone;
+    private int credit;
+    private int gender;
+
 
     //不使用任何参数创建一个空的User对象
     public User(){}
     //依次使用用户名，姓名，身份证号，支付密码，密码，电话，信誉值，性别创建User对象
-    public User(String _username,String _name,String _id,String _pay_password,String _password,String _phone,
-                short _credit,int _gender)
+    public User(String _username,String _name,String _id,String _pay_password,String _password,String _phone,int _credit,int _gender)
     {
-        super(_password,_phone,_credit,_gender);
+        password = _password;
+        phone = _phone;
+        credit = _credit;
+        gender = _gender;
         username = _username;
         name = _name;
         id = _id;
         pay_password = _pay_password;
     }
-    public User(String _username, String _password, String pay_password, String name, String phone, File _profile_a,
-                File _profile_b, String _id, int _gender)
+
+    public User(String _name,String _id,String _ipfs_hash,String _phone,int _gender,int _credit)
+    {
+        name = _name;
+        id = _id;
+        IPFS_hash = _ipfs_hash;
+        phone = _phone;
+        gender = _gender;
+        credit = _credit;
+
+    }
+    public User(String _username, String _password, String pay_password, String name, String phone, File _profile_a, File _profile_b, String _id, byte _gender)
     {
         username = _username;
-        super.setPassword(_password);
+        password = _password;
         this.pay_password = pay_password;
         this.name = name;
-        super.setPhone(phone);
+        this.phone = phone;
         profile_a = _profile_a;
         profile_b = _profile_b;
         id = _id;
-        super.setGender(_gender);
+        gender = _gender;
     }
 
     //依次使用姓名，身份证号，密码，电话，信誉值，性别创建User对象，用户名默认设置为null,暂时不用
@@ -128,5 +141,13 @@ public class User extends modifyUser{
         return IPFS_hash;
     }
 
+    public void setPassword(String _password){password = _password;}
+    public String getPassword(){return password;}
+    public void setPhone(String _phone){phone = _phone;}
+    public String getPhone(){return phone;}
+    public void setCredit( int _credit){credit = _credit;}
+    public int getCredit(){return credit;}
+    public void setGender( int _gender){gender = _gender;}
+    public int getGender(){return gender;}
 
 }

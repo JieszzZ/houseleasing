@@ -3,10 +3,7 @@ package com.mokelock.houseleasing.services;
 import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.UserModel.User;
 import com.mokelock.houseleasing.model.UserModel.front_record;
-import com.mokelock.houseleasing.model.UserModel.modifyUser;
-import com.mokelock.houseleasing.model.UserModel.record;
 
-import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -39,23 +36,14 @@ public interface UserService {
     //通过输入的用户名和密码，检索数据库里的账号和密码匹配，则登录成功
     boolean login(String _username,String _password);
 
-    //检测某用户名的账号是否已登录;
-    //暂时无法完成
-    /*
-    boolean hasLoggedIn(String _username);
 
-    //注销某用户名的账号
-    //
-    boolean logout(String _username);
-*/
+
     //注册账号;注册的信息存储在_rUser里;
     //根据_rUser里的信息注册账户
     //注册需要在以太坊上申请一个以太坊账户，并且在系统以太坊账户的用户*以太账户对应表上添加该数据
     //在数据库上添加账号*密码信息
     //在以太坊账户上存储该用户的个人信息
-    boolean register(String _username, String _password, String pay_password, String name, String phone,
-                     File _profile_a, File _profile_b, String _id, int _gender);
-
+    boolean register(String _username, String _password, String pay_password, String name, String phone, File _profile_a, File _profile_b, String _id, byte _gender);
     //获取目标用户账户的余额，查询失败返回-1
     //从以太坊返回账户的余额
     //先从系统以太坊账户取出用户账号*以太坊账户的表
@@ -76,11 +64,13 @@ public interface UserService {
     //根据用户名查询该用户的交易记录，存储在一个ArrayList<record>链表中
     //先根据用户名查询系统账户里的用户账户*以太坊账户表
     //再从以太坊账户访问智能合约查询用户的订单
-    ArrayList<front_record> getRecords(String _username);
+    ArrayList<front_record> getRecords(String _username,String pay_password);
 
     //根据房子的哈希值获取一个房屋的信息，返回一个house对象
     House getHouses(String _house_hash);
 
+    //获取所有用户的信息
+    ArrayList<User> getAllUser();
 /*
     //修改一个房子的状态；_house_hash为需要修改的房子的哈希地址；成功返回true，失败返回false；
     boolean postHouseState(String _house_hash,int _state);
@@ -97,11 +87,11 @@ public interface UserService {
 
 
     //修改一个房子的信息;_house_hash为需要修改的房子的哈希地址；成功返回true，失败返回false；
-    boolean postHouse(String _house_hash,int _state,boolean _elevator,int _lease,String _phone);
+//    boolean postHouse(String _house_hash,int _state,boolean _elevator,int _lease,String _phone);
 
 
 /*
-    //修改一个用户的密码和电话号码，成功返回true，失败返回false，实际上调用的是这个函数的重载：boolean postUser(User _old, modifyUser _modified);
+    //修改一个用户的密码和电话号码，成功返回true，失败返回false，实际上调用的是这个函数的重载：boolean postUser(User _old, User _modified);
     boolean postUser(User _old,String _password,String _phone);
 
     //修改一个用户的信誉值，得到的信誉值是_credit，成功返回true，失败返回false；实际上是调用了postUser
@@ -121,7 +111,7 @@ public interface UserService {
     /*
     //传入一个User对象和一个modifyUser对象，将_modified对象的信息覆盖old的信息,成功返回true，失败返回false;
     //该方法是其他修改方法的源方法，可以不用主动调用;
-    boolean postUser(User _old, modifyUser _modified);
+    boolean postUser(User _old, User _modified);
 */
 
 }

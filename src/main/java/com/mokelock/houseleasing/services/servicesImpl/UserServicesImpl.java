@@ -1,5 +1,7 @@
 package com.mokelock.houseleasing.services.servicesImpl;
 
+import com.mokelock.houseleasing.Cipher.Ciphers;
+import com.mokelock.houseleasing.Cipher.CiphersImpl.CiphersImpl;
 import com.mokelock.houseleasing.IPFS.IPFS_SERVICE;
 import com.mokelock.houseleasing.IPFS.Table;
 import com.mokelock.houseleasing.IPFS.TableImpl.TableImpl;
@@ -11,29 +13,37 @@ import com.mokelock.houseleasing.model.UserModel.front_record;
 import com.mokelock.houseleasing.model.UserModel.record;
 import com.mokelock.houseleasing.services.HouseService;
 import com.mokelock.houseleasing.services.UserService;
+//import org.springframework.stereotype.Service;
 
+import java.util.*;
 import java.io.*;
 import java.util.ArrayList;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
-import org.springframework.stereotype.Service;
+import javax.crypto.*;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
 
-@Service
+import javax.crypto.Cipher;
+//import org.springframework.stereotype.Service;
+
+//@Service
 public class UserServicesImpl implements UserService {
 
     private static final int User_Account_TYPE = 1;
-    private static String path= "src/main/file" ;//文件下载和上传路径
-    private static String tablepath = "";
-    private static String SK = "";
-    private static String profile_a = "";//身份证正面位置
-    private static String profile_b = "";//身份证背面位置
-    private static String ipfs = "";//用户信息的位置
-    private static String oneTable = "";//用户-账号表
-    private static String twoTable = "";//能租的房子
-    private static String threeTable = "";//不能租的房子
-    private static String contractAddress = "";//合约的地址
-    private static String adminEthPassword = "";
-    private static String adminFilePath = "";
+    private static String path= "src\\file" ;//身份证文件下载和上传路径
+    private static String tablepath = ".\\table";
+    //private static String SK = "";
+    private static String profile_a = "profile_a.png";//身份证正面位置
+    private static String profile_b = "profile_b.png";//身份证背面位置
+    //private static String ipfs = "";//用户信息的位置
+    private static String oneTable = "onetable";//用户-账号表
+    //private static String twoTable = "";//能租的房子
+    //private static String threeTable = "";//不能租的房子
+    //private static String contractAddress = "";//合约的地址
+    private static String adminAccount = "1f3ff30f01ec45eb10a6c5613aaf33224b40d0b0";
+    private static String adminEthPassword = "yuan";
+    private static String adminFilePath = "N:\\geth\\data\\keystore\\UTC--2019-07-06T05-37-21.279150600Z--1f3ff30f01ec45eb10a6c5613aaf33224b40d0b0";
     private static final int InitialCredit = 10;
     private static final int InitialGive = 100;
     //@Resources
@@ -61,9 +71,9 @@ public class UserServicesImpl implements UserService {
     @Override
     //注册账号;注册的信息分别为用户名，密码，支付口令，姓名，电话，身份证照片正，反，身份证号，性别;
     //信誉值用初始化的值
-    //差以太坊钱包地址
-    public boolean register(String _username, String _password, String pay_password, String name, String phone,
-                            File _profile_a, File _profile_b, String _id, int _gender)
+    //以太坊钱包地址
+    //已完成
+    public boolean register(String _username, String _password, String pay_password, String name, String phone, File _profile_a, File _profile_b, String _id, byte _gender)
     {
         User user = new User(_username,_password,pay_password,name,phone,_profile_a,_profile_b,_id,_gender);
         try
@@ -71,9 +81,11 @@ public class UserServicesImpl implements UserService {
             if(userDao.checkUser(_username) <= 0 && userDao.insertUser(_username,_password) > 0)
             {
                 BlockChain bc = new BlockChain();
-                String account = bc.creatCredentials(pay_password);
+                Map map = bc.creatCredentials(pay_password);
+                String account = (String)map.get("ethAddress");
+                String ethPath = (String)map.get("ethPath");
                 Table table = new TableImpl();
-                table.insert(_username,account,SK,tablepath +"/" + oneTable);
+                table.insert(_username,account,ethPath,tablepath +"\\" + oneTable);
 
                 postAccount(_username,InitialGive);
 
@@ -123,6 +135,8 @@ public class UserServicesImpl implements UserService {
                 fos.flush();
                 fos.close();
                 */
+
+                //把身份证照片的文件夹传到IPFS
                 String is = IPFS_SERVICE.upload(path);
 
                 //把哈希值传给以太坊
@@ -134,15 +148,17 @@ public class UserServicesImpl implements UserService {
                 // 添加id和name
                 //
                 // }
+                Ciphers ci = new CiphersImpl();
 
-                bc.addUser(account,SK,pay_password,_username,_id,is,phone,_gender,InitialCredit);
+                String id_hash = ci.encryHASH(_id);
+                bc.addUser(account,ethPath,pay_password,_username,id_hash,is,phone,_gender,InitialCredit);
                 return true;
             }
 
         }catch (IOException e)
         {
             System.out.println("register failed.");
-    }
+        }
         finally {
             return false;
         }
@@ -238,6 +254,7 @@ public class UserServicesImpl implements UserService {
 
     }
 
+    @Override
     public ArrayList<User> getAllUser()
     {
         try
@@ -247,7 +264,7 @@ public class UserServicesImpl implements UserService {
             String one_hash = bc.getHash(User_Account_TYPE);
             IPFS_SERVICE.download(tablepath,one_hash,oneTable);
             String[] key = {"eth-id"};
-            ArrayList<String []> res = table.get_all(key,table+"/"+oneTable);
+            ArrayList<String []> res = table.get_all(key,tablepath+"\\"+oneTable);
             ArrayList<User> ans = new ArrayList<User>();
             for(int i=0;i<res.size();i++)
             {
@@ -291,17 +308,26 @@ public class UserServicesImpl implements UserService {
 
 
     //*********
-    //待修改；现在无法获取订单的信息
+    //已完成
     //*********
     @Override
-    public ArrayList<front_record> getRecords(String _username) {
+    public ArrayList<front_record> getRecords(String _username,String pay_password) {
         ArrayList<front_record> alr = new ArrayList<front_record>();
         try
         {
 
             String account = findAccount(_username);
+            String ethFile = findEthFile(_username);
             BlockChain bc = new BlockChain();
-           // String message = bc.replayFilter(account);
+
+
+            String orders = bc.findOrders(account,ethFile,pay_password);
+            ArrayList<record> ars = readRecords(orders);
+            for(int i=0;i<ars.size();i++)
+            {
+                alr.add(new front_record(ars.get(i)));
+            }
+            // String message = bc.replayFilter(account);
           //  alr  = readRecords(message);
 
 
@@ -365,11 +391,11 @@ public class UserServicesImpl implements UserService {
 
     }
 
-    //修改一个用户的密码和电话号码，成功返回true，失败返回false，实际上调用的是这个函数的重载：boolean postUser(User _old, modifyUser _modified);
+    //修改一个用户的密码和电话号码，成功返回true，失败返回false，实际上调用的是这个函数的重载：boolean postUser(User _old, User _modified);
    // public boolean postUser(User _old,String _password,String _phone){return true;}
 /*
     @Override
-    public boolean postUser(User _old, modifyUser _modified) {
+    public boolean postUser(User _old, User _modified) {
         return false;
     }
 */
@@ -408,18 +434,19 @@ public class UserServicesImpl implements UserService {
     //修改一个房子房主的联系电话，_house_hash为需要修改的房子的哈希地址；成功返回true，失败返回false；
     public boolean postHousePhone(String _house_hash,String _phone){return true;}
 */
-    @Override
+    //@Override
     //修改一个房子的信息;_house_hash为需要修改的房子的哈希地址；成功返回true，失败返回false；
     //需要等到李晓婷把这部分接口完成我才能修改房源
-    public boolean postHouse(String _house_hash,int _state,boolean _elevator,int _lease,String _phone){return true;}
+    //不需要我写
+   // public boolean postHouse(String _house_hash,int _state,boolean _elevator,int _lease,String _phone){return true;}
 
 
     /*
     *
-    * 为毛这儿返回的是一个链表String数组
+    * 已完成
     *
     * */
-    public String  findAccount(String _username) throws IOException
+    public String findAccount(String _username) throws IOException
     {
         int where = 0;
         String hash = findUser_Account_hash();
@@ -447,9 +474,9 @@ public class UserServicesImpl implements UserService {
         String _json = bc.getMessage(account,ethFile,_pay_password);
         ArrayList<String> res = new ArrayList<String>();
         int begin = -1,end = 0;
-        for(int i=0;i<_json.length();i++)
+        for(int i=0;i<_json.length()-1;i++)
         {
-            if(_json.substring(i,i+1) == "\"")
+            if(_json.charAt(i) == '\"' || Character.isDigit(_json.charAt(i)))
             {
                 if(begin == -1)
                 {
@@ -482,6 +509,15 @@ public class UserServicesImpl implements UserService {
                 case "IPFS_hash":
                     user.setIPFS_hash(res.get(++i));
                     break;
+                case "phone":
+                    user.setPhone(res.get(++i));
+                    break;
+                case "gender":
+                    user.setGender(Byte.parseByte(res.get(++i)));
+                    break;
+                case "credit":
+                    user.setCredit(Short.parseShort(res.get(++i)));
+                    break;
             }
         }
 
@@ -498,7 +534,7 @@ public class UserServicesImpl implements UserService {
 
         for(int i=0;i<_json.length();i++)
         {
-            if(_json.substring(i,i+1) == "\"")
+            if(_json.charAt(i) == '\"' || Character.isDigit(_json.charAt(i)))
             {
                 if(begin == -1)
                 {
@@ -652,6 +688,15 @@ public class UserServicesImpl implements UserService {
                         alr.add(rd);
                     }
                     break;
+
+                case "house_hash":
+                    rd.setHouse_hash(als.get(++i));
+                    num++;
+                    if(num == NUMS)
+                    {
+                        num = 0;
+                        alr.add(rd);
+                    }
             }
 
             i++;
@@ -685,79 +730,79 @@ public class UserServicesImpl implements UserService {
 
     }
 
-    private record.Sign tranlateSign(String sign)
+    private int tranlateSign(String sign)
     {
-        if(sign == "Sign.signed")
+        if(sign == "1")
         {
-            return record.Sign.signed;
+            return 1;
         }
-        else if(sign == "Sign.refused")
+        else if(sign == "2")
         {
-            return record.Sign.refused;
+            return 2;
         }
         else
             {
-                return record.Sign.unsigned;
+                return 0;
             }
     }
 
-    private record.Role tranlateRole(String role)
+    private int tranlateRole(String role)
     {
-        if(role == "Role.submiter")
+        if(role == "0")
         {
-            return record.Role.submiter;
+            return 0;
         }
-        else if(role == "Role.responder")
+        else if(role == "1")
         {
-            return  record.Role.responder;
+            return  1;
         }
-        return null;
+        return -1;
     }
 
-    private record.State tranlateState(String state)
+    private int tranlateState(String state)
     {
-        if(state == "State.submiting")
+        if(state == "0")
         {
-            return record.State.submiting;
+            return 0;
         }
-        else if(state == "State.effecting")
+        else if(state == "1")
         {
-            return record.State.effecting;
+            return 1;
         }
-        else if(state == "State.finished")
+        else if(state == "2")
         {
-            return record.State.finished;
+            return 2;
         }
-        else if(state == "State.refused")
+        else if(state == "3")
         {
-            return record.State.refused;
+            return 3;
         }
-        else if(state == "State.failed")
+        else if(state == "4")
         {
-            return record.State.failed;
+            return 4;
         }
-        return null;
+        return -1;
     }
 
-    private record.Money tranlateMoney(String money)
+    private int tranlateMoney(String money)
     {
-        if(money == "Money.nosub")
+        if(money == "0")
         {
-            return record.Money.nosub;
+            return 1;
         }
-        else if(money == "Money.subed")
+        else if(money == "1")
         {
-            return record.Money.subed;
+            return 1;
         }
-        else if(money == "Money.returned")
+        else if(money == "2")
         {
-            return record.Money.retruned;
+            return 2;
         }
-        else if(money == "Money.deduction")
+        else if(money == "3")
         {
-            return record.Money.deduction;
+            return 3;
         }
-        return null;
+        return -1;
     }
 
     public User readUser(String userStr)

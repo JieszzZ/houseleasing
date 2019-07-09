@@ -95,60 +95,60 @@ public class front_record {
     public void setHouse_hash(String house_hash){this.house_hash = house_hash;}
     public String getHouse_hash(){return house_hash;}
 
-    private String translateSign(record.Sign sign)
+    private String translateSign(int sign)
     {
         switch (sign)
         {
-            case unsigned:
-                return "unsign";
-            case signed:
-                return "sign";
-            case refused:
-                return "refuse";
+            case 0:
+                return "未签名";
+            case 1:
+                return "已同意";
+            case 2:
+                return "已拒绝";
         }
         return "";
     }
-    private String translateState(record.State state)
+    private String translateState(int state)
     {
         switch (state)
         {
-            case submiting:
-                return "submit";
-            case effecting:
-                return "effect";
-            case refused:
-                return "refused";
-            case finished:
-                return "finish";
-            case failed:
-                return "fail";
+            case 0:
+                return "已提交";
+            case 1:
+                return "生效中";
+            case 2:
+                return "已完成";
+            case 3:
+                return "被拒绝";
+            case 4:
+                return "毁约";
         }
         return "";
     }
-    private String translateRole(record.Role role)
+    private String translateRole(int role)
     {
         switch (role)
         {
-            case submiter:
-                return "suber";
-            case responder:
-                return "reser";
+            case 0:
+                return "房客";
+            case 1:
+                return "房主";
         }
         return "";
     }
 
-    private String translateMoney(record.Money money)
+    private String translateMoney(int money)
     {
         switch (money)
         {
-            case nosub:
-                return "nosub";
-            case subed:
-                return "subed";
-            case retruned:
-                return "return";
-            case deduction:
-                return "deduction";
+            case 0:
+                return "未提交";
+            case 1:
+                return "已提交";
+            case 2:
+                return "已返还";
+            case 3:
+                return "被扣除";
         }
         return "";
     }
