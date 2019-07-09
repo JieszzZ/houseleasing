@@ -18,20 +18,18 @@ import com.mokelock.houseleasing.services.UserService;
 import java.util.*;
 import java.io.*;
 import java.util.ArrayList;
+
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
-import javax.crypto.*;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
+import org.springframework.stereotype.Service;
 
-import javax.crypto.Cipher;
 //import org.springframework.stereotype.Service;
 
-//@Service
+@Service
 public class UserServicesImpl implements UserService {
 
     private static final int User_Account_TYPE = 1;
-    private static String path= "src\\file" ;//身份证文件下载和上传路径
+    private static String path = "src\\file";//身份证文件下载和上传路径
     private static String tablepath = ".\\table";
     //private static String SK = "";
     private static String profile_a = "profile_a.png";//身份证正面位置
@@ -51,54 +49,50 @@ public class UserServicesImpl implements UserService {
 
     @Override
     //使用用户和密码进行登录，成功返回true,失败返回false；
-    public boolean login(String _username,String _password)
-    {
-        if(userDao.getPasswordByUsername(_username) == _password)
-        {
+    public boolean login(String _username, String _password) {
+        if (userDao.getPasswordByUsername(_username) == _password) {
             return true;
         }
         return false;
     }
-/*
-    @Override
-    //检测某用户名的账号是否已登录;
-    public boolean hasLoggedIn(String _username){return true;}
 
-    @Override
-    //注销某用户名的账号
-    public boolean logout(String _username){return true;}
-*/
+    /*
+        @Override
+        //检测某用户名的账号是否已登录;
+        public boolean hasLoggedIn(String _username){return true;}
+
+        @Override
+        //注销某用户名的账号
+        public boolean logout(String _username){return true;}
+    */
     @Override
     //注册账号;注册的信息分别为用户名，密码，支付口令，姓名，电话，身份证照片正，反，身份证号，性别;
     //信誉值用初始化的值
     //以太坊钱包地址
     //已完成
-    public boolean register(String _username, String _password, String pay_password, String name, String phone, File _profile_a, File _profile_b, String _id, byte _gender)
-    {
-        User user = new User(_username,_password,pay_password,name,phone,_profile_a,_profile_b,_id,_gender);
-        try
-        {
-            if(userDao.checkUser(_username) <= 0 && userDao.insertUser(_username,_password) > 0)
-            {
+    public boolean register(String _username, String _password, String pay_password, String name, String phone, File _profile_a, File _profile_b, String _id, byte _gender) {
+        User user = new User(_username, _password, pay_password, name, phone, _profile_a, _profile_b, _id, _gender);
+        try {
+            if (userDao.checkUser(_username) <= 0 && userDao.insertUser(_username, _password) > 0) {
                 BlockChain bc = new BlockChain();
                 Map map = bc.creatCredentials(pay_password);
-                String account = (String)map.get("ethAddress");
-                String ethPath = (String)map.get("ethPath");
+                String account = (String) map.get("ethAddress");
+                String ethPath = (String) map.get("ethPath");
                 Table table = new TableImpl();
-                table.insert(_username,account,ethPath,tablepath +"\\" + oneTable);
+                table.insert(_username, account, ethPath, tablepath + "\\" + oneTable);
 
-                postAccount(_username,InitialGive);
+                postAccount(_username, InitialGive);
 
                 //将身份证照片存储在IPFS上
-                File pro_a = new File(path+"/"+profile_a);
-                File pro_b = new File(path+"/"+profile_b);
+                File pro_a = new File(path + "/" + profile_a);
+                File pro_b = new File(path + "/" + profile_b);
                 String pro_a_binary = "";
                 String pro_b_binary = "";
                 FileInputStream fis = new FileInputStream(_profile_a);
                 FileOutputStream fos = new FileOutputStream(pro_a);
 
                 int ch = fis.read();
-                while(ch!=-1) {
+                while (ch != -1) {
                     fos.write(ch);
                     ch = fis.read();
                 }
@@ -108,8 +102,7 @@ public class UserServicesImpl implements UserService {
                 fis = new FileInputStream(_profile_b);
                 fos = new FileOutputStream(pro_b);
                 ch = fis.read();
-                while(ch != -1)
-                {
+                while (ch != -1) {
                     fos.write(ch);
                     ch = fis.read();
                 }
@@ -151,36 +144,29 @@ public class UserServicesImpl implements UserService {
                 Ciphers ci = new CiphersImpl();
 
                 String id_hash = ci.encryHASH(_id);
-                bc.addUser(account,ethPath,pay_password,_username,id_hash,is,phone,_gender,InitialCredit);
+                bc.addUser(account, ethPath, pay_password, _username, id_hash, is, phone, _gender, InitialCredit);
                 return true;
             }
 
-        }catch (IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("register failed.");
-        }
-        finally {
+        } finally {
             return false;
         }
-
 
 
     }
 
     @Override
     public int getBalance(String _username) {
-        try
-        {
+        try {
             BlockChain bc = new BlockChain();
             String account = findAccount(_username);
             int balance = bc.getBalance(account).intValue();
             return balance;
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("getBalance() is error");
-        }
-        finally
-        {
+        } finally {
             return -1;
         }
     }
@@ -190,15 +176,13 @@ public class UserServicesImpl implements UserService {
     //再从以太坊账户读取存储在区块链上的信息
     //存储在_one中
     @Override
-    public User getUser(String _username,String _pay_password)
-    {
+    public User getUser(String _username, String _pay_password) {
         User _one;
-        try
-        {
+        try {
             String account = findAccount(_username);
             String sk = findEthFile(_username);
             BlockChain bc = new BlockChain();
-            String message = bc.getMessage(account,sk,_pay_password);
+            String message = bc.getMessage(account, sk, _pay_password);
             _one = readUser(message);
             _one.setUsername(_username);
             /*
@@ -242,12 +226,9 @@ public class UserServicesImpl implements UserService {
 */
 
             return _one;
-        }catch(IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("getUser() is error!");
-        }
-        finally
-        {
+        } finally {
             return null;
         }
 
@@ -255,31 +236,27 @@ public class UserServicesImpl implements UserService {
     }
 
     @Override
-    public ArrayList<User> getAllUser()
-    {
-        try
-        {
+    public ArrayList<User> getAllUser() {
+        try {
             Table table = new TableImpl();
             BlockChain bc = new BlockChain();
             String one_hash = bc.getHash(User_Account_TYPE);
-            IPFS_SERVICE.download(tablepath,one_hash,oneTable);
+            IPFS_SERVICE.download(tablepath, one_hash, oneTable);
             String[] key = {"eth-id"};
-            ArrayList<String []> res = table.get_all(key,tablepath+"\\"+oneTable);
+            ArrayList<String[]> res = table.get_all(key, tablepath + "\\" + oneTable);
             ArrayList<User> ans = new ArrayList<User>();
-            for(int i=0;i<res.size();i++)
-            {
+            for (int i = 0; i < res.size(); i++) {
                 User one;
-                String message = bc.getMessage(res.get(i)[0],adminFilePath,adminEthPassword);
+                String message = bc.getMessage(res.get(i)[0], adminFilePath, adminEthPassword);
                 one = readUser(message);
                 ans.add(one);
             }
 
             return ans;
 
-        }catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             return null;
         }
     }
@@ -287,74 +264,67 @@ public class UserServicesImpl implements UserService {
 
     //向目标账户进行充值
     @Override
-    public boolean postAccount(String _username,int _money) {
-        try
-        {
+    public boolean postAccount(String _username, int _money) {
+        try {
             BlockChain bc = new BlockChain();
             String account = findAccount(_username);
-            bc.transaction(adminEthPassword,adminFilePath,account);
+            bc.transaction(adminEthPassword, adminFilePath, account);
             return true;
 
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println("postAccount() is error");
-        }
-        finally {
+        } finally {
             return false;
         }
 
     }
 
 
-
     //*********
     //已完成
     //*********
     @Override
-    public ArrayList<front_record> getRecords(String _username,String pay_password) {
+    public ArrayList<front_record> getRecords(String _username, String pay_password) {
         ArrayList<front_record> alr = new ArrayList<front_record>();
-        try
-        {
+        try {
 
             String account = findAccount(_username);
             String ethFile = findEthFile(_username);
             BlockChain bc = new BlockChain();
 
 
-            String orders = bc.findOrders(account,ethFile,pay_password);
+            String orders = bc.findOrders(account, ethFile, pay_password);
             ArrayList<record> ars = readRecords(orders);
-            for(int i=0;i<ars.size();i++)
-            {
+            for (int i = 0; i < ars.size(); i++) {
                 alr.add(new front_record(ars.get(i)));
             }
             // String message = bc.replayFilter(account);
-          //  alr  = readRecords(message);
+            //  alr  = readRecords(message);
 
 
-        }catch(IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("getRecords() is error!");
-        }finally
-        {
+        } finally {
             return alr;
         }
     }
-/*
-    @Override
-    public boolean postCredit(User _old, short _credit) {
-        return false;
-    }
 
-    @Override
-    public boolean postGender(User _old, byte _gender) {
-        return false;
-    }
+    /*
+        @Override
+        public boolean postCredit(User _old, short _credit) {
+            return false;
+        }
 
-    @Override
-    public boolean postPassword(User _old, String _password) {
-        return false;
-    }
-*/
+        @Override
+        public boolean postGender(User _old, byte _gender) {
+            return false;
+        }
+
+        @Override
+        public boolean postPassword(User _old, String _password) {
+            return false;
+        }
+    */
     @Override
     //需要比对密码,_phone 为修改后的电话号码
     //************************************
@@ -363,36 +333,30 @@ public class UserServicesImpl implements UserService {
     //************************************
     //已完善；
     //************************************
-    public boolean postPhone(String _username,String _password,String _pay_password,String _phone)
-    {
+    public boolean postPhone(String _username, String _password, String _pay_password, String _phone) {
         BlockChain bc = new BlockChain();
-        String account,ethFile;
-        if(_password != userDao.getPasswordByUsername(_username))
-        {
+        String account, ethFile;
+        if (_password != userDao.getPasswordByUsername(_username)) {
             return false;
         }
-        try
-        {
+        try {
 
             account = findAccount(_username);
             ethFile = findEthFile(_username);
             //User user = readUser(bc.getMessage(account,ethFile,_pay_password));
-            bc.changeTelInfo(account,ethFile, _pay_password,_phone);
+            bc.changeTelInfo(account, ethFile, _pay_password, _phone);
             return true;
-        }catch (IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("postPhone() is error;");
-        }finally {
+        } finally {
             return false;
         }
-
-
 
 
     }
 
     //修改一个用户的密码和电话号码，成功返回true，失败返回false，实际上调用的是这个函数的重载：boolean postUser(User _old, User _modified);
-   // public boolean postUser(User _old,String _password,String _phone){return true;}
+    // public boolean postUser(User _old,String _password,String _phone){return true;}
 /*
     @Override
     public boolean postUser(User _old, User _modified) {
@@ -400,19 +364,15 @@ public class UserServicesImpl implements UserService {
     }
 */
     //根据房子的哈希值获取一个房屋的信息，返回一个house对象
-    public House getHouses(String _house_hash)
-    {
+    public House getHouses(String _house_hash) {
         HouseService hs = new HouseServiceImpl();
         House house = new House();
-        try
-        {
-            JSONObject job =(JSONObject) hs.speInfo(_house_hash);
-            house = (House) JSONObject.toJavaObject(job,House.class);
-        }catch (Exception e)
-        {
+        try {
+            JSONObject job = (JSONObject) hs.speInfo(_house_hash);
+            house = (House) JSONObject.toJavaObject(job, House.class);
+        } catch (Exception e) {
             System.out.println("getHouses() is error!");
-        }
-        finally {
+        } finally {
             return house;
         }
     }
@@ -438,65 +398,56 @@ public class UserServicesImpl implements UserService {
     //修改一个房子的信息;_house_hash为需要修改的房子的哈希地址；成功返回true，失败返回false；
     //需要等到李晓婷把这部分接口完成我才能修改房源
     //不需要我写
-   // public boolean postHouse(String _house_hash,int _state,boolean _elevator,int _lease,String _phone){return true;}
+    // public boolean postHouse(String _house_hash,int _state,boolean _elevator,int _lease,String _phone){return true;}
 
 
     /*
-    *
-    * 已完成
-    *
-    * */
-    public String findAccount(String _username) throws IOException
-    {
+     *
+     * 已完成
+     *
+     * */
+    public String findAccount(String _username) throws IOException {
         int where = 0;
         String hash = findUser_Account_hash();
 
 
-        IPFS_SERVICE.download(tablepath,hash,oneTable);
+        IPFS_SERVICE.download(tablepath, hash, oneTable);
 
 
         Table table = new TableImpl();
         String[] user_name = {"username"};
         String[] _user = {_username};
         String[] eth_id = {"eth_id"};
-        ArrayList<String[]> result = table.query(user_name,_user,eth_id,tablepath+"/"+oneTable);
+        ArrayList<String[]> result = table.query(user_name, _user, eth_id, tablepath + "/" + oneTable);
         String res = result.get(where)[where];
 
         return res;
     }
 
 
-    private User readUsermessage(String _username,String _pay_password) throws IOException
-    {
+    private User readUsermessage(String _username, String _pay_password) throws IOException {
         BlockChain bc = new BlockChain();
         String account = findAccount(_username);
         String ethFile = findEthFile(_username);
-        String _json = bc.getMessage(account,ethFile,_pay_password);
+        String _json = bc.getMessage(account, ethFile, _pay_password);
         ArrayList<String> res = new ArrayList<String>();
-        int begin = -1,end = 0;
-        for(int i=0;i<_json.length()-1;i++)
-        {
-            if(_json.charAt(i) == '\"' || Character.isDigit(_json.charAt(i)))
-            {
-                if(begin == -1)
-                {
+        int begin = -1, end = 0;
+        for (int i = 0; i < _json.length() - 1; i++) {
+            if (_json.charAt(i) == '\"' || Character.isDigit(_json.charAt(i))) {
+                if (begin == -1) {
                     begin = i;
+                } else {
+                    end = i;
+                    res.add(_json.substring(begin, end));
+                    begin = -1;
+                    end = 0;
                 }
-                else
-                    {
-                        end = i;
-                        res.add(_json.substring(begin,end));
-                        begin = -1;
-                        end = 0;
-                    }
             }
         }
 
         User user = new User();
-        for(int i=0;i<res.size();i++)
-        {
-            switch(res.get(i))
-            {
+        for (int i = 0; i < res.size(); i++) {
+            switch (res.get(i)) {
                 case "name":
                     user.setName(res.get(++i));
                     break;
@@ -524,49 +475,39 @@ public class UserServicesImpl implements UserService {
         return user;
     }
 
-    private ArrayList<record> readRecordmessage(String _json)
-    {
+    private ArrayList<record> readRecordmessage(String _json) {
         ArrayList<record> alr = new ArrayList<record>();
         ArrayList<String> als = new ArrayList<String>();
-        int begin = -1,end = 0;
+        int begin = -1, end = 0;
         final int NUMS = 14;
 
 
-        for(int i=0;i<_json.length();i++)
-        {
-            if(_json.charAt(i) == '\"' || Character.isDigit(_json.charAt(i)))
-            {
-                if(begin == -1)
-                {
+        for (int i = 0; i < _json.length(); i++) {
+            if (_json.charAt(i) == '\"' || Character.isDigit(_json.charAt(i))) {
+                if (begin == -1) {
                     begin = i;
+                } else {
+                    end = i;
+                    String str = _json.substring(begin, end);
+                    als.add(str);
+                    begin = -1;
+                    end = 0;
                 }
-                else
-                    {
-                        end = i;
-                        String str = _json.substring(begin,end);
-                        als.add(str);
-                        begin = -1;
-                        end =0;
-                    }
             }
         }
 
-        int i=0,num = 0;
+        int i = 0, num = 0;
         record rd = new record();
-        while(i<als.size())
-        {
-            if(num == 0)
-            {
+        while (i < als.size()) {
+            if (num == 0) {
                 rd = new record();
             }
 
-            switch(als.get(i))
-            {
+            switch (als.get(i)) {
                 case "submiter":
                     rd.setTenant(als.get(++i));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -574,8 +515,7 @@ public class UserServicesImpl implements UserService {
                 case "responder":
                     rd.setHomeowner(als.get(++i));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -583,8 +523,7 @@ public class UserServicesImpl implements UserService {
                 case "submiterEthCoin":
                     rd.setSubmiterEthCoin(Integer.parseInt(als.get(++i)));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -592,8 +531,7 @@ public class UserServicesImpl implements UserService {
                 case "aimerEthCoin":
                     rd.setAimerEthCoin(Integer.parseInt(als.get(++i)));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -601,8 +539,7 @@ public class UserServicesImpl implements UserService {
                 case "subFirstSign":
                     rd.setSubFirstSign(tranlateSign(als.get(++i)));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -610,8 +547,7 @@ public class UserServicesImpl implements UserService {
                 case "resFirstSign":
                     rd.setResFirstSign(tranlateSign(als.get(++i)));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -619,8 +555,7 @@ public class UserServicesImpl implements UserService {
                 case "subSecondSign":
                     rd.setSubSecondSign(tranlateSign(als.get(++i)));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -628,8 +563,7 @@ public class UserServicesImpl implements UserService {
                 case "resSecondSign":
                     rd.setResSecondSign(tranlateSign(als.get(++i)));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -637,8 +571,7 @@ public class UserServicesImpl implements UserService {
                 case "sub_time":
                     rd.setSub_time(Integer.parseInt(als.get(++i)));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -646,8 +579,7 @@ public class UserServicesImpl implements UserService {
                 case "effect_time":
                     rd.setEffect_time(Integer.parseInt(als.get(++i)));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -655,8 +587,7 @@ public class UserServicesImpl implements UserService {
                 case "finish_time":
                     rd.setFinish_time(Integer.parseInt(als.get(++i)));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -664,8 +595,7 @@ public class UserServicesImpl implements UserService {
                 case "role":
                     rd.setRole(tranlateRole(als.get(++i)));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -673,8 +603,7 @@ public class UserServicesImpl implements UserService {
                 case "state":
                     rd.setState(tranlateState(als.get(++i)));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -682,8 +611,7 @@ public class UserServicesImpl implements UserService {
                 case "money":
                     rd.setMoney(tranlateMoney(als.get(++i)));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -692,8 +620,7 @@ public class UserServicesImpl implements UserService {
                 case "house_hash":
                     rd.setHouse_hash(als.get(++i));
                     num++;
-                    if(num == NUMS)
-                    {
+                    if (num == NUMS) {
                         num = 0;
                         alr.add(rd);
                     }
@@ -708,119 +635,86 @@ public class UserServicesImpl implements UserService {
 
 
     //访问以太坊得到用户_账号表的哈希值
-    private String findUser_Account_hash()
-    {
+    private String findUser_Account_hash() {
         BlockChain bc = new BlockChain();
         return bc.getHash(User_Account_TYPE);
     }
 
-    public String findEthFile(String _username) throws  IOException
-    {
+    public String findEthFile(String _username) throws IOException {
         int where = 0;
         String hash = findUser_Account_hash();
-        IPFS_SERVICE.download(tablepath,hash,oneTable);
+        IPFS_SERVICE.download(tablepath, hash, oneTable);
         Table table = new TableImpl();
         String[] user_name = {"username"};
         String[] _user = {_username};
         String[] SK = {"SK"};
-        ArrayList<String[]> result = table.query(user_name,_user,SK,tablepath+"/"+oneTable);
+        ArrayList<String[]> result = table.query(user_name, _user, SK, tablepath + "/" + oneTable);
         String res = result.get(where)[where];
 
         return res;
 
     }
 
-    private int tranlateSign(String sign)
-    {
-        if(sign == "1")
-        {
+    private int tranlateSign(String sign) {
+        if (sign == "1") {
             return 1;
-        }
-        else if(sign == "2")
-        {
+        } else if (sign == "2") {
             return 2;
-        }
-        else
-            {
-                return 0;
-            }
-    }
-
-    private int tranlateRole(String role)
-    {
-        if(role == "0")
-        {
+        } else {
             return 0;
         }
-        else if(role == "1")
-        {
-            return  1;
+    }
+
+    private int tranlateRole(String role) {
+        if (role == "0") {
+            return 0;
+        } else if (role == "1") {
+            return 1;
         }
         return -1;
     }
 
-    private int tranlateState(String state)
-    {
-        if(state == "0")
-        {
+    private int tranlateState(String state) {
+        if (state == "0") {
             return 0;
-        }
-        else if(state == "1")
-        {
+        } else if (state == "1") {
             return 1;
-        }
-        else if(state == "2")
-        {
+        } else if (state == "2") {
             return 2;
-        }
-        else if(state == "3")
-        {
+        } else if (state == "3") {
             return 3;
-        }
-        else if(state == "4")
-        {
+        } else if (state == "4") {
             return 4;
         }
         return -1;
     }
 
-    private int tranlateMoney(String money)
-    {
-        if(money == "0")
-        {
+    private int tranlateMoney(String money) {
+        if (money == "0") {
             return 1;
-        }
-        else if(money == "1")
-        {
+        } else if (money == "1") {
             return 1;
-        }
-        else if(money == "2")
-        {
+        } else if (money == "2") {
             return 2;
-        }
-        else if(money == "3")
-        {
+        } else if (money == "3") {
             return 3;
         }
         return -1;
     }
 
-    public User readUser(String userStr)
-    {
-        User user  =(User) JSONObject.parseObject(userStr,User.class);
+    public User readUser(String userStr) {
+        User user = (User) JSONObject.parseObject(userStr, User.class);
         return user;
     }
 
-    private ArrayList<record> readRecords(String records)
-    {
+    private ArrayList<record> readRecords(String records) {
         JSONArray ja = JSONArray.parseArray(records);
         ArrayList<record> alr = new ArrayList<record>();
-        for(int i=0;i<ja.size();i++)
-        {
-            record record = (record)ja.get(i);
+        for (int i = 0; i < ja.size(); i++) {
+            record record = (record) ja.get(i);
             alr.add(record);
         }
-        return  alr;
+        return alr;
     }
 
 

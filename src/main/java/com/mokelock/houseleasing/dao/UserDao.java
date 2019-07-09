@@ -10,6 +10,7 @@ public interface UserDao {
 
     /**
      * 根据用户名获取密码
+     *
      * @param username 用户名
      * @return 密码
      */
@@ -18,6 +19,7 @@ public interface UserDao {
 
     /**
      * 创建用户
+     *
      * @param username 用户名
      * @param password 密码
      * @return 返回值>0表示成功
@@ -27,6 +29,7 @@ public interface UserDao {
 
     /**
      * 判断用户名是否存在
+     *
      * @param username 用户名
      * @return 返回值>0表示存在
      */
@@ -35,6 +38,7 @@ public interface UserDao {
 
     /**
      * 更改密码
+     *
      * @param username 用户名
      * @param password 新密码
      * @return 返回值>0表示成功

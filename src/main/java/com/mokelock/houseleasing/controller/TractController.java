@@ -21,8 +21,9 @@ public class TractController {
 
     /**
      * 用户发起租住请求
+     *
      * @param house_hash 房子hash
-     * @param owner 房主账号
+     * @param owner      房主账号
      * @return requestID？
      */
     @RequestMapping(value = "/userSet", method = RequestMethod.POST)
@@ -32,6 +33,7 @@ public class TractController {
 
     /**
      * 房主获取所有相关请求
+     *
      * @return 所有请求列表
      */
     @RequestMapping(value = "/ownerGet", method = RequestMethod.GET)
@@ -48,9 +50,10 @@ public class TractController {
 
     /**
      * 请假请求反馈(u)
-     * @param requestID 请求编号
+     *
+     * @param requestID        请求编号
      * @param request_response 请求反馈 true 同意签约 false 不同意签约
-     * @param pay_password 支付密码
+     * @param pay_password     支付密码
      */
     @RequestMapping(value = "/ownerRes", method = RequestMethod.POST)
     public void acquire(String requestID, String request_response, String pay_password) {
@@ -59,12 +62,13 @@ public class TractController {
 
     /**
      * 请假反馈获取(u)
+     *
      * @return "checkID":"aadfif",
-     *       "groupID":"xxoo",
-     *       "request_status":0,   # 0：未处理  1：同意   2：拒绝
+     * "groupID":"xxoo",
+     * "request_status":0,   # 0：未处理  1：同意   2：拒绝
      */
     @RequestMapping(value = "/leave/{requestID}/feedback", method = RequestMethod.GET)
-    public JSON feedback(@PathVariable("requestID") String requestID){
+    public JSON feedback(@PathVariable("requestID") String requestID) {
         JSON json = new JSONObject();
         return json;
     }

@@ -13,7 +13,8 @@ public class SampleHouse {
 
     public SampleHouse() {
     }
-    public SampleHouse(String use_id, String house_pic, String low_str_location, String lease, String lease_inter, String house_type, String lease_type, boolean elevator, boolean verify ,String house_id_hash) {
+
+    public SampleHouse(String use_id, String house_pic, String low_str_location, String lease, String lease_inter, String house_type, String lease_type, boolean elevator, boolean verify, String house_id_hash) {
         this.use_id = use_id;
         this.house_pic = house_pic;
         this.low_str_location = low_str_location;
@@ -25,9 +26,10 @@ public class SampleHouse {
         this.verify = verify;
         this.house_id_hash = house_id_hash;
     }
+
     /*************************************************************************************************/
     //返回前端用到的构造函数
-    public SampleHouse(String house_pic, String low_str_location, String lease, String house_type, String lease_type, boolean elevator ,String house_id_hash) {
+    public SampleHouse(String house_pic, String low_str_location, String lease, String house_type, String lease_type, boolean elevator, String house_id_hash) {
         this.house_pic = house_pic;
         this.low_str_location = low_str_location;
         this.lease = lease;
@@ -38,19 +40,20 @@ public class SampleHouse {
     }
 
     //将SampleHouse对象转换为json对象的形式
-    public JSONObject SHtoJson(){
+    public JSONObject SHtoJson() {
         JSONObject josh = new JSONObject(true);
 
-        josh.put("house_pic",this.house_pic);
-        josh.put("low_str_location",this.low_str_location);
-        josh.put("lease",this.lease);
-        josh.put("house_type",this.house_type);
-        josh.put("lease_type",this.lease_type);
-        josh.put("elevator",this.elevator);
-        josh.put("house_id_hash",this.house_id_hash);
+        josh.put("house_pic", this.house_pic);
+        josh.put("low_str_location", this.low_str_location);
+        josh.put("lease", this.lease);
+        josh.put("house_type", this.house_type);
+        josh.put("lease_type", this.lease_type);
+        josh.put("elevator", this.elevator);
+        josh.put("house_id_hash", this.house_id_hash);
 
         return josh;
     }
+
     /************************************************************************************************/
 
     //查询的人
@@ -59,6 +62,7 @@ public class SampleHouse {
     public String getUse_id() {
         return use_id;
     }
+
     public void setUse_id(String use_id) {
         this.use_id = use_id;
     }
@@ -69,6 +73,7 @@ public class SampleHouse {
     public String getHouse_id_hash() {
         return house_id_hash;
     }
+
     public void setHouse_id_hash(String house_id_hash) {
         this.house_id_hash = house_id_hash;
     }
@@ -79,6 +84,7 @@ public class SampleHouse {
     public String getHouse_pic() {
         return house_pic;
     }
+
     public void setHouse_pic(String house_pic) {
         this.house_pic = house_pic;
     }
@@ -89,15 +95,18 @@ public class SampleHouse {
     public String getLow_str_location() {
         return low_str_location;
     }
+
     public void setLow_str_location(String low_str_location) {
         this.low_str_location = low_str_location;
     }
+
     //租金
     private String lease;
 
     public String getLease() {
         return lease;
     }
+
     public void setLease(String lease) {
         this.lease = lease;
     }
@@ -108,6 +117,7 @@ public class SampleHouse {
     public String getLease_inter() {
         return lease_inter;
     }
+
     public void setLease_inter(String lease_inter) {
         this.lease_inter = lease_inter;
     }
@@ -119,6 +129,7 @@ public class SampleHouse {
     public String getHouse_type() {
         return house_type;
     }
+
     public void setHouse_type(String house_type) {
         this.house_type = house_type;
     }
@@ -129,6 +140,7 @@ public class SampleHouse {
     public String getLease_type() {
         return lease_type;
     }
+
     public void setLease_type(String lease_type) {
         this.lease_type = lease_type;
     }
@@ -139,6 +151,7 @@ public class SampleHouse {
     public boolean isElevator() {
         return elevator;
     }
+
     //public boolean getElevator() {
     //    return elevator;
     //}
@@ -152,6 +165,7 @@ public class SampleHouse {
     public boolean isVerify() {
         return verify;
     }
+
     public void setVerify(boolean verify) {
         this.verify = verify;
     }

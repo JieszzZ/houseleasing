@@ -2,7 +2,7 @@ package com.mokelock.houseleasing.IPFS;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 import com.alibaba.fastjson.JSONObject;
-import com.mokelock.houseleasing.IPFS.IPFS_SERVICE ;
+import com.mokelock.houseleasing.IPFS.IPFS_SERVICE;
 import com.mokelock.houseleasing.IPFS.IpfsImpl.IPFS_SERVICE_IMPL;
 import com.mokelock.houseleasing.IPFS.TableImpl.TableImpl;
 import com.mokelock.houseleasing.model.HouseModel.House;
@@ -45,14 +45,11 @@ public class IPFS_TEST {
 //
         IPFS_SERVICE_IMPL demo = new IPFS_SERVICE_IMPL();
         String hash = demo.upload("C:\\Users\\10922\\Desktop\\code");
-        demo.download("D:\\ipfs_downloads\\2",hash,"HouseState0.txt");
+        demo.download("D:\\ipfs_downloads\\2", hash, "HouseState0.txt");
         System.out.println(hash);
 
 
-
-
     }
-
 
 
 }

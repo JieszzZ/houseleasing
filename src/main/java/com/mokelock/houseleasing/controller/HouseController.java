@@ -62,7 +62,7 @@ public class HouseController {
      */
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public String search(String provi, String city, String site_select, String lease_inter, String house_type,
-                         String lease_type, boolean elevator) {
+                         String lease_type, boolean elevator, String page) {
 //        JSONObject low_location = new JSONObject();
 //        low_location.put("provi", "0");
 //        low_location.put("city", "0");
@@ -71,7 +71,8 @@ public class HouseController {
 //                lease_type + " " + elevator);
         String low_location = provi + city + site_select;
         logger.debug("low_location in controller is " + low_location);
-        String result = houseService.search(low_location, lease_inter, house_type, lease_type, elevator).toJSONString();
+        String result =
+                houseService.search(low_location, lease_inter, house_type, lease_type, elevator, Integer.parseInt(page)).toJSONString();
         logger.debug("search result is \n\t" + result);
         return result;
 //        return "[{\"photo\":\"sadfadsfadf\",\"low_location\":\"山东省济南市历下区**小区\",\"lease\":\"5000\",\"house_type\":\"2\",\"lease_type\":\"1\"},{\"photo\":\"sadfadsfadf\",\"low_location\":\"山东省济南市历下区B小区\",\"lease\":\"3000\",\"house_type\":\"2\",\"lease_type\":\"1\"},{\"photo\":\"sadfadsfadf\",\"low_location\":\"山东省济南市历下区**小区\",\"lease\":\"2000\",\"house_type\":\"2\",\"lease_type\":\"1\"}]";
