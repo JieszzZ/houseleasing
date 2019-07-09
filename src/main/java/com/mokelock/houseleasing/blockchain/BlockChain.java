@@ -6,7 +6,6 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.abi.datatypes.generated.Uint32;
-import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
@@ -17,18 +16,14 @@ import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tx.Transfer;
-import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
-import org.web3j.tx.gas.StaticGasProvider;
 import org.web3j.utils.Convert;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class BlockChain {
@@ -36,24 +31,24 @@ public class BlockChain {
     private final static String url = "http://211.87.230.89:9988/";
     private static Web3j web3j = Web3j.build(new HttpService(url));
 
-    private final static String filePath = "E:/Geth/data/keystore";
-    private final static String rootAddress = "0x40b4dd13e90c55c1f3c62e5eea0e9074742256d9";
-    private final static String rootPassword = "123";
-    private final static String rootFile = "D:\\Program Files\\Geth\\data\\keystore\\UTC--2019-06-20T02-48-33.298133800Z--40b4dd13e90c55c1f3c62e5eea0e9074742256d9";
-    private final static String contractAddress = "0xf7afa5662dcca6f75aa8f6fd0168cd3c861f09a9";
+    private final static String filePath = "";
+    private final static String rootAddress = "";
+    private final static String rootPassword = "";
+    private final static String rootFile = "";
+    private final static String contractAddress = "0xa0f490e57d4ddf2c5a526d99aea5125fd310466c";
 //    private final static String contractAddress = "0xf7afa5662dcca6f75aa8f6fd0168cd3c861f09a9";
     //            "0xA802412997277907849B29f7ea1361CEdc2E224D";
-    private final static String testAddress = "0x0c1b9a02b43b9c458b132a98413eebde20668520";
-    private final static String testPassword = "321";
-    private final static String testFile = "D:\\Program Files\\Geth\\data\\keystore\\UTC--2019-07-09T02-43-03.994397500Z--0c1b9a02b43b9c458b132a98413eebde20668520";
+    private final static String testAddress = "";
+    private final static String testPassword = "";
+    private final static String testFile = "";
 
     /**
      * 创建用户账户
      *
      * @return 账户hash地址
      */
-    public String creatCredentials(String ethPassword) {
-        String fileName_local;
+    public Map creatCredentials(String ethPassword) {
+        String fileName_local = "";
         Credentials credentials = null;
         try {
             fileName_local = WalletUtils.generateNewWalletFile(ethPassword, new File(filePath), false);
@@ -62,7 +57,12 @@ public class BlockChain {
             e.printStackTrace();
         }
         assert credentials != null;
-        return credentials.getAddress();
+        String ethAddress =  credentials.getAddress();
+        String ethPath = filePath + "/" + fileName_local;
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("ethAddress", ethAddress);
+        map.put("ethPath", ethPath);
+        return map;
     }
 //0xdfec136611676641542ce3dff6e930db3259f372
 
