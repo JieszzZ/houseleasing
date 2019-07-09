@@ -4,7 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.mokelock.houseleasing.model.HouseModel.HouseTemp;
 import com.mokelock.houseleasing.services.HouseService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +24,7 @@ import java.util.List;
 @RequestMapping(value = "/api/house")
 public class HouseController {
 
-    private final static Logger logger = Logger.getLogger(HouseController.class);
+    private final static Logger logger = LoggerFactory.getLogger(HouseController.class);
 
 
     @Resource
