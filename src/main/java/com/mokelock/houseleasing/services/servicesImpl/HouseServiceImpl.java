@@ -52,37 +52,37 @@ public class HouseServiceImpl implements HouseService {
         IPFS_SERVICE_IMPL isi = new IPFS_SERVICE_IMPL();
 
         //新建文件用来存储概要信息表
-        File fht1 = new File(System.getProperty("user.dir") + "\\src\\main\\file\\housetable1.txt");
-        File fht2 = new File(System.getProperty("user.dir") + "\\src\\main\\file\\housetable2.txt");
+        File fht1 = new File(System.getProperty("user.dir")+"\\src\\main\\file\\housetable1.txt");
+        File fht2 = new File(System.getProperty("user.dir")+"\\src\\main\\file\\housetable2.txt");
         try {
             //下载上线和下线概要房屋信息表
-            isi.download(fht1.getPath(), "QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH", "");
-            isi.download(fht2.getPath(), "QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH", "");
+            isi.download(fht1.getPath(),"QmUeCWUpWwZSD7kYjEtRnKkATQ6ntaKX2k5ZF81QkifnkQ","");
+            isi.download(fht2.getPath(),"QmUeCWUpWwZSD7kYjEtRnKkATQ6ntaKX2k5ZF81QkifnkQ","");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         //从表中查询房源文件夹的hash
-        ArrayList<String[]> HashToHouse1 = dhtable.query(key_for_search, value_to_search, hash_to_get, fht1.getPath());
-        ArrayList<String[]> HashToHouse2 = dhtable.query(key_for_search, value_to_search, hash_to_get, fht2.getPath());
+        ArrayList<String[]> HashToHouse1 = dhtable.query(key_for_search,value_to_search,hash_to_get,fht1.getPath());
+        ArrayList<String[]> HashToHouse2 = dhtable.query(key_for_search,value_to_search,hash_to_get, fht2.getPath());
 
         //创建文件夹用于存储下载下来的房屋详细信息
-        File dirdh = new File(System.getProperty("user.dir") + "\\src\\main\\file\\detailedHouse");
+        File dirdh=new File(System.getProperty("user.dir")+"\\src\\main\\file\\detailedHouse");
         //File dirdh=new File("C:\\Users\\Administrator\\Desktop\\img");
-        if (!dirdh.exists()) {
+        if(!dirdh.exists()) {
             dirdh.mkdir();
         }
 
         //确定house_hash
-        if (HashToHouse1.size() != 0) {
+        if(HashToHouse1.size() != 0){
             house_hash = HashToHouse1.get(0)[0];
-        } else if (HashToHouse2.size() != 0) {
+        }else if(HashToHouse2.size() != 0){
             house_hash = HashToHouse2.get(0)[0];
-        } else ;
+        }else;
 
         //根据house_hash下载房源文件夹
-        try {
-            isi.download(dirdh.getPath(), house_hash, "");
+        try{
+            isi.download(dirdh.getPath(),house_hash,"");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -92,50 +92,55 @@ public class HouseServiceImpl implements HouseService {
         int piccount = 0;
         for (int i = 0; i < dhl.length; i++) {
             String s = dhl[i].substring(dhl[i].lastIndexOf("."));
-            if (s.equals(".jpg"))
+            if(s.equals(".jpg"))
                 piccount++;
             //System.out.println(dhl[i]);
         }
 
-        String[] key_to_get = {"owner_id", "verify", "owner", "owner_name",
-                "role", "state", "area", "provi",
-                "city", "sector", "commu_name", "specific_location",
-                "floor", "lon", "lat", "elevator",
+        String[] key_to_get = {"owner_id","verify", "owner","owner_name",
+                "role","state", "area", "provi",
+                "city", "sector","commu_name","specific_location",
+                "floor", "lon", "lat",  "elevator",
                 "lease", "house_type", "house_credit"};
-        String[] key_to_getComment = {"user_id", "comment", "comment_pic"};
+        String[] key_to_getComment = {"user_id","comment","comment_pic"};
 
-        File info = new File(dirdh, "info.txt");
-        File comment = new File(dirdh, "comment.txt");
+        File info = new File(dirdh,"info.txt");
+        File comment = new File(dirdh,"comment.txt");
 
         //得到满足条件的房子的信息
         JSONArray house_comment = new JSONArray();
+
         ArrayList<String[]> detailedHouse = dhtable.query(key_for_search, value_to_search, key_to_get, info.getPath());
-        if (dhl.length - piccount > 1) {
+        System.out.println("1234"+info.getPath());
+        if(dhl.length - piccount > 1){
             ArrayList<String[]> houseComment = dhtable.get_all(key_to_getComment, comment.getPath());
             //获得所有评论的正确形式
             HouseComment singleHouseComment;
-            for (int i = 0; i < houseComment.size(); i++) {
-                singleHouseComment = new HouseComment(houseComment.get(i)[0], houseComment.get(i)[1],
-                        (houseComment.get(i)[2].substring(1, houseComment.get(i)[2].length())).split(","));
+            for(int i = 0 ;i < houseComment.size() ;i++){
+                singleHouseComment = new HouseComment(houseComment.get(i)[0],houseComment.get(i)[1],
+                        (houseComment.get(i)[2].substring(1,houseComment.get(i)[2].length())).split(","));
                 house_comment.add(singleHouseComment.HCtoJson());
             }
             comment.delete();
         }
 
-        info.delete();
+       // info.delete();
 
         //存放得到的房子的图片
         String[] house_pic = new String[piccount];
-        for (int i = 0; i < piccount; i++) {
+        System.out.println("piccount is " + piccount);
+        for(int i = 0; i < piccount ; i++){
             String s = String.valueOf(i);
-            File pic = new File(dirdh, s + ".jpg");
-            house_pic[i] = house_hash + "\\" + s + ".jpg";
-            pic.delete();
+            File pic = new File(dirdh,s+".jpg");
+            house_pic[i] = house_hash + "/" + s + ".jpg";
+//            pic.delete();
+            System.out.println("pic_hash " + i + " " + house_pic[i]);
         }
+        System.out.println("123");
         System.out.println(detailedHouse.size());
 
         //获得符合要求的形式
-        String low_str_location = detailedHouse.get(0)[7] + detailedHouse.get(0)[8] + detailedHouse.get(0)[9] + detailedHouse.get(0)[10];
+        String low_str_location = detailedHouse.get(0)[7]+detailedHouse.get(0)[8]+detailedHouse.get(0)[9]+detailedHouse.get(0)[10];
         //创建一个LowLocation类型的对象
         LowLocation ll = new LowLocation();
         //使用字符串类型的low_str_location来初始化ll
@@ -143,12 +148,12 @@ public class HouseServiceImpl implements HouseService {
         //获得JSON对象类型的low_location
         JSONObject low_location = ll.LLtoJson();
 
-        House theHouse = new House(house_pic, house_id_hash, detailedHouse.get(0)[0], Boolean.parseBoolean(detailedHouse.get(0)[1]),
-                detailedHouse.get(0)[2], detailedHouse.get(0)[3], Integer.parseInt(detailedHouse.get(0)[4]),
-                Integer.parseInt(detailedHouse.get(0)[5]), detailedHouse.get(0)[6], low_location, low_str_location, detailedHouse.get(0)[11],
+        House theHouse = new House(house_pic,house_id_hash,detailedHouse.get(0)[0],Boolean.parseBoolean(detailedHouse.get(0)[1]),
+                detailedHouse.get(0)[2],detailedHouse.get(0)[3],Integer.parseInt(detailedHouse.get(0)[4]),
+                Integer.parseInt(detailedHouse.get(0)[5]), detailedHouse.get(0)[6], low_location,low_str_location,detailedHouse.get(0)[11],
                 Integer.parseInt(detailedHouse.get(0)[12]), detailedHouse.get(0)[13], detailedHouse.get(0)[14],
-                Boolean.parseBoolean(detailedHouse.get(0)[15]), Integer.parseInt(detailedHouse.get(0)[16]),
-                Integer.parseInt(detailedHouse.get(0)[17]), Integer.parseInt(detailedHouse.get(0)[18]), house_comment);
+                Boolean.parseBoolean(detailedHouse.get(0)[15]),Integer.parseInt(detailedHouse.get(0)[16]),
+                Integer.parseInt(detailedHouse.get(0)[17]),Integer.parseInt(detailedHouse.get(0)[18]),house_comment);
 
         //fht1.delete();
         //fht2.delete();
@@ -171,99 +176,100 @@ public class HouseServiceImpl implements HouseService {
         lowlocation.StoLL(low_location);
 
         //只在在线房屋信息表中进行搜索
-        File fht1 = new File(System.getProperty("user.dir") + "\\src\\main\\file\\housetable1.txt");
+        File fht1 = new File(System.getProperty("user.dir")+"\\src\\main\\file\\housetable1.txt");
         try {
             //下载在线房屋概要信息表
-            isi.download(fht1.getPath(), "QmR1cRmDYbJL4zDGCBPojYDQaMpWinhiXVGeHNLTdarz6u", "");
+            isi.download(fht1.getPath(),"QmUeCWUpWwZSD7kYjEtRnKkATQ6ntaKX2k5ZF81QkifnkQ","");
         } catch (IOException e) {
             e.printStackTrace();
         }
         int count = 0;
         //将所有可能被用户输入的实参的变量名和变量值
-        String[] allkey = {"provi", "city", "sector", "commu_name",
-                "lease_inter", "house_type", "lease_type", "elevator"};
-        String[] allvalue = {lowlocation.getProvi(), lowlocation.getCity(), lowlocation.getSector(), lowlocation.getCommu_name(),
-                lease_inter, house_type, lease_type, String.valueOf(elevator)};
+        String[] allkey = {"provi","city","sector","commu_name",
+                "lease_inter","house_type","lease_type","elevator"};
+        String[] allvalue = {lowlocation.getProvi(),lowlocation.getCity(),lowlocation.getSector(),lowlocation.getCommu_name(),
+                lease_inter,house_type,lease_type,String.valueOf(elevator)};
 
         //记录各实参索引的状态，1表示有具体值，0表示空或“”
         List<Integer> valued = new ArrayList<>();
         //如果实参有具体值，则记录该实参在
-        if (!lowlocation.getProvi().equals("")) {
-            valued.add(0, 1);
+        if(!lowlocation.getProvi().equals("山东省")){
+            valued.add(0,1);
             count++;
-        } else if (lowlocation.getProvi().equals("")) {
-            valued.add(0, 0);
+        }else if(lowlocation.getProvi().equals("山东省")){
+            valued.add(0,0);
         }
-        if (!lowlocation.getCity().equals("")) {
-            valued.add(1, 1);
+        if(!lowlocation.getCity().equals("济南市")){
+            valued.add(1,1);
             count++;
-        } else if (lowlocation.getCity().equals("")) {
-            valued.add(1, 0);
+        }else if(lowlocation.getCity().equals("济南市")){
+            valued.add(1,0);
         }
-        if (!lowlocation.getSector().equals("")) {
-            valued.add(2, 1);
+        if(!lowlocation.getSector().equals("0")){
+            valued.add(2,1);
             count++;
-        } else if (lowlocation.getSector().equals("")) {
-            valued.add(2, 0);
+        }else if(lowlocation.getSector().equals("0")){
+            valued.add(2,0);
         }
-        if (!lowlocation.getCommu_name().equals("")) {
-            valued.add(3, 1);
+        if(!lowlocation.getCommu_name().equals("")){
+            valued.add(3,1);
             count++;
-        } else if (lowlocation.getCommu_name().equals("")) {
-            valued.add(3, 0);
+        }else if(lowlocation.getCommu_name().equals("")){
+            valued.add(3,0);
         }
-        if (!lease_inter.equals("0")) {
-            valued.add(4, 1);
+        if(!lease_inter.equals("0")){
+            valued.add(4,1);
             count++;
-        } else if (lease_inter.equals("0")) {
-            valued.add(4, 0);
+        }else if(lease_inter.equals("0")){
+            valued.add(4,0);
         }
-        if (!house_type.equals("0")) {
-            valued.add(5, 1);
+        if(!house_type.equals("0")){
+            valued.add(5,1);
             count++;
-        } else if (house_type.equals("0")) {
-            valued.add(5, 0);
+        }else if(house_type.equals("0")){
+            valued.add(5,0);
         }
-        if (!lease_type.equals("0")) {
-            valued.add(6, 1);
+        if(!lease_type.equals("0")){
+            valued.add(6,1);
             count++;
-        } else if (lease_type.equals("0")) {
-            valued.add(6, 0);
+        }else if(lease_type.equals("0")){
+            valued.add(6,0);
         }
-        if (!(String.valueOf(elevator)).equals("0")) {
-            valued.add(7, 1);
+        if(!(String.valueOf(elevator)).equals("false")){
+            valued.add(7,1);
             count++;
-        } else if ((String.valueOf(elevator)).equals("0")) {
-            valued.add(7, 0);
+        }else if((String.valueOf(elevator)).equals("false")){
+            valued.add(7,0);
         }
         /*******************************************************************************************/
         /**/
+        System.out.println(count);
         //定义要传入数据文件查询方法的实参
         String[] key_to_search = new String[count];
         String[] value_to_search = new String[count];
         int in = 0;
-        for (int i = 0; i < valued.size(); i++) {
-            if (valued.get(i) == 1) {
+        for(int i = 0; i < valued.size(); i++){
+            if(valued.get(i) == 1){
                 key_to_search[in] = allkey[i];
                 value_to_search[in] = allvalue[i];
                 in++;
             }
         }
         //定义要得到的属性的集合
-        String[] key_to_get = {"provi", "city", "sector", "commu_name", "lease", "house_type", "lease_type", "elevator", "house_id_hash", "house_hash"};
+        String[] key_to_get = {"provi","city","sector","commu_name","lease","house_type","lease_type","elevator","house_id_hash","house_hash"};
         /**/
 
         //查询满足要求的房子
         TableImpl tableforsearch = new TableImpl();
-        for (int i = 0; i < key_to_search.length; i++) {
+        for(int i = 0;i < key_to_search.length;i++){
             System.out.println(key_to_search[i]);
             System.out.println(value_to_search[i]);
         }
 
         System.out.println();
-        //ArrayList<String[]> returnedSH = tableforsearch.query(key_to_search,value_to_search,key_to_get,fht1.getPath());
+        ArrayList<String[]> returnedSH = tableforsearch.query(key_to_search,value_to_search,key_to_get,fht1.getPath());
 
-        ArrayList<String[]> returnedSH = tableforsearch.query(key_to_search, value_to_search, key_to_get, "C:\\Users\\Administrator\\Desktop\\housetable1.txt");
+        //ArrayList<String[]> returnedSH = tableforsearch.query(key_to_search,value_to_search,key_to_get,"C:\\Users\\Administrator\\Desktop\\housetable1.txt");
 
         //声明一个概要信息房子对象
         SampleHouse sh;
@@ -284,13 +290,13 @@ public class HouseServiceImpl implements HouseService {
         String house_hash_single;
 
         int size = 0;
-        if (returnedSH.size() > 6) {
+        if(returnedSH.size() > 6){
             size = 6;
-        } else if (returnedSH.size() <= 6) {
+        }else if(returnedSH.size() <= 6){
             size = returnedSH.size();
         }
 
-        for (int i = 0; i < size; i++) {
+        for(int i = 0;i < size;i++){
             provi_single = returnedSH.get(i)[0];
             city_single = returnedSH.get(i)[1];
             sector_single = returnedSH.get(i)[2];
@@ -302,7 +308,7 @@ public class HouseServiceImpl implements HouseService {
             house_id_hash_single = returnedSH.get(i)[8];
             house_hash_single = returnedSH.get(i)[9];
 
-            switch (house_type_single) {
+            switch(house_type_single){
                 case "0":
                     house_type_single = "全部";
                     break;
@@ -316,7 +322,7 @@ public class HouseServiceImpl implements HouseService {
                     house_type_single = "其他";
                     break;
             }
-            switch (lease_type_single) {
+            switch(lease_type_single){
                 case "0":
                     lease_type_single = "全部";
                     break;
@@ -327,19 +333,19 @@ public class HouseServiceImpl implements HouseService {
                     lease_type_single = "合租";
                     break;
             }
-            llforStr = new LowLocation(provi_single, city_single, sector_single, commu_name_single);
+            llforStr = new LowLocation(provi_single,city_single,sector_single,commu_name_single);
             low_str_location = llforStr.lltoStr();
 
-            sh = new SampleHouse(house_hash_single + "\\0.jpg", low_str_location, lease_single, house_type_single, lease_type_single, elevator_single, house_id_hash_single);
+            sh = new SampleHouse(house_hash_single+"/0.jpg",low_str_location,lease_single,house_type_single,lease_type_single,elevator_single,house_id_hash_single);
             allsh.add(sh.SHtoJson());
+            System.out.println(sh.SHtoJson());
         }
         //Response resOfSearchSH = new Response(200,"success",allsh);
         //fht1.delete();
         return allsh;
     }
-
     @Override
-    public JSONObject setUpHouse(String user_id, String user_name, String user, int house_owner_credit, String house_id, int state, JSONObject low_location, String specific_location, int floor, boolean elevator, int lease, int lease_type, int house_type, String lon, String lat, String area, File[] house_pic) {
+    public JSONObject setUpHouse(String user_id, String user_name, String user,int house_owner_credit, String house_id, int state, JSONObject low_location, String specific_location, int floor, boolean elevator, int lease, int lease_type, int house_type, String lon, String lat, String area, File[] house_pic) {
 
         //添加一个房源
         TableImpl forInsertHouse = new TableImpl();
@@ -353,12 +359,12 @@ public class HouseServiceImpl implements HouseService {
         IPFS_SERVICE_IMPL isi = new IPFS_SERVICE_IMPL();
 
         //创建存放一个房子详细信息的文件夹
-        File dirdh = new File(System.getProperty("user.dir") + "\\src\\main\\file\\detailedHouse");
-        if (!dirdh.exists()) {
+        File dirdh = new File(System.getProperty("user.dir")+"\\src\\main\\file\\detailedHouse");
+        if(!dirdh.exists()) {
             dirdh.mkdir();
         }
 
-        File fht1 = new File(System.getProperty("user.dir") + "\\src\\main\\file\\housetable1.txt");
+        File fht1 = new File(System.getProperty("user.dir")+"\\src\\main\\file\\housetable1.txt");
         //if(!fht1.exists()) {
         //    try {
         //        fht1.createNewFile();
@@ -366,24 +372,24 @@ public class HouseServiceImpl implements HouseService {
         // TODO: handle exception e.printStackTrace();
         //    }
         //}
-        File fht2 = new File(System.getProperty("user.dir") + "\\src\\main\\file\\housetable2.txt");
+        File fht2 = new File(System.getProperty("user.dir")+"\\src\\main\\file\\housetable2.txt");
 
         try {
-            isi.download(fht1.getPath(), "QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH", "");
-            isi.download(fht2.getPath(), "QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH", "");
+            isi.download(fht1.getPath(),"QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH","");
+            isi.download(fht2.getPath(),"QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH","");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         //判断该房源是否已经存在
-        ArrayList<String[]> id1 = forInsertHouse.query(key_for_search_get, value_for_search, key_for_search_get, fht1.getPath());
-        ArrayList<String[]> id2 = forInsertHouse.query(key_for_search_get, value_for_search, key_for_search_get, fht2.getPath());
+        ArrayList<String[]> id1 = forInsertHouse.query(key_for_search_get,value_for_search,key_for_search_get,fht1.getPath());
+        ArrayList<String[]> id2 = forInsertHouse.query(key_for_search_get,value_for_search,key_for_search_get,fht2.getPath());
 
 
-        if (id1.size() != 0 || id2.size() != 0) {
+        if(id1.size() != 0 || id2.size() != 0){
             //Response failRes = new Response(200,"fail");
             //toReturn = failRes.RestoJson2();
-        } else if (id1.size() == 0 && id2.size() == 0) {
+        }else if(id1.size() == 0 && id2.size() == 0){
             insertHouse.setHouse_id_hash(enId.encryHASH(house_id));
             insertHouse.setOwner_id(user_id);
             insertHouse.setOwner_name(user_name);
@@ -392,7 +398,7 @@ public class HouseServiceImpl implements HouseService {
             insertHouse.setState(state);
             insertHouse.setVerify(true);
             insertHouse.setLow_location(low_location);
-            insertHouse.setLow_str_location(low_location.getString("provi") + low_location.getString("city") + low_location.getString("sector") + low_location.getString("commu_name"));
+            insertHouse.setLow_str_location(low_location.getString("provi")+low_location.getString("city")+low_location.getString("sector")+low_location.getString("commu_name"));
             insertHouse.setSpecific_location(specific_location);
             insertHouse.setFloor(floor);
             insertHouse.setElevator(elevator);
@@ -405,19 +411,19 @@ public class HouseServiceImpl implements HouseService {
             insertHouse.setLon(lon);
 
             int lease_inter;
-            if (lease < 500) {
+            if(lease < 500){
                 lease_inter = 1;
                 insertHouse.setLease_inter(lease_inter);
-            } else if (lease >= 500 && lease < 1000) {
+            }else if(lease >= 500 && lease < 1000){
                 lease_inter = 2;
                 insertHouse.setLease_inter(lease_inter);
-            } else if (lease >= 1000 && lease < 1500) {
+            }else if(lease >= 1000 && lease < 1500){
                 lease_inter = 3;
                 insertHouse.setLease_inter(lease_inter);
-            } else if (lease >= 1500 && lease < 2000) {
+            }else if(lease >= 1500 && lease < 2000){
                 lease_inter = 4;
                 insertHouse.setLease_inter(lease_inter);
-            } else if (lease >= 2000) {
+            }else if(lease >= 2000){
                 lease_inter = 5;
                 insertHouse.setLease_inter(lease_inter);
             }
@@ -425,14 +431,14 @@ public class HouseServiceImpl implements HouseService {
             //System.out.println("1");
             File info = new File(dirdh, "info.txt");
             //将房子的文字详细信息放入文件夹中
-            forInsertHouse.insert_into_more_info(insertHouse, info.getPath());
+            forInsertHouse.insert_into_more_info(insertHouse,info.getPath());
             //System.out.println(info.getPath());
             //将房子的图片放入文件夹中
             File[] pic = new File[house_pic.length];
-            for (int i = 0; i < pic.length; i++) {
+            for(int i = 0; i< pic.length ; i++){
                 String s = String.valueOf(i);
-                pic[i] = new File(dirdh, s + ".jpg");
-                if (!pic[i].exists()) {
+                pic[i] = new File(dirdh,s+".jpg");
+                if(!pic[i].exists()) {
                     try {
                         pic[i].createNewFile();
                     } catch (IOException e) {
@@ -442,7 +448,8 @@ public class HouseServiceImpl implements HouseService {
                 try {
                     BufferedImage image = ImageIO.read(new File(house_pic[i].getPath()));
                     ImageIO.write(image, "jpg", new File(pic[i].getPath()));
-                } catch (Exception e) { // TODO: handle exception
+                } catch (Exception e)
+                { // TODO: handle exception
                     e.printStackTrace();
                 }
             }
@@ -452,31 +459,33 @@ public class HouseServiceImpl implements HouseService {
             try {
                 //得到房屋详细信息文件夹的hash
                 String house_hash = isi.upload(dirdh.getPath());
-                for (int i = 0; i < house_pic.length; i++) {
+                for(int i = 0;i < house_pic.length;i++){
 
                     String s = String.valueOf(i);
 
                     pic_hash[i] = isi.upload(pic[i].getPath());
-                    pic_to_show[i] = house_hash + "\\" + s + ".jpg";
+                    pic_to_show[i] = house_hash + "/" + s + ".jpg";
                     //pic[i].delete();
-                    //System.out.println(pic_hash[i]);
+                    System.out.println("pic_hash" + i + " " +  pic_hash[i]);
+
                 }
 
                 insertHouse.setHouse_pic(pic_to_show);
                 info.delete();
-                for (int i = 0; i < pic.length; i++) {
+                for(int i = 0;i < pic.length;i++){
                     //pic_hash[i] = isi.upload(pic[i].getPath());
                     pic[i].delete();
                 }
                 //插入概要信息表
-                if (state == 1) {
+                if(state == 1) {
                     forInsertHouse.insert(insertHouse, house_hash, fht1.getPath());
                     String newHash = isi.upload(fht1.getPath());
-                    System.out.println("上线概要信息表的新hash值" + newHash);
-                } else {
+                    System.out.println("上线概要信息表的新hash值"+newHash);
+                }
+                else {
                     forInsertHouse.insert(insertHouse, house_hash, fht2.getPath());
                     String newHash = isi.upload(fht2.getPath());
-                    System.out.println("下线概要信息表的新hash值" + newHash);
+                    System.out.println("下线概要信息表的新hash值"+newHash);
                 }
                 //dirdh.delete();
             } catch (IOException e) {
@@ -487,6 +496,7 @@ public class HouseServiceImpl implements HouseService {
         //fht2.delete();
         return insertHouse.HtoJson();
     }
+
 
 
     @Override
@@ -572,8 +582,8 @@ public class HouseServiceImpl implements HouseService {
         String[] key_for_search = {"house_id_hash"};
         BlockChain chain = new BlockChain();
         //String  verified_house= chain.getHash(1);
-        String housetable1 = "Qmf4Kui6PVPsMtRYphDxWR3jnNrjkdij8uvwZetYetHiSx";
-        String housetable2 = "QmUVr4BMZUsbYgmtQhr9u6W6JxfyjPMkGDsExcWw9P6ACs";
+        String housetable1 = "QmUeCWUpWwZSD7kYjEtRnKkATQ6ntaKX2k5ZF81QkifnkQ";
+        String housetable2 = "QmUeCWUpWwZSD7kYjEtRnKkATQ6ntaKX2k5ZF81QkifnkQ";
         //String non_verified_house="QmaREvaaa7MHzfadQBhf5UxgSBzv9KGjSkRWyRke57ht29";
 
         try {
@@ -783,6 +793,7 @@ public class HouseServiceImpl implements HouseService {
 
     public static void main(String args[]) {
         HouseServiceImpl h = new HouseServiceImpl();
+        h.speInfo("lEj/IW4OvMJgYQbg3BynVA==");
 //        String[] picture = {"456"};
 //h.speInfo("lEj/IW4OvMJgYQbg3BynVA==");
         //h.valuation("123","lEj/IW4OvMJgYQbg3BynVA==","不错",picture);
@@ -792,15 +803,15 @@ public class HouseServiceImpl implements HouseService {
 
         // String[] p={"123"};
         //h.valuation("123","mHnuI4B3jMR/upF97HX6OQ==","不错",p);
-        IPFS_SERVICE_IMPL i = new IPFS_SERVICE_IMPL();
-        String p2 = "E:\\houseleasing\\houseleasing\\src\\main\\file\\housetable3.txt";
-        String hash = "QmRK8cwQRgMoyhopH4YxXbY84JVsu4uuF6r7pf8Scq9rEA";
-        String name = "info.txt";
+     /*   IPFS_SERVICE_IMPL i=new IPFS_SERVICE_IMPL();
+        String p2="D:\\untitled\\houseleasing\\src\\main\\file\\housetable3.txt";
+        String hash="QmRK8cwQRgMoyhopH4YxXbY84JVsu4uuF6r7pf8Scq9rEA";
+        String name="info.txt";
         try {
-            i.download(p2, hash, name);
+            i.download(p2,hash,name);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 }

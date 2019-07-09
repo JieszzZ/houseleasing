@@ -30,9 +30,9 @@ public class HouseController {
      * @param house_id_hash 房子hash
      * @return 信息列表
      */
-    @RequestMapping(value = "/speinfo", method = RequestMethod.POST)
+    @RequestMapping(value = "/speInfo", method = RequestMethod.POST)
     public String speInfo(HttpServletResponse response, String house_id_hash) {
-        logger.debug("speinfo's param is " + house_id_hash);
+        logger.debug("speInfo's param is " + house_id_hash);
         return houseService.speInfo(house_id_hash).toJSONString();
 //        return "{\"house_pic\":[\"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1561902918490" +
 //                "&di=93de199997bd27876fb3e72842da2551&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2Fa403a1d2880ef70d" +
@@ -81,6 +81,7 @@ public class HouseController {
      */
     @RequestMapping(value = "/valuation", method = RequestMethod.POST)
     public String valuation(String house_hash, String house_level, String comment_word, String comment_pic[]) {
+
         return houseService.valuation(house_hash, house_level, comment_word, comment_pic);
     }
 
@@ -89,7 +90,7 @@ public class HouseController {
      *
      * @return 房屋列表
      */
-    @RequestMapping(value = "/allinfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/allInfo", method = RequestMethod.GET)
     public JSON allInfo() {
         return houseService.allInfo();
     }
