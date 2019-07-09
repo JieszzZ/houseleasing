@@ -3,23 +3,20 @@ package com.mokelock.houseleasing.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.UserModel.User;
 import com.mokelock.houseleasing.model.UserModel.UserTemp;
 import com.mokelock.houseleasing.services.UserService;
 import org.apache.log4j.Logger;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -144,15 +141,15 @@ public class UserController {
             response.setStatus(201);
             return null;
         }
-//        User user = new User();
-//        int balance = userService.getBalance(username);
-//        user = userService.getUser(username, (String) session.getAttribute("payPassword"));
-//        JSONObject json = new JSONObject();
-//        json.put("username", username);
-//        json.put("name", user.getName());
-//        json.put("balance", balance);
-//        return json;
-        return "{\"username\":\"liupenghao\",\"name\":\"刘鹏昊\",\"balance\":85500}";
+        User user = new User();
+        int balance = userService.getBalance(username);
+        user = userService.getUser(username, (String) session.getAttribute("payPassword"));
+        JSONObject json = new JSONObject();
+        json.put("username", username);
+        json.put("name", user.getName());
+        json.put("balance", balance);
+        return json.toJSONString();
+//        return "{\"username\":\"liupenghao\",\"name\":\"刘鹏昊\",\"balance\":85500}";
     }
 
     /**
@@ -221,12 +218,13 @@ public class UserController {
      * @param house_hash 房子的hash
      * @return 见接口文档。。。好长
      */
-    @RequestMapping(value = "/myhouse", method = RequestMethod.GET)
+    @RequestMapping(value = "/myhouseInfo", method = RequestMethod.POST)
     public String getMyHouse(String house_hash) {
-//        return userService.getHouses(house_hash);
-        return "{\"house_pic\":[\"sdfadfasfasfasdfa\",\"sdfadsfadsfasf\",\"sadfadsfasfsa\"]," +
-                "\"house_id_hash\":\"sdfaafadsfasd\",\"owner_id\":\"37012506546564\",\"verify\":\"true\"," +
-                "\"owner\":\"quyanso111\",\"owner_name\":\"曲延松\",\"role\":1,\"state\":0,\"low_location\":{\"provi\":\"山东省\",\"city\":\"济南市\",\"sector\":\"历下区\",\"commu_name\":\"奥龙官邸\"},\"specific_location\":\"2号楼3单元1801\",\"floor\":18,\"elevator\":true,\"lease\":3800,\"house_type\":1,\"house_owner_credit\":16,\"house_comment\":[{\"user_id\":\"quyans111\",\"comment\":\"这个房子挺不错适合居住\",\"comment_pic\":[\"sdfadfasfasfasdfa\",\"sdfadfasfasfasdfa\",\"sdfadfasfasfasdfa\"]},{\"user_id\":\"quyans111\",\"comment\":\"这个房子挺不错适合居住\",\"comment_pic\":[\"sdfadfasfasfasdfa\",\"sdfadfasfasfasdfa\",\"sdfadfasfasfasdfa\"]}]}";
+        House house = userService.getHouses(house_hash);
+        return JSON.toJSONString(house);
+//        return "{\"house_pic\":[\"sdfadfasfasfasdfa\",\"sdfadsfadsfasf\",\"sadfadsfasfsa\"]," +
+//                "\"house_id_hash\":\"sdfaafadsfasd\",\"owner_id\":\"37012506546564\",\"verify\":\"true\"," +
+//                "\"owner\":\"quyanso111\",\"owner_name\":\"曲延松\",\"role\":1,\"state\":0,\"low_location\":{\"provi\":\"山东省\",\"city\":\"济南市\",\"sector\":\"历下区\",\"commu_name\":\"奥龙官邸\"},\"specific_location\":\"2号楼3单元1801\",\"floor\":18,\"elevator\":true,\"lease\":3800,\"house_type\":1,\"house_owner_credit\":16,\"house_comment\":[{\"user_id\":\"quyans111\",\"comment\":\"这个房子挺不错适合居住\",\"comment_pic\":[\"sdfadfasfasfasdfa\",\"sdfadfasfasfasdfa\",\"sdfadfasfasfasdfa\"]},{\"user_id\":\"quyans111\",\"comment\":\"这个房子挺不错适合居住\",\"comment_pic\":[\"sdfadfasfasfasdfa\",\"sdfadfasfasfasdfa\",\"sdfadfasfasfasdfa\"]}]}";
     }
 
     /**
@@ -234,7 +232,7 @@ public class UserController {
      *
      * @param house_hash 房子的唯一hash
      */
-    @RequestMapping(value = "/myHouse", method = RequestMethod.POST)
+    @RequestMapping(value = "/myhouse", method = RequestMethod.POST)
     public boolean setMyHouse(String house_hash, int state, boolean elevator, int lease, String phone) {
         return userService.postHouse(house_hash, state, elevator, lease, phone);
     }
@@ -295,6 +293,7 @@ public class UserController {
      */
     @RequestMapping(value = "/changeinfo", method = RequestMethod.POST)
     public void changeInfo(HttpServletRequest request, HttpServletResponse response, String username, String credit) {
+//        String s = userService.postPhone();
     }
 
 }
