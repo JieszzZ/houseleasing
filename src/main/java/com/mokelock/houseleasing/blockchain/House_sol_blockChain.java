@@ -1,12 +1,14 @@
 package com.mokelock.houseleasing.blockchain;
 
 import io.reactivex.Flowable;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
@@ -36,7 +38,7 @@ import org.web3j.tx.gas.ContractGasProvider;
  * <p>Auto generated code.
  * <p><strong>Do not modify!</strong>
  * <p>Please use the <a href="https://docs.web3j.io/command_line.html">web3j command line tools</a>,
- * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
+ * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
  *
  * <p>Generated with web3j version 4.3.0.
@@ -84,28 +86,46 @@ public class House_sol_blockChain extends Contract {
 
     public static final String FUNC_WITHDRAW = "withdraw";
 
-    public static final Event ORDERSUBMITED_EVENT = new Event("OrderSubmited", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+    public static final Event ORDERSUBMITED_EVENT = new Event("OrderSubmited",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            }, new TypeReference<Address>() {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
-    public static final Event ORDEREFFECT_EVENT = new Event("OrderEffect", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+    public static final Event ORDEREFFECT_EVENT = new Event("OrderEffect",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            }, new TypeReference<Address>() {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
-    public static final Event ORDERREJECTED_EVENT = new Event("OrderRejected", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+    public static final Event ORDERREJECTED_EVENT = new Event("OrderRejected",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            }, new TypeReference<Address>() {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
-    public static final Event ORDERFINISHED_EVENT = new Event("OrderFinished", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+    public static final Event ORDERFINISHED_EVENT = new Event("OrderFinished",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            }, new TypeReference<Address>() {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
-    public static final Event ORDERFAILED_EVENT = new Event("OrderFailed", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+    public static final Event ORDERFAILED_EVENT = new Event("OrderFailed",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            }, new TypeReference<Address>() {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
-    public static final Event DEPOSITWITHDRAW_EVENT = new Event("DepositWithdraw", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+    public static final Event DEPOSITWITHDRAW_EVENT = new Event("DepositWithdraw",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            }, new TypeReference<Address>() {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
     @Deprecated
@@ -127,157 +147,179 @@ public class House_sol_blockChain extends Contract {
     }
 
     public RemoteCall<Tuple8<String, String, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger>> findOrder_1(String _user, BigInteger location) {
-        final Function function = new Function(FUNC_FINDORDER_1, 
+        final Function function = new Function(FUNC_FINDORDER_1,
                 Arrays.<Type>asList(new Address(_user),
-                new Uint256(location)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint32>() {}, new TypeReference<Uint32>() {}, new TypeReference<Uint8>() {}, new TypeReference<Uint8>() {}, new TypeReference<Uint8>() {}, new TypeReference<Uint8>() {}));
+                        new Uint256(location)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }, new TypeReference<Address>() {
+                }, new TypeReference<Uint32>() {
+                }, new TypeReference<Uint32>() {
+                }, new TypeReference<Uint8>() {
+                }, new TypeReference<Uint8>() {
+                }, new TypeReference<Uint8>() {
+                }, new TypeReference<Uint8>() {
+                }));
         return new RemoteCall<Tuple8<String, String, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger>>(
                 new Callable<Tuple8<String, String, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger>>() {
                     @Override
                     public Tuple8<String, String, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
                         return new Tuple8<String, String, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger>(
-                                (String) results.get(0).getValue(), 
-                                (String) results.get(1).getValue(), 
-                                (BigInteger) results.get(2).getValue(), 
-                                (BigInteger) results.get(3).getValue(), 
-                                (BigInteger) results.get(4).getValue(), 
-                                (BigInteger) results.get(5).getValue(), 
-                                (BigInteger) results.get(6).getValue(), 
+                                (String) results.get(0).getValue(),
+                                (String) results.get(1).getValue(),
+                                (BigInteger) results.get(2).getValue(),
+                                (BigInteger) results.get(3).getValue(),
+                                (BigInteger) results.get(4).getValue(),
+                                (BigInteger) results.get(5).getValue(),
+                                (BigInteger) results.get(6).getValue(),
                                 (BigInteger) results.get(7).getValue());
                     }
                 });
     }
 
     public RemoteCall<BigInteger> findEnd_noReturned_oreder(String _submiter, String _aimer, String _from) {
-        final Function function = new Function(FUNC_FINDEND_NORETURNED_OREDER, 
+        final Function function = new Function(FUNC_FINDEND_NORETURNED_OREDER,
                 Arrays.<Type>asList(new Address(_submiter),
-                new Address(_aimer),
-                new Address(_from)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {}));
+                        new Address(_aimer),
+                        new Address(_from)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<BigInteger> findSub_order(String _submiter, String _aimer, String _from) {
-        final Function function = new Function(FUNC_FINDSUB_ORDER, 
+        final Function function = new Function(FUNC_FINDSUB_ORDER,
                 Arrays.<Type>asList(new Address(_submiter),
-                new Address(_aimer),
-                new Address(_from)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {}));
+                        new Address(_aimer),
+                        new Address(_from)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<String> findAccount_house_downline() {
-        final Function function = new Function(FUNC_FINDACCOUNT_HOUSE_DOWNLINE, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+        final Function function = new Function(FUNC_FINDACCOUNT_HOUSE_DOWNLINE,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<String> findAccount_house_online() {
-        final Function function = new Function(FUNC_FINDACCOUNT_HOUSE_ONLINE, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+        final Function function = new Function(FUNC_FINDACCOUNT_HOUSE_ONLINE,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<TransactionReceipt> postAccount_house_downline(String account_house_downline) {
         final Function function = new Function(
-                FUNC_POSTACCOUNT_HOUSE_DOWNLINE, 
+                FUNC_POSTACCOUNT_HOUSE_DOWNLINE,
                 Arrays.<Type>asList(new Utf8String(account_house_downline)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<BigInteger> findEff_order(String _submiter, String _aimer, String _from) {
-        final Function function = new Function(FUNC_FINDEFF_ORDER, 
+        final Function function = new Function(FUNC_FINDEFF_ORDER,
                 Arrays.<Type>asList(new Address(_submiter),
-                new Address(_aimer),
-                new Address(_from)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {}));
+                        new Address(_aimer),
+                        new Address(_from)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<TransactionReceipt> respondOrder(String _submiter, Boolean res, BigInteger coins, BigInteger weiValue) {
         final Function function = new Function(
-                FUNC_RESPONDORDER, 
+                FUNC_RESPONDORDER,
                 Arrays.<Type>asList(new Address(_submiter),
-                new org.web3j.abi.datatypes.Bool(res), 
-                new Uint32(coins)),
+                        new org.web3j.abi.datatypes.Bool(res),
+                        new Uint32(coins)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function, weiValue);
     }
 
     public RemoteCall<BigInteger> findOrdersNum(String _user) {
-        final Function function = new Function(FUNC_FINDORDERSNUM, 
+        final Function function = new Function(FUNC_FINDORDERSNUM,
                 Arrays.<Type>asList(new Address(_user)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<TransactionReceipt> submitOrder(String _aimer, String house_hash, BigInteger coins, BigInteger weiValue) {
         final Function function = new Function(
-                FUNC_SUBMITORDER, 
+                FUNC_SUBMITORDER,
                 Arrays.<Type>asList(new Address(_aimer),
-                new Utf8String(house_hash),
-                new Uint32(coins)),
+                        new Utf8String(house_hash),
+                        new Uint32(coins)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function, weiValue);
     }
 
     public RemoteCall<String> findUser_account_table() {
-        final Function function = new Function(FUNC_FINDUSER_ACCOUNT_TABLE, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+        final Function function = new Function(FUNC_FINDUSER_ACCOUNT_TABLE,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<BigInteger> findFailed_noReturned_orderer(String _submiter, String _aimer, String _from) {
-        final Function function = new Function(FUNC_FINDFAILED_NORETURNED_ORDERER, 
+        final Function function = new Function(FUNC_FINDFAILED_NORETURNED_ORDERER,
                 Arrays.<Type>asList(new Address(_submiter),
-                new Address(_aimer),
-                new Address(_from)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {}));
+                        new Address(_aimer),
+                        new Address(_from)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<TransactionReceipt> addUser(String _who, String name, String id, String IPFS_hash, String phone, BigInteger gender, BigInteger credit) {
         final Function function = new Function(
-                FUNC_ADDUSER, 
+                FUNC_ADDUSER,
                 Arrays.<Type>asList(new Address(_who),
-                new Utf8String(name),
-                new Utf8String(id),
-                new Utf8String(IPFS_hash),
-                new Utf8String(phone),
-                new Uint256(gender),
-                new Uint256(credit)),
+                        new Utf8String(name),
+                        new Utf8String(id),
+                        new Utf8String(IPFS_hash),
+                        new Utf8String(phone),
+                        new Uint256(gender),
+                        new Uint256(credit)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<TransactionReceipt> postAccount_house_online(String account_house_online) {
         final Function function = new Function(
-                FUNC_POSTACCOUNT_HOUSE_ONLINE, 
+                FUNC_POSTACCOUNT_HOUSE_ONLINE,
                 Arrays.<Type>asList(new Utf8String(account_house_online)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<Tuple6<String, String, String, String, BigInteger, BigInteger>> findUser(String _who) {
-        final Function function = new Function(FUNC_FINDUSER, 
+        final Function function = new Function(FUNC_FINDUSER,
                 Arrays.<Type>asList(new Address(_who)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }, new TypeReference<Utf8String>() {
+                }, new TypeReference<Utf8String>() {
+                }, new TypeReference<Utf8String>() {
+                }, new TypeReference<Uint256>() {
+                }, new TypeReference<Uint256>() {
+                }));
         return new RemoteCall<Tuple6<String, String, String, String, BigInteger, BigInteger>>(
                 new Callable<Tuple6<String, String, String, String, BigInteger, BigInteger>>() {
                     @Override
                     public Tuple6<String, String, String, String, BigInteger, BigInteger> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
                         return new Tuple6<String, String, String, String, BigInteger, BigInteger>(
-                                (String) results.get(0).getValue(), 
-                                (String) results.get(1).getValue(), 
-                                (String) results.get(2).getValue(), 
-                                (String) results.get(3).getValue(), 
-                                (BigInteger) results.get(4).getValue(), 
+                                (String) results.get(0).getValue(),
+                                (String) results.get(1).getValue(),
+                                (String) results.get(2).getValue(),
+                                (String) results.get(3).getValue(),
+                                (BigInteger) results.get(4).getValue(),
                                 (BigInteger) results.get(5).getValue());
                     }
                 });
@@ -285,29 +327,36 @@ public class House_sol_blockChain extends Contract {
 
     public RemoteCall<TransactionReceipt> postUser_account(String user_account) {
         final Function function = new Function(
-                FUNC_POSTUSER_ACCOUNT, 
+                FUNC_POSTUSER_ACCOUNT,
                 Arrays.<Type>asList(new Utf8String(user_account)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<Tuple7<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, String>> findOrder_2(String _user, BigInteger location) {
-        final Function function = new Function(FUNC_FINDORDER_2, 
+        final Function function = new Function(FUNC_FINDORDER_2,
                 Arrays.<Type>asList(new Address(_user),
-                new Uint256(location)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint8>() {}, new TypeReference<Uint8>() {}, new TypeReference<Uint8>() {}, new TypeReference<Utf8String>() {}));
+                        new Uint256(location)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }, new TypeReference<Uint256>() {
+                }, new TypeReference<Uint256>() {
+                }, new TypeReference<Uint8>() {
+                }, new TypeReference<Uint8>() {
+                }, new TypeReference<Uint8>() {
+                }, new TypeReference<Utf8String>() {
+                }));
         return new RemoteCall<Tuple7<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, String>>(
                 new Callable<Tuple7<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, String>>() {
                     @Override
                     public Tuple7<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, String> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
                         return new Tuple7<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, String>(
-                                (BigInteger) results.get(0).getValue(), 
-                                (BigInteger) results.get(1).getValue(), 
-                                (BigInteger) results.get(2).getValue(), 
-                                (BigInteger) results.get(3).getValue(), 
-                                (BigInteger) results.get(4).getValue(), 
-                                (BigInteger) results.get(5).getValue(), 
+                                (BigInteger) results.get(0).getValue(),
+                                (BigInteger) results.get(1).getValue(),
+                                (BigInteger) results.get(2).getValue(),
+                                (BigInteger) results.get(3).getValue(),
+                                (BigInteger) results.get(4).getValue(),
+                                (BigInteger) results.get(5).getValue(),
                                 (String) results.get(6).getValue());
                     }
                 });
@@ -315,29 +364,29 @@ public class House_sol_blockChain extends Contract {
 
     public RemoteCall<TransactionReceipt> resSecond(String _submiter, String _aimer, Boolean res) {
         final Function function = new Function(
-                FUNC_RESSECOND, 
+                FUNC_RESSECOND,
                 Arrays.<Type>asList(new Address(_submiter),
-                new Address(_aimer),
-                new org.web3j.abi.datatypes.Bool(res)), 
+                        new Address(_aimer),
+                        new org.web3j.abi.datatypes.Bool(res)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<TransactionReceipt> postUserPhone(String _who, String phone) {
         final Function function = new Function(
-                FUNC_POSTUSERPHONE, 
+                FUNC_POSTUSERPHONE,
                 Arrays.<Type>asList(new Address(_who),
-                new Utf8String(phone)),
+                        new Utf8String(phone)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<TransactionReceipt> withdraw(String _submiter, String _aimer, String _appealer, BigInteger weiValue) {
         final Function function = new Function(
-                FUNC_WITHDRAW, 
+                FUNC_WITHDRAW,
                 Arrays.<Type>asList(new Address(_submiter),
-                new Address(_aimer),
-                new Address(_appealer)),
+                        new Address(_aimer),
+                        new Address(_appealer)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function, weiValue);
     }

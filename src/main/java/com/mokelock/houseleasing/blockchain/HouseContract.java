@@ -1,12 +1,14 @@
 package com.mokelock.houseleasing.blockchain;
 
 import io.reactivex.Flowable;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
@@ -36,7 +38,7 @@ import org.web3j.tx.gas.ContractGasProvider;
  * <p>Auto generated code.
  * <p><strong>Do not modify!</strong>
  * <p>Please use the <a href="https://docs.web3j.io/command_line.html">web3j command line tools</a>,
- * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
+ * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
  *
  * <p>Generated with web3j version 4.3.0.
@@ -98,28 +100,46 @@ public class HouseContract extends Contract {
 
     public static final String FUNC_POSTUSERPHONE = "postUserPhone";
 
-    public static final Event ORDERSUBMITED_EVENT = new Event("OrderSubmited", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+    public static final Event ORDERSUBMITED_EVENT = new Event("OrderSubmited",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            }, new TypeReference<Address>() {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
-    public static final Event ORDEREFFECT_EVENT = new Event("OrderEffect", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+    public static final Event ORDEREFFECT_EVENT = new Event("OrderEffect",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            }, new TypeReference<Address>() {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
-    public static final Event ORDERREJECTED_EVENT = new Event("OrderRejected", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+    public static final Event ORDERREJECTED_EVENT = new Event("OrderRejected",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            }, new TypeReference<Address>() {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
-    public static final Event ORDERFINISHED_EVENT = new Event("OrderFinished", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+    public static final Event ORDERFINISHED_EVENT = new Event("OrderFinished",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            }, new TypeReference<Address>() {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
-    public static final Event ORDERFAILED_EVENT = new Event("OrderFailed", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+    public static final Event ORDERFAILED_EVENT = new Event("OrderFailed",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            }, new TypeReference<Address>() {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
-    public static final Event DEPOSITWITHDRAW_EVENT = new Event("DepositWithdraw", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+    public static final Event DEPOSITWITHDRAW_EVENT = new Event("DepositWithdraw",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            }, new TypeReference<Address>() {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
     @Deprecated
@@ -141,122 +161,138 @@ public class HouseContract extends Contract {
     }
 
     public RemoteCall<Tuple8<Address, Address, Uint32, Uint32, Uint8, Uint8, Uint8, Uint8>> findOrder_1(Address _user, Uint256 location) {
-        final Function function = new Function(FUNC_FINDORDER_1, 
-                Arrays.<Type>asList(_user, location), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint32>() {}, new TypeReference<Uint32>() {}, new TypeReference<Uint8>() {}, new TypeReference<Uint8>() {}, new TypeReference<Uint8>() {}, new TypeReference<Uint8>() {}));
+        final Function function = new Function(FUNC_FINDORDER_1,
+                Arrays.<Type>asList(_user, location),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }, new TypeReference<Address>() {
+                }, new TypeReference<Uint32>() {
+                }, new TypeReference<Uint32>() {
+                }, new TypeReference<Uint8>() {
+                }, new TypeReference<Uint8>() {
+                }, new TypeReference<Uint8>() {
+                }, new TypeReference<Uint8>() {
+                }));
         return new RemoteCall<Tuple8<Address, Address, Uint32, Uint32, Uint8, Uint8, Uint8, Uint8>>(
                 new Callable<Tuple8<Address, Address, Uint32, Uint32, Uint8, Uint8, Uint8, Uint8>>() {
                     @Override
                     public Tuple8<Address, Address, Uint32, Uint32, Uint8, Uint8, Uint8, Uint8> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
                         return new Tuple8<Address, Address, Uint32, Uint32, Uint8, Uint8, Uint8, Uint8>(
-                                (Address) results.get(0), 
-                                (Address) results.get(1), 
-                                (Uint32) results.get(2), 
-                                (Uint32) results.get(3), 
-                                (Uint8) results.get(4), 
-                                (Uint8) results.get(5), 
-                                (Uint8) results.get(6), 
+                                (Address) results.get(0),
+                                (Address) results.get(1),
+                                (Uint32) results.get(2),
+                                (Uint32) results.get(3),
+                                (Uint8) results.get(4),
+                                (Uint8) results.get(5),
+                                (Uint8) results.get(6),
                                 (Uint8) results.get(7));
                     }
                 });
     }
 
     public RemoteCall<Int256> findEnd_noReturned_oreder(Address _submiter, Address _aimer, Address _from) {
-        final Function function = new Function(FUNC_FINDEND_NORETURNED_OREDER, 
-                Arrays.<Type>asList(_submiter, _aimer, _from), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {}));
+        final Function function = new Function(FUNC_FINDEND_NORETURNED_OREDER,
+                Arrays.<Type>asList(_submiter, _aimer, _from),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteCall<Int256> findSub_order(Address _submiter, Address _aimer, Address _from) {
-        final Function function = new Function(FUNC_FINDSUB_ORDER, 
-                Arrays.<Type>asList(_submiter, _aimer, _from), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {}));
+        final Function function = new Function(FUNC_FINDSUB_ORDER,
+                Arrays.<Type>asList(_submiter, _aimer, _from),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteCall<Utf8String> findAccount_house_downline() {
-        final Function function = new Function(FUNC_FINDACCOUNT_HOUSE_DOWNLINE, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+        final Function function = new Function(FUNC_FINDACCOUNT_HOUSE_DOWNLINE,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteCall<Utf8String> findAccount_house_online() {
-        final Function function = new Function(FUNC_FINDACCOUNT_HOUSE_ONLINE, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+        final Function function = new Function(FUNC_FINDACCOUNT_HOUSE_ONLINE,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteCall<TransactionReceipt> postAccount_house_downline(Utf8String account_house_downline) {
         final Function function = new Function(
-                FUNC_POSTACCOUNT_HOUSE_DOWNLINE, 
-                Arrays.<Type>asList(account_house_downline), 
+                FUNC_POSTACCOUNT_HOUSE_DOWNLINE,
+                Arrays.<Type>asList(account_house_downline),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<Int256> findEff_order(Address _submiter, Address _aimer, Address _from) {
-        final Function function = new Function(FUNC_FINDEFF_ORDER, 
-                Arrays.<Type>asList(_submiter, _aimer, _from), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {}));
+        final Function function = new Function(FUNC_FINDEFF_ORDER,
+                Arrays.<Type>asList(_submiter, _aimer, _from),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteCall<TransactionReceipt> rejectOrder(Address _submiter) {
         final Function function = new Function(
-                FUNC_REJECTORDER, 
-                Arrays.<Type>asList(_submiter), 
+                FUNC_REJECTORDER,
+                Arrays.<Type>asList(_submiter),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<TransactionReceipt> postAdminTable(Utf8String user_account, Utf8String account_house_online, Utf8String account_house_downline) {
         final Function function = new Function(
-                FUNC_POSTADMINTABLE, 
-                Arrays.<Type>asList(user_account, account_house_online, account_house_downline), 
+                FUNC_POSTADMINTABLE,
+                Arrays.<Type>asList(user_account, account_house_online, account_house_downline),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<TransactionReceipt> submitOrder(Address _aimer, Uint32 coins, BigInteger weiValue) {
         final Function function = new Function(
-                FUNC_SUBMITORDER, 
-                Arrays.<Type>asList(_aimer, coins), 
+                FUNC_SUBMITORDER,
+                Arrays.<Type>asList(_aimer, coins),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function, weiValue);
     }
 
     public RemoteCall<TransactionReceipt> findOrdersNum(Address _user) {
         final Function function = new Function(
-                FUNC_FINDORDERSNUM, 
-                Arrays.<Type>asList(_user), 
+                FUNC_FINDORDERSNUM,
+                Arrays.<Type>asList(_user),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<TransactionReceipt> withdrawAppeal(Address _submiter, Address _aimer, Address _appealer) {
         final Function function = new Function(
-                FUNC_WITHDRAWAPPEAL, 
-                Arrays.<Type>asList(_submiter, _aimer, _appealer), 
+                FUNC_WITHDRAWAPPEAL,
+                Arrays.<Type>asList(_submiter, _aimer, _appealer),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<Tuple3<Utf8String, Utf8String, Utf8String>> findAdminTable() {
-        final Function function = new Function(FUNC_FINDADMINTABLE, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}));
+        final Function function = new Function(FUNC_FINDADMINTABLE,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }, new TypeReference<Utf8String>() {
+                }, new TypeReference<Utf8String>() {
+                }));
         return new RemoteCall<Tuple3<Utf8String, Utf8String, Utf8String>>(
                 new Callable<Tuple3<Utf8String, Utf8String, Utf8String>>() {
                     @Override
                     public Tuple3<Utf8String, Utf8String, Utf8String> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
                         return new Tuple3<Utf8String, Utf8String, Utf8String>(
-                                (Utf8String) results.get(0), 
-                                (Utf8String) results.get(1), 
+                                (Utf8String) results.get(0),
+                                (Utf8String) results.get(1),
                                 (Utf8String) results.get(2));
                     }
                 });
@@ -264,73 +300,81 @@ public class HouseContract extends Contract {
 
     public RemoteCall<TransactionReceipt> respondOrder(Address _submiter, Uint32 coins, BigInteger weiValue) {
         final Function function = new Function(
-                FUNC_RESPONDORDER, 
-                Arrays.<Type>asList(_submiter, coins), 
+                FUNC_RESPONDORDER,
+                Arrays.<Type>asList(_submiter, coins),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function, weiValue);
     }
 
     public RemoteCall<TransactionReceipt> rejectSecond(Address _submiter, Address _aimer) {
         final Function function = new Function(
-                FUNC_REJECTSECOND, 
-                Arrays.<Type>asList(_submiter, _aimer), 
+                FUNC_REJECTSECOND,
+                Arrays.<Type>asList(_submiter, _aimer),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<Utf8String> findUser_account_table() {
-        final Function function = new Function(FUNC_FINDUSER_ACCOUNT_TABLE, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+        final Function function = new Function(FUNC_FINDUSER_ACCOUNT_TABLE,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteCall<Int256> findFailed_noReturned_orderer(Address _submiter, Address _aimer, Address _from) {
-        final Function function = new Function(FUNC_FINDFAILED_NORETURNED_ORDERER, 
-                Arrays.<Type>asList(_submiter, _aimer, _from), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {}));
+        final Function function = new Function(FUNC_FINDFAILED_NORETURNED_ORDERER,
+                Arrays.<Type>asList(_submiter, _aimer, _from),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteCall<TransactionReceipt> addUser(Address _who, Utf8String name, Utf8String id, Utf8String IPFS_hash, Utf8String phone, Uint256 gender, Uint256 credit) {
         final Function function = new Function(
-                FUNC_ADDUSER, 
-                Arrays.<Type>asList(_who, name, id, IPFS_hash, phone, gender, credit), 
+                FUNC_ADDUSER,
+                Arrays.<Type>asList(_who, name, id, IPFS_hash, phone, gender, credit),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<TransactionReceipt> postUser(Address _who, Utf8String IPFS_hash, Utf8String phone) {
         final Function function = new Function(
-                FUNC_POSTUSER, 
-                Arrays.<Type>asList(_who, IPFS_hash, phone), 
+                FUNC_POSTUSER,
+                Arrays.<Type>asList(_who, IPFS_hash, phone),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<TransactionReceipt> postAccount_house_online(Utf8String account_house_online) {
         final Function function = new Function(
-                FUNC_POSTACCOUNT_HOUSE_ONLINE, 
-                Arrays.<Type>asList(account_house_online), 
+                FUNC_POSTACCOUNT_HOUSE_ONLINE,
+                Arrays.<Type>asList(account_house_online),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<Tuple6<Utf8String, Utf8String, Utf8String, Utf8String, Uint256, Uint256>> findUser(Address _who) {
-        final Function function = new Function(FUNC_FINDUSER, 
-                Arrays.<Type>asList(_who), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
+        final Function function = new Function(FUNC_FINDUSER,
+                Arrays.<Type>asList(_who),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }, new TypeReference<Utf8String>() {
+                }, new TypeReference<Utf8String>() {
+                }, new TypeReference<Utf8String>() {
+                }, new TypeReference<Uint256>() {
+                }, new TypeReference<Uint256>() {
+                }));
         return new RemoteCall<Tuple6<Utf8String, Utf8String, Utf8String, Utf8String, Uint256, Uint256>>(
                 new Callable<Tuple6<Utf8String, Utf8String, Utf8String, Utf8String, Uint256, Uint256>>() {
                     @Override
                     public Tuple6<Utf8String, Utf8String, Utf8String, Utf8String, Uint256, Uint256> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
                         return new Tuple6<Utf8String, Utf8String, Utf8String, Utf8String, Uint256, Uint256>(
-                                (Utf8String) results.get(0), 
-                                (Utf8String) results.get(1), 
-                                (Utf8String) results.get(2), 
-                                (Utf8String) results.get(3), 
-                                (Uint256) results.get(4), 
+                                (Utf8String) results.get(0),
+                                (Utf8String) results.get(1),
+                                (Utf8String) results.get(2),
+                                (Utf8String) results.get(3),
+                                (Uint256) results.get(4),
                                 (Uint256) results.get(5));
                     }
                 });
@@ -338,27 +382,33 @@ public class HouseContract extends Contract {
 
     public RemoteCall<TransactionReceipt> postUser_account(Utf8String user_account) {
         final Function function = new Function(
-                FUNC_POSTUSER_ACCOUNT, 
-                Arrays.<Type>asList(user_account), 
+                FUNC_POSTUSER_ACCOUNT,
+                Arrays.<Type>asList(user_account),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<Tuple6<Uint256, Uint256, Uint256, Uint8, Uint8, Uint8>> findOrder_2(Address _user, Uint256 location) {
-        final Function function = new Function(FUNC_FINDORDER_2, 
-                Arrays.<Type>asList(_user, location), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint8>() {}, new TypeReference<Uint8>() {}, new TypeReference<Uint8>() {}));
+        final Function function = new Function(FUNC_FINDORDER_2,
+                Arrays.<Type>asList(_user, location),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }, new TypeReference<Uint256>() {
+                }, new TypeReference<Uint256>() {
+                }, new TypeReference<Uint8>() {
+                }, new TypeReference<Uint8>() {
+                }, new TypeReference<Uint8>() {
+                }));
         return new RemoteCall<Tuple6<Uint256, Uint256, Uint256, Uint8, Uint8, Uint8>>(
                 new Callable<Tuple6<Uint256, Uint256, Uint256, Uint8, Uint8, Uint8>>() {
                     @Override
                     public Tuple6<Uint256, Uint256, Uint256, Uint8, Uint8, Uint8> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
                         return new Tuple6<Uint256, Uint256, Uint256, Uint8, Uint8, Uint8>(
-                                (Uint256) results.get(0), 
-                                (Uint256) results.get(1), 
-                                (Uint256) results.get(2), 
-                                (Uint8) results.get(3), 
-                                (Uint8) results.get(4), 
+                                (Uint256) results.get(0),
+                                (Uint256) results.get(1),
+                                (Uint256) results.get(2),
+                                (Uint8) results.get(3),
+                                (Uint8) results.get(4),
                                 (Uint8) results.get(5));
                     }
                 });
@@ -366,32 +416,32 @@ public class HouseContract extends Contract {
 
     public RemoteCall<TransactionReceipt> postUserIPFS_hash(Address _who, Utf8String IPFS_hash) {
         final Function function = new Function(
-                FUNC_POSTUSERIPFS_HASH, 
-                Arrays.<Type>asList(_who, IPFS_hash), 
+                FUNC_POSTUSERIPFS_HASH,
+                Arrays.<Type>asList(_who, IPFS_hash),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<TransactionReceipt> confirmSecond(Address _submiter, Address _aimer) {
         final Function function = new Function(
-                FUNC_CONFIRMSECOND, 
-                Arrays.<Type>asList(_submiter, _aimer), 
+                FUNC_CONFIRMSECOND,
+                Arrays.<Type>asList(_submiter, _aimer),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<TransactionReceipt> withdraw(Address _submiter, Address _aimer) {
         final Function function = new Function(
-                FUNC_WITHDRAW, 
-                Arrays.<Type>asList(_submiter, _aimer), 
+                FUNC_WITHDRAW,
+                Arrays.<Type>asList(_submiter, _aimer),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<TransactionReceipt> postUserPhone(Address _who, Utf8String phone) {
         final Function function = new Function(
-                FUNC_POSTUSERPHONE, 
-                Arrays.<Type>asList(_who, phone), 
+                FUNC_POSTUSERPHONE,
+                Arrays.<Type>asList(_who, phone),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }

@@ -1,17 +1,18 @@
 package com.mokelock.houseleasing.model.UserModel;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
 /*
-* 编写人：袁虎
-* 更新时间2019/06/25
-*
-* 把身份证照片属性加了进去，添加了支付密码属性
-* 根据需求说明书把需求里提到到关于所有的User的属性都加了进来
-* 继承了modifyUser类，为了方便以后添加和修改功能
-*
-* */
+ * 编写人：袁虎
+ * 更新时间2019/06/25
+ *
+ * 把身份证照片属性加了进去，添加了支付密码属性
+ * 根据需求说明书把需求里提到到关于所有的User的属性都加了进来
+ * 继承了modifyUser类，为了方便以后添加和修改功能
+ *
+ * */
 
 
 public class UserTemp {

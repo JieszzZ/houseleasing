@@ -1,22 +1,23 @@
 package com.mokelock.houseleasing.IPFS.IpfsImpl;
 
 import com.mokelock.houseleasing.IPFS.IPFS_SERVICE;
-import com.mysql.cj.xdevapi.AddResult;
 import io.ipfs.api.IPFS;
 import io.ipfs.api.MerkleNode;
 import io.ipfs.api.NamedStreamable;
-import io.ipfs.multihash.Multihash;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
 
 public class IPFS_SERVICE_IMPL implements IPFS_SERVICE {
 
+    @Value(value = "${IPFS.address}")
+    private static String IPFS_address;
+
     public static String upload(String filePathName) throws IOException {
-        IPFS ipfs = new IPFS("/ip4/127.0.0.1/tcp/5001");//ipfs的服务器地址和端口
+        IPFS ipfs = new IPFS(IPFS_address);//ipfs的服务器地址和端口
         //filePathName指的是文件(夹)的上传路径+文件名，如D:/1.png
         NamedStreamable.FileWrapper file = new NamedStreamable.FileWrapper(new File(filePathName));
         //添加文件到IPFS返回HASH值

@@ -7,7 +7,8 @@ import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.UserModel.User;
 import com.mokelock.houseleasing.model.UserModel.UserTemp;
 import com.mokelock.houseleasing.services.UserService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 @RequestMapping(value = "/api/user")
 public class UserController {
 
-    private final static Logger logger = Logger.getLogger(UserController.class);
+    private final static Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Resource
     private UserService userService;
@@ -86,7 +87,7 @@ public class UserController {
         user.getProfile_a().transferTo(excelFile);
         user.getProfile_b().transferTo(excelFile1);
         boolean result = userService.register(user.getUsername(), user.getPassword(), user.getPay_password(),
-                user.getName(), user.getPhone(), excelFile, excelFile1, user.getId(), Integer.parseInt(user.getGender()));
+                user.getName(), user.getPhone(), excelFile, excelFile1, user.getId(), new Byte(user.getGender()));
         if (!result) {
             logger.debug("register failed");
             try {
@@ -97,10 +98,10 @@ public class UserController {
         } else {
             logger.debug(user.toString());
         }
-        if (excelFile.exists()){
+        if (excelFile.exists()) {
             excelFile.delete();
         }
-        if (excelFile1.exists()){
+        if (excelFile1.exists()) {
             excelFile1.delete();
         }
     }
@@ -203,13 +204,17 @@ public class UserController {
      * }]
      */
     @RequestMapping(value = "/trans_record", method = RequestMethod.GET)
-    public ArrayList trans_record(HttpServletRequest request) {
+    public ArrayList trans_record(HttpServletRequest request, HttpServletResponse response) {
         String username = request.getParameter("username");
+        HttpSession session = request.getSession();
         if (username == null) {
-            HttpSession session = request.getSession();
             username = (String) session.getAttribute("username");
         }
-        return userService.getRecords(username);
+        if (session.getAttribute("payPassword") == null) {
+            response.setStatus(201);
+            return null;
+        }
+        return userService.getRecords(username, (String) session.getAttribute("payPassword"));
     }
 
     /**
@@ -234,7 +239,8 @@ public class UserController {
      */
     @RequestMapping(value = "/myhouse", method = RequestMethod.POST)
     public boolean setMyHouse(String house_hash, int state, boolean elevator, int lease, String phone) {
-        return userService.postHouse(house_hash, state, elevator, lease, phone);
+//        return userService.postHouse(house_hash, state, elevator, lease, phone);
+        return false;
     }
 
     /**

@@ -37,12 +37,13 @@ public class Response {
 
         return fjo;
     }
-    public JSONObject RestoJson3(){
+
+    public JSONObject RestoJson3() {
         JSONObject fjo = new JSONObject(true);
 
-        fjo.put("status",this.status);
-        fjo.put("message",this.message);
-        fjo.put("data",this.data);
+        fjo.put("status", this.status);
+        fjo.put("message", this.message);
+        fjo.put("data", this.data);
 
         return fjo;
         //String jsonString = JSONObject.toJSONString(this, SerializerFeature.PrettyFormat,

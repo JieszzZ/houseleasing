@@ -12,11 +12,17 @@ import com.mokelock.houseleasing.model.HouseModel.*;
 
 
 import com.mokelock.houseleasing.services.HouseService;
+import com.mysql.cj.xdevapi.JsonArray;
+import jnr.ffi.annotations.In;
 import org.springframework.stereotype.Service;
+import org.web3j.abi.datatypes.Bool;
+import org.web3j.abi.datatypes.Int;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,7 +158,7 @@ public class HouseServiceImpl implements HouseService {
 
     @Override
     //搜索
-    public JSON search(String low_location, String lease_inter, String house_type, String lease_type, boolean elevator) {
+    public JSON search(String low_location, String lease_inter, String house_type, String lease_type, boolean elevator, int page) {
 
         /*******************************************************************************************/
         //记录用户输入了几个查找条件，即用户调用该函数时的实参有几个是有具体数据的
@@ -277,13 +283,18 @@ public class HouseServiceImpl implements HouseService {
         String house_hash_single;
 
         int size = 0;
-        if(returnedSH.size() > 6){
+
+        int newPage = returnedSH.size()/6 + 1;
+
+        if(page > newPage-1){
+            size = 0;
+        }else if(page == newPage-1){
+            size = returnedSH.size()%6;
+        }else if(page < newPage-1){
             size = 6;
-        }else if(returnedSH.size() <= 6){
-            size = returnedSH.size();
         }
 
-        for(int i = 0;i < size;i++){
+        for(int i = 6*page;i < 6*page + size;i++){
             provi_single = returnedSH.get(i)[0];
             city_single = returnedSH.get(i)[1];
             sector_single = returnedSH.get(i)[2];
@@ -326,8 +337,12 @@ public class HouseServiceImpl implements HouseService {
             sh = new SampleHouse(house_hash_single+"/0.jpg",low_str_location,lease_single,house_type_single,lease_type_single,elevator_single,house_id_hash_single);
             allsh.add(sh.SHtoJson());
         }
+
+        JSONObject data = new JSONObject(true);
+        data.put("houseList",allsh);
+        data.put("page",newPage);
         //Response resOfSearchSH = new Response(200,"success",allsh);
-        return allsh;
+        return data;
     }
 
     @Override
@@ -814,20 +829,44 @@ public class HouseServiceImpl implements HouseService {
     }
 
     public static void main(String[] args){
-        IPFS_SERVICE_IMPL isi = new IPFS_SERVICE_IMPL();
+        //IPFS_SERVICE_IMPL isi = new IPFS_SERVICE_IMPL();
 
         //String pic_hash = "";
 
-        LowLocation ll = new LowLocation("山东省","济南市","历城区","fr小区");
+        //LowLocation ll = new LowLocation("山东省","济南市","历城区","fr小区");
 //
-        File[] pic = new File[4];
-        pic[0] = new File("C:\\Users\\Administrator\\Desktop\\img\\00.jpg");
-        pic[1] = new File("C:\\Users\\Administrator\\Desktop\\img\\00.jpg");
-        pic[2] = new File("C:\\Users\\Administrator\\Desktop\\img\\00.jpg");
-        pic[3] = new File("C:\\Users\\Administrator\\Desktop\\img\\00.jpg");
+        //File[] pic = new File[4];
+        //pic[0] = new File("C:\\Users\\Administrator\\Desktop\\img\\00.jpg");
+        //pic[1] = new File("C:\\Users\\Administrator\\Desktop\\img\\00.jpg");
+        //pic[2] = new File("C:\\Users\\Administrator\\Desktop\\img\\00.jpg");
+        //pic[3] = new File("C:\\Users\\Administrator\\Desktop\\img\\00.jpg");
 
 
-        HouseServiceImpl hsi = new HouseServiceImpl();
+        //HouseServiceImpl hsi = new HouseServiceImpl();
+
+        int size = 0;
+
+        int newPage = 25/6 + 1;
+
+        System.out.println(newPage);
+
+        int page = 2;
+
+        if(page > newPage-1){
+            size = 0;
+        }else if(page == newPage-1){
+            size = 25%6;
+        }else if(page < newPage-1){
+            size = 6;
+        }
+
+        for(int i = 6*page;i<6*page+size;i++){
+            System.out.println(i);
+
+        }
+        System.out.println(size);
+
+        System.out.println(6*page);
 
 
         //JSONArray house = (JSONArray) hsi.search("山东省济南市高新区","1","1","1",false);
