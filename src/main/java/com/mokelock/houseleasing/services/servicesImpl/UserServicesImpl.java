@@ -50,7 +50,7 @@ public class UserServicesImpl implements UserService {
     @Override
     //使用用户和密码进行登录，成功返回true,失败返回false；
     public boolean login(String _username, String _password) {
-        if (userDao.getPasswordByUsername(_username) == _password) {
+        if ( _password.equals(userDao.getPasswordByUsername(_username))) {
             return true;
         }
         return false;
@@ -336,7 +336,7 @@ public class UserServicesImpl implements UserService {
     public boolean postPhone(String _username, String _password, String _pay_password, String _phone) {
         BlockChain bc = new BlockChain();
         String account, ethFile;
-        if (_password != userDao.getPasswordByUsername(_username)) {
+        if (!_password.equals(userDao.getPasswordByUsername(_username))) {
             return false;
         }
         try {
@@ -418,7 +418,7 @@ public class UserServicesImpl implements UserService {
         String[] user_name = {"username"};
         String[] _user = {_username};
         String[] eth_id = {"eth_id"};
-        ArrayList<String[]> result = table.query(user_name, _user, eth_id, tablepath + "/" + oneTable);
+        ArrayList<String[]> result = table.query(user_name, _user, eth_id, tablepath + "\\" + oneTable);
         String res = result.get(where)[where];
 
         return res;
@@ -648,7 +648,7 @@ public class UserServicesImpl implements UserService {
         String[] user_name = {"username"};
         String[] _user = {_username};
         String[] SK = {"SK"};
-        ArrayList<String[]> result = table.query(user_name, _user, SK, tablepath + "/" + oneTable);
+        ArrayList<String[]> result = table.query(user_name, _user, SK, tablepath + "\\" + oneTable);
         String res = result.get(where)[where];
 
         return res;
