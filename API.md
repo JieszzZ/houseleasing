@@ -258,7 +258,7 @@
 
 
   ```
-  POST /user/myhouse
+  POST /user/myhouseInfo
   ```
    ##### input
   
@@ -300,6 +300,7 @@
       "lease":3800
       "house_type":1  // 1 一室 2 二室 3 其他
       "house_owner_credit":16,       //房主的信誉
+      'accessory':'微波炉，冰箱，大床' //房屋配套
       "house_comment":[
         {
           "user_id":"quyans111",   //评论人账号名
@@ -412,6 +413,7 @@ low_location：
   |lon|string| 经度  eg "113.45"  |
   |lat|string| 纬度  eg "184.45"  |
   |area|string|房屋面积  eg: '356'  |
+  |accessory|string|'空调，洗衣机，两张床'|
   |house_pic|file| 一系列图片|
   ##### <a name="get-group-response">response</a>
   **注：**
@@ -511,6 +513,7 @@ low_location：
       "lease":3800
       "house_type":1  // 1 一室 2 二室 3 其他
       "house_owner_credit":16,
+      'accessory':'微波炉，冰箱，大床',//房屋配套
       "house_comment":[
         {
           "user_id":"quyans111",   //评论人账号名
@@ -540,13 +543,15 @@ low_location：
   |house_type|number| 0 全部 1 一室 2 二室 3 其他 |
   |lease_type|number| 0 全部 1 整租 2 合租 |
   |elevator|boolean| false 全部 true 有电梯  |
+  |page|number| eg 0 1 2 3 4  |
 
    #### response
   ```
   {
   "status":200,
   "message":"success",
-  "data":[
+  "data":{
+      houseList:[
         {
           "house_pic":"sadfadsfadf"   //一张图片的hash
        
@@ -558,7 +563,11 @@ low_location：
           "house_id_hash":"sdfadfafsaf"   //房子房产证的哈希
         }，
         ...
-    ]
+    ],
+    
+    page:3,
+      
+    }
   }
   ```
   
