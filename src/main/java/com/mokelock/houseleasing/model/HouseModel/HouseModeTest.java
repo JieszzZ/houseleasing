@@ -37,6 +37,7 @@ public class HouseModeTest {
     public String getUser_id() {
         return user_id;
     }
+
     public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
@@ -58,6 +59,7 @@ public class HouseModeTest {
     public String getHouse_id() {
         return house_id;
     }
+
     public void setHouse_id(String house_id) {
         this.house_id = house_id;
     }
@@ -68,6 +70,7 @@ public class HouseModeTest {
     public String getHouse_hash() {
         return house_hash;
     }
+
     public void setHouse_hash(String house_hash) {
         this.house_hash = house_hash;
     }
@@ -78,6 +81,7 @@ public class HouseModeTest {
     public String getOwner_id() {
         return owner_id;
     }
+
     public void setOwner_id(String owner_id) {
         this.owner_id = owner_id;
     }
@@ -88,6 +92,7 @@ public class HouseModeTest {
     public boolean isVerify() {
         return verify;
     }
+
     public void setVerify(boolean verify) {
         this.verify = verify;
     }
@@ -98,6 +103,7 @@ public class HouseModeTest {
     public String getOwner() {
         return owner;
     }
+
     public void setOwner(String owner) {
         this.owner = owner;
     }
@@ -108,6 +114,7 @@ public class HouseModeTest {
     public String getOwner_name() {
         return owner_name;
     }
+
     public void setOwner_name(String owner_name) {
         this.owner_name = owner_name;
     }
@@ -118,6 +125,7 @@ public class HouseModeTest {
     public int getRole() {
         return role;
     }
+
     public void setRole(int role) {
         this.role = role;
     }
@@ -128,6 +136,7 @@ public class HouseModeTest {
     public int getState() {
         return state;
     }
+
     public void setState(int state) {
         this.state = state;
     }
@@ -138,6 +147,7 @@ public class HouseModeTest {
     public LowLocation getLow_location() {
         return low_location;
     }
+
     public void setLow_location(LowLocation low_location) {
         this.low_location = low_location;
     }
@@ -148,6 +158,7 @@ public class HouseModeTest {
     public String getSpecific_location() {
         return specific_location;
     }
+
     public void setSpecific_location(String specific_location) {
         this.specific_location = specific_location;
     }
@@ -158,6 +169,7 @@ public class HouseModeTest {
     public int getFloor() {
         return floor;
     }
+
     public void setFloor(int floor) {
         this.floor = floor;
     }
@@ -168,6 +180,7 @@ public class HouseModeTest {
     public boolean isElevator() {
         return elevator;
     }
+
     public void setElevator(boolean elevator) {
         this.elevator = elevator;
     }
@@ -178,6 +191,7 @@ public class HouseModeTest {
     public int getLease() {
         return lease;
     }
+
     public void setLease(int lease) {
         this.lease = lease;
     }
@@ -189,6 +203,7 @@ public class HouseModeTest {
     public int getLease_inter() {
         return lease_inter;
     }
+
     public void setLease_inter(int lease_inter) {
         this.lease_inter = lease_inter;
     }
@@ -199,6 +214,7 @@ public class HouseModeTest {
     public int getLease_type() {
         return lease_type;
     }
+
     public void setLease_type(int lease_type) {
         this.lease_type = lease_type;
     }
@@ -209,6 +225,7 @@ public class HouseModeTest {
     public int getHouse_type() {
         return house_type;
     }
+
     public void setHouse_type(int house_type) {
         this.house_type = house_type;
     }
@@ -220,6 +237,7 @@ public class HouseModeTest {
     public int getHouse_owner_credit() {
         return house_owner_credit;
     }
+
     public void setHouse_owner_credit(int house_owner_credit) {
         this.house_owner_credit = house_owner_credit;
     }
@@ -230,6 +248,7 @@ public class HouseModeTest {
     public double getHouse_level() {
         return house_level;
     }
+
     public void setHouse_level(int house_level) {
         this.house_level = house_level;
     }
@@ -240,6 +259,7 @@ public class HouseModeTest {
     public HouseComment[] getHouse_comment() {
         return house_comment;
     }
+
     public void setHouse_comment(HouseComment[] house_comment) {
         this.house_comment = house_comment;
     }
