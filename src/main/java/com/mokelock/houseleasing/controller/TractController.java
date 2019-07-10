@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @RestController
@@ -15,10 +17,15 @@ import javax.servlet.http.HttpSession;
 public class TractController {
 
     @RequestMapping(value = "/payPass")
-    public void setPayPassword(HttpSession session, String payPassword) {
-        session.setAttribute("payPassword", payPassword);
+    public void setPayPassword(HttpServletRequest request, HttpServletResponse response, String payPass) {
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("username");
+//        if (username == null) {
+//            return "notLogin";
+//        }
+        session.setAttribute("payPassword", payPass);
+//        return "true";
     }
-
     /**
      * 用户发起租住请求
      *

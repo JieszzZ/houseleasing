@@ -341,15 +341,4 @@ public class UserController {
 //        String s = userService.postPhone();
     }
 
-    @RequestMapping(value = "/payPassword")
-    public String payPassword(HttpServletRequest request, HttpServletResponse response, String payPassword) {
-        HttpSession session = request.getSession();
-        String username = (String) session.getAttribute("username");
-        if (username == null) {
-            return "notLogin";
-        }
-        session.setAttribute("payPassword", payPassword);
-        return "true";
-    }
-
 }

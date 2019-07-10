@@ -64,6 +64,7 @@ public class HouseController {
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public String search(String provi, String city, String site_select, String lease_inter, String house_type,
                          String lease_type, boolean elevator, String page) {
+        System.out.println("page = " + page);
 //        JSONObject low_location = new JSONObject();
 //        low_location.put("provi", "0");
 //        low_location.put("city", "0");
