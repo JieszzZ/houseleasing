@@ -87,14 +87,14 @@ public class UserServicesImpl implements UserService {
                 Map map = bc.creatCredentials(pay_password);
 
                 String old = findUser_Account_hash();
-                IPFS_SERVICE_IMPL.download(tablepath,old,oneTable);
+                IPFS_SERVICE_IMPL.download(tablepath + "\\" + oneTable,old,oneTable);
                 //File table_one = new File(tablepath+"\\"+oneTable);
                 String account = (String) map.get("ethAddress");
                 String ethPath = (String) map.get("ethPath");
                 Table table = new TableImpl();
                 table.insert(_username, account, ethPath, tablepath + "\\" + oneTable);
 
-                postAccount(_username, InitialGive);
+                postAccount(account, InitialGive);
 
                 //将身份证照片存储在IPFS上
                 File pro_a = new File(path + "/" + profile_a);
@@ -278,11 +278,11 @@ public class UserServicesImpl implements UserService {
 
     //向目标账户进行充值
     @Override
-    public boolean postAccount(String _username, int _money) {
-        System.out.println("postAccount " + _username);
+    public boolean postAccount(String account, int _money) {
+        //System.out.println("postAccount " + _username);
         try {
             BlockChain bc = new BlockChain();
-            String account = findAccount(_username);
+            //String account = findAccount(_username);
             System.out.println(account);
             bc.transaction(adminEthPassword, adminFilePath, account);
             return true;
@@ -427,7 +427,7 @@ public class UserServicesImpl implements UserService {
         String hash = findUser_Account_hash();
         System.out.println("findAccount_hash is " + hash);
 
-        IPFS_SERVICE.download(tablepath, hash, oneTable);
+        IPFS_SERVICE_IMPL.download(tablepath, hash, oneTable);
 
 
         Table table = new TableImpl();

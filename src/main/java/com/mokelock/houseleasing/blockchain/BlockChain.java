@@ -294,6 +294,7 @@ public class BlockChain {
         try {
             TransactionReceipt receipt = houseContract.addUser(address, _username, _id, _IPFS_hash, _tel, _gender,
                     _credit).send();
+            System.out.println("addUser's receipt = " + receipt.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
