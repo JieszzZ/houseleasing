@@ -45,7 +45,7 @@ public class TractServiceImpl implements TractService {
     public void userSet(String house_id_hash,String owner,String userAddress,String ethPassword){
         String hash=download();
         String owner_addr=get_addr(owner,hash);
-        bc.submitOrder(userAddress,contractAddress,ethPassword,owner_addr,coins);
+        bc.submitOrder(userAddress,contractAddress,ethPassword,owner_addr, house_id_hash, coins);
     }
 
     private JSONArray infoGet(String owner, String ethPassWord){
@@ -88,24 +88,24 @@ public class TractServiceImpl implements TractService {
         String hash=download();
         String owner_addr=get_addr(owner,hash);
         String user_addr=get_addr(username,hash);
-        if(request_response)
-            bc.responseOrder(owner_addr,contractAddress,ethPassword,user_addr,coins);
-        else
-            bc.rejectOrder(owner_addr,contractAddress,ethPassword,user_addr);
+//        if(request_response)
+            bc.responseOrder(owner_addr,contractAddress,ethPassword,user_addr, request_response, coins);
+//        else
+//            bc.rejectOrder(owner_addr,contractAddress,ethPassword,user_addr);
     }
 
     public void userIden(String ownername,boolean requestIdentify,String username,String ethPassword){
         String hash=download();
         String user_addr=get_addr(username,hash);
         String owner_addr=get_addr(ownername,hash);
-        bc.confirmSecond(1,owner_addr,contractAddress,user_addr,ethPassword);
+        bc.confirmSecond(1,owner_addr,contractAddress,user_addr,ethPassword, requestIdentify);
     }
 
     public void ownerIden(String username,boolean requestIdentify,String ownername,String ethPassword){
         String hash=download();
         String user_addr=get_addr(username,hash);
         String owner_addr=get_addr(ownername,hash);
-        bc.confirmSecond(0,owner_addr,contractAddress,user_addr,ethPassword);
+        bc.confirmSecond(0,owner_addr,contractAddress,user_addr,ethPassword, requestIdentify);
     }
 
     public void payPass(String paypass1,String username,String ethpassword){
