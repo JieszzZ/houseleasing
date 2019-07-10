@@ -3,6 +3,7 @@ package com.mokelock.houseleasing.services.servicesImpl;
 import com.mokelock.houseleasing.Cipher.Ciphers;
 import com.mokelock.houseleasing.Cipher.CiphersImpl.CiphersImpl;
 import com.mokelock.houseleasing.IPFS.IPFS_SERVICE;
+import com.mokelock.houseleasing.IPFS.IpfsImpl.IPFS_SERVICE_IMPL;
 import com.mokelock.houseleasing.IPFS.Table;
 import com.mokelock.houseleasing.IPFS.TableImpl.TableImpl;
 import com.mokelock.houseleasing.blockchain.BlockChain;
@@ -24,6 +25,8 @@ import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 //import org.springframework.stereotype.Service;
 
 @Service
@@ -40,16 +43,16 @@ public class UserServicesImpl implements UserService {
     //private static String twoTable = "";//能租的房子
     //private static String threeTable = "";//不能租的房子
     //private static String contractAddress = "";//合约的地址
-    @Value("${BlockChain.root.Address}")
-    private static String adminAccount;
-    @Value("${BlockChain.root.Password}")
-    private static String adminEthPassword;
-    @Value("${BlockChain.root.File}")
-    private String adminFilePath;
+//    @Value("${BlockChain.root.Address}")
+    private static String adminAccount = "0x7d8b423d21b1e682063665b4fa99df5d04874c48";
+//    @Value("${BlockChain.root.Password}")
+    private static String adminEthPassword = "123";
+//    @Value("${BlockChain.root.File}")
+    private String adminFilePath = "E:\\Geth\\data\\keystore\\UTC--2019-07-09T00-53-06.868496100Z--7d8b423d21b1e682063665b4fa99df5d04874c48";
 //    private static String adminFilePath = "N:\\geth\\data\\keystore\\UTC--2019-07-06T05-37-21.279150600Z--1f3ff30f01ec45eb10a6c5613aaf33224b40d0b0";
     private static final int InitialCredit = 10;
     private static final int InitialGive = 100;
-    //@Resources
+    @Resource
     private UserDao userDao;
 
     @Override
@@ -84,7 +87,7 @@ public class UserServicesImpl implements UserService {
                 Map map = bc.creatCredentials(pay_password);
 
                 String old = findUser_Account_hash();
-                IPFS_SERVICE.download(tablepath,old,oneTable);
+                IPFS_SERVICE_IMPL.download(tablepath,old,oneTable);
                 //File table_one = new File(tablepath+"\\"+oneTable);
                 String account = (String) map.get("ethAddress");
                 String ethPath = (String) map.get("ethPath");
@@ -140,8 +143,8 @@ public class UserServicesImpl implements UserService {
                 */
 
                 //把身份证照片的文件夹传到IPFS
-                String is = IPFS_SERVICE.upload(path);
-                String new_table = IPFS_SERVICE.upload(tablepath+"\\"+oneTable);
+                String is = IPFS_SERVICE_IMPL.upload(path);
+                String new_table = IPFS_SERVICE_IMPL.upload(tablepath+"\\"+oneTable);
                 //把哈希值传给以太坊
                 //bc.changeHashInfo(account,is);
 
