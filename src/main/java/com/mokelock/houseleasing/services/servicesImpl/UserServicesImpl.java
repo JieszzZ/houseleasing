@@ -13,6 +13,7 @@ import com.mokelock.houseleasing.model.UserModel.front_record;
 import com.mokelock.houseleasing.model.UserModel.record;
 import com.mokelock.houseleasing.services.HouseService;
 import com.mokelock.houseleasing.services.UserService;
+//import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.io.*;
@@ -23,7 +24,7 @@ import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+//import org.springframework.stereotype.Service;
 
 @Service
 public class UserServicesImpl implements UserService {
@@ -48,13 +49,16 @@ public class UserServicesImpl implements UserService {
 //    private static String adminFilePath = "N:\\geth\\data\\keystore\\UTC--2019-07-06T05-37-21.279150600Z--1f3ff30f01ec45eb10a6c5613aaf33224b40d0b0";
     private static final int InitialCredit = 10;
     private static final int InitialGive = 100;
-    @Resource
+    //@Resources
     private UserDao userDao;
 
     @Override
     //使用用户和密码进行登录，成功返回true,失败返回false；
     public boolean login(String _username, String _password) {
-        return _password.equals(userDao.getPasswordByUsername(_username));
+        if ( _password.equals(userDao.getPasswordByUsername(_username))) {
+            return true;
+        }
+        return false;
     }
 
     /*
@@ -78,6 +82,10 @@ public class UserServicesImpl implements UserService {
             if (userDao.checkUser(_username) <= 0 && userDao.insertUser(_username, _password) > 0) {
                 BlockChain bc = new BlockChain();
                 Map map = bc.creatCredentials(pay_password);
+
+                String old = findUser_Account_hash();
+                IPFS_SERVICE.download(tablepath,old,oneTable);
+                //File table_one = new File(tablepath+"\\"+oneTable);
                 String account = (String) map.get("ethAddress");
                 String ethPath = (String) map.get("ethPath");
                 Table table = new TableImpl();
@@ -133,7 +141,7 @@ public class UserServicesImpl implements UserService {
 
                 //把身份证照片的文件夹传到IPFS
                 String is = IPFS_SERVICE.upload(path);
-
+                String new_table = IPFS_SERVICE.upload(tablepath+"\\"+oneTable);
                 //把哈希值传给以太坊
                 //bc.changeHashInfo(account,is);
 
@@ -147,6 +155,7 @@ public class UserServicesImpl implements UserService {
 
                 String id_hash = ci.encryHASH(_id);
                 bc.addUser(account, ethPath, pay_password, _username, id_hash, is, phone, _gender, InitialCredit);
+                bc.changeTable(User_Account_TYPE,new_table);
                 return true;
             } else {
                 System.out.println("the user has exists");
