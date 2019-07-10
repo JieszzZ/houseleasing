@@ -219,20 +219,20 @@ public class BlockChain {
      */
     public String getMessage(String userAddress, String ethFile, String ethPassword) {
         House_sol_blockChain houseContract = loadContract(userAddress, ethFile, ethPassword);
-        Tuple6<String, String, String, String, BigInteger, BigInteger> tuple6 = null;
+        Tuple6<Utf8String, Utf8String, Utf8String, Utf8String, Uint256, Uint256> tuple6 = null;
         Address address = new Address(userAddress);
         try {
-            tuple6 = houseContract.findUser(userAddress).send();
+            tuple6 = houseContract.findUser(address).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("tuple6 is " + tuple6.toString());
-        String username = tuple6 != null ? tuple6.getValue1() : null;
-        String id = tuple6 != null ? tuple6.getValue2() : null;
-        String IPFS_hash = tuple6 != null ? tuple6.getValue3() : null;
-        String phone = tuple6 != null ? tuple6.getValue4() : null;
-        BigInteger gender = tuple6 != null ? tuple6.getValue5() : null;
-        BigInteger credit = tuple6 != null ? tuple6.getValue6() : null;
+        Utf8String username = tuple6 != null ? tuple6.getValue1() : null;
+        Utf8String id = tuple6 != null ? tuple6.getValue2() : null;
+        Utf8String IPFS_hash = tuple6 != null ? tuple6.getValue3() : null;
+        Utf8String phone = tuple6 != null ? tuple6.getValue4() : null;
+        Uint256 gender = tuple6 != null ? tuple6.getValue5() : null;
+        Uint256 credit = tuple6 != null ? tuple6.getValue6() : null;
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
         jsonObject.put("id", id);
@@ -288,8 +288,8 @@ public class BlockChain {
         Uint256 _gender = new Uint256(gender);
         Uint256 _credit = new Uint256(credit);
         try {
-            TransactionReceipt receipt =
-                    houseContract.addUser(userAddress, username, id, IPFS_hash, tel, new BigInteger(gender + ""), new BigInteger(credit + "")).send();
+            TransactionReceipt receipt = houseContract.addUser(address, _username, _id, _IPFS_hash, _tel, _gender,
+                    _credit).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -308,11 +308,11 @@ public class BlockChain {
         House_sol_blockChain houseContract = loadContract(userAddress, ethFile, ethPassword);
         Address address = new Address(userAddress);
         Utf8String _houseHash = new Utf8String(houseHash);
-        Uint32 coin = new Uint32(coins);
+        Uint256 coin = new Uint256(coins);
         //???wei value是个啥么东西
         try {
             TransactionReceipt receipt =
-                    houseContract.submitOrder(userAddress, houseHash, coins, BigInteger.valueOf(1L)).send();
+                    houseContract.submitOrder(address, _houseHash, coin, BigInteger.valueOf(1L)).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -332,7 +332,7 @@ public class BlockChain {
         Bool _res = new Bool(res);
         Uint32 coin = new Uint32(coins);
         try {
-            TransactionReceipt receipt = houseContract.respondOrder(ownerAddress, res, coins, BigInteger.valueOf(1L)).send();
+            TransactionReceipt receipt = houseContract.respondOrder(address, _res, coin, BigInteger.valueOf(1L)).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -358,7 +358,7 @@ public class BlockChain {
         Address o_address = new Address(ownerAddress);
         try {
             TransactionReceipt receipt = houseContract != null ?
-                    houseContract.resSecond(userAddress, ownerAddress, res).send()
+                    houseContract.resSecond(u_address, o_address, _res).send()
                     : null;
         } catch (Exception e) {
             e.printStackTrace();
@@ -393,7 +393,7 @@ public class BlockChain {
         Address o_address = new Address(ownerAddress);
         try {
             TransactionReceipt receipt = houseContract != null ?
-                    houseContract.withdraw(userAddress, ownerAddress, res_address, new BigInteger("1")).send() : null;
+                    houseContract.withdraw(u_address, o_address, resAddress, new BigInteger("1")).send() : null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -446,13 +446,13 @@ public class BlockChain {
         try {
             switch (type) {
                 case 0:
-                    receipt = houseContract.postUser_account(hash).send();
+                    receipt = houseContract.postUser_account(_hash).send();
                     break;
                 case 1:
-                    receipt = houseContract.postAccount_house_online(hash).send();
+                    receipt = houseContract.postAccount_house_online(_hash).send();
                     break;
                 case 2:
-                    receipt = houseContract.postAccount_house_downline(hash).send();
+                    receipt = houseContract.postAccount_house_downline(_hash).send();
                     break;
             }
         } catch (Exception e) {
@@ -471,7 +471,7 @@ public class BlockChain {
         Address address = new Address(ownerAddress);
         Utf8String _phone = new Utf8String(phone);
         try {
-            TransactionReceipt receipt = houseContract.postUserPhone(ownerAddress, phone).send();
+            TransactionReceipt receipt = houseContract.postUserPhone(address, _phone).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -488,7 +488,7 @@ public class BlockChain {
         Utf8String _hash = new Utf8String(hash);
         Address address = new Address(ownerAddress);
         try {
-            TransactionReceipt receipt = houseContract.postUserPhone(ownerAddress, hash).send();
+            TransactionReceipt receipt = houseContract.postUserPhone(address, _hash).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
