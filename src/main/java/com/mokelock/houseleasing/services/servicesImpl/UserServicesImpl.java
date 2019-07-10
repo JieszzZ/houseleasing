@@ -32,7 +32,7 @@ import javax.annotation.Resource;
 @Service
 public class UserServicesImpl implements UserService {
 
-    private static final int User_Account_TYPE = 1;
+    private static final int User_Account_TYPE = 0;
     private static String path = System.getProperty("user.dir") + "\\src\\main\\file\\id";//身份证文件下载和上传路径
     private static String tablepath =  System.getProperty("user.dir") + "\\src\\main\\file\\table";
     //private static String SK = "";
@@ -121,6 +121,9 @@ public class UserServicesImpl implements UserService {
                 }
                 fis.close();
                 fos.close();
+
+                pro_a.delete();
+                pro_b.delete();
                 /*
                 String _json =" { ";
                 _json += "\""+"username"+"\""+":"+"\""+_username+"\", ";
