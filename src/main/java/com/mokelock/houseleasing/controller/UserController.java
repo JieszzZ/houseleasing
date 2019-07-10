@@ -90,11 +90,7 @@ public class UserController {
                 user.getName(), user.getPhone(), excelFile, excelFile1, user.getId(), new Byte(user.getGender()));
         if (!result) {
             logger.debug("register failed");
-            try {
-                response.getWriter().append("fail");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            response.setStatus(202);
         } else {
             logger.debug(user.toString());
         }

@@ -497,28 +497,15 @@ public class BlockChain {
     public String findOrders(String ownerAddress, String ethFile, String ethPassword) {
         House_sol_blockChain houseContract = loadContract(ownerAddress, ethFile, ethPassword);
         Address address = new Address(ownerAddress);
-        List<Type> inputParameters = new ArrayList<>();
-        inputParameters.add(address);
-        Function function = new Function("findOrdersNum", inputParameters, Collections.<TypeReference<?>>emptyList());
-        String encodedFunction = FunctionEncoder.encode(function);
-        EthCall response = null;
+        Uint256 num;
         try {
-            response = web3j.ethCall(
-                    Transaction.createEthCallTransaction(ownerAddress, contractAddress, encodedFunction),
-                    DefaultBlockParameterName.LATEST)
-                    .sendAsync().get();
-        } catch (InterruptedException | ExecutionException e) {
+             num = houseContract.findOrdersNum(address).send();
+             for ( int i = Integer.parseInt(num + ""); i > 0; i++){
+
+             }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        assert response != null;
-        if (response.getValue().equals("0x")) {
-
-        }
-//        try {
-//            TransactionReceipt receipt = houseContract.findOrdersNum(address).send();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         return "";
     }
 

@@ -12,17 +12,11 @@ import com.mokelock.houseleasing.model.HouseModel.*;
 
 
 import com.mokelock.houseleasing.services.HouseService;
-import com.mysql.cj.xdevapi.JsonArray;
-import jnr.ffi.annotations.In;
 import org.springframework.stereotype.Service;
-import org.web3j.abi.datatypes.Bool;
-import org.web3j.abi.datatypes.Int;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 

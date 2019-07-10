@@ -13,7 +13,6 @@ import com.mokelock.houseleasing.model.UserModel.front_record;
 import com.mokelock.houseleasing.model.UserModel.record;
 import com.mokelock.houseleasing.services.HouseService;
 import com.mokelock.houseleasing.services.UserService;
-//import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.io.*;
@@ -23,7 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
 import org.springframework.stereotype.Service;
 
-//import org.springframework.stereotype.Service;
+import javax.annotation.Resource;
 
 @Service
 public class UserServicesImpl implements UserService {
@@ -44,16 +43,13 @@ public class UserServicesImpl implements UserService {
     private static String adminFilePath = "N:\\geth\\data\\keystore\\UTC--2019-07-06T05-37-21.279150600Z--1f3ff30f01ec45eb10a6c5613aaf33224b40d0b0";
     private static final int InitialCredit = 10;
     private static final int InitialGive = 100;
-    //@Resources
+    @Resource
     private UserDao userDao;
 
     @Override
     //使用用户和密码进行登录，成功返回true,失败返回false；
     public boolean login(String _username, String _password) {
-        if (userDao.getPasswordByUsername(_username) == _password) {
-            return true;
-        }
-        return false;
+        return _password.equals(userDao.getPasswordByUsername(_username));
     }
 
     /*
@@ -336,7 +332,7 @@ public class UserServicesImpl implements UserService {
     public boolean postPhone(String _username, String _password, String _pay_password, String _phone) {
         BlockChain bc = new BlockChain();
         String account, ethFile;
-        if (_password != userDao.getPasswordByUsername(_username)) {
+        if (!_password.equals(userDao.getPasswordByUsername(_username))) {
             return false;
         }
         try {
@@ -418,7 +414,7 @@ public class UserServicesImpl implements UserService {
         String[] user_name = {"username"};
         String[] _user = {_username};
         String[] eth_id = {"eth_id"};
-        ArrayList<String[]> result = table.query(user_name, _user, eth_id, tablepath + "/" + oneTable);
+        ArrayList<String[]> result = table.query(user_name, _user, eth_id, tablepath + "\\" + oneTable);
         String res = result.get(where)[where];
 
         return res;
@@ -648,7 +644,7 @@ public class UserServicesImpl implements UserService {
         String[] user_name = {"username"};
         String[] _user = {_username};
         String[] SK = {"SK"};
-        ArrayList<String[]> result = table.query(user_name, _user, SK, tablepath + "/" + oneTable);
+        ArrayList<String[]> result = table.query(user_name, _user, SK, tablepath + "\\" + oneTable);
         String res = result.get(where)[where];
 
         return res;
