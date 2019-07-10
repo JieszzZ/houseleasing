@@ -24,7 +24,7 @@ public interface UserDao {
      * @param password 密码
      * @return 返回值>0表示成功
      */
-    @Insert("insert into user_table (username, password) values (#{username}, #{password}")
+    @Insert("insert into user_table (username, password, uid) values (#{username}, #{password}, null)")
     int insertUser(String username, String password);
 
     /**

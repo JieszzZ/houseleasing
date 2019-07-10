@@ -171,4 +171,20 @@ public class User {
         return gender;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                ", pay_password='" + pay_password + '\'' +
+                ", profile_a=" + profile_a +
+                ", profile_b=" + profile_b +
+                ", IPFS_hash='" + IPFS_hash + '\'' +
+                ", password='" + password + '\'' +
+                ", phone='" + phone + '\'' +
+                ", credit=" + credit +
+                ", gender=" + gender +
+                '}';
+    }
 }
