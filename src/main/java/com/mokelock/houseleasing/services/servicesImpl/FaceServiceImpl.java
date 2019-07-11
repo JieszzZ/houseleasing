@@ -16,8 +16,11 @@ import com.mokelock.houseleasing.blockchain.BlockChain;
 import com.mokelock.houseleasing.services.tools_face_recog.*;
 import java.util.*;
 import com.mokelock.houseleasing.services.FaceService;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
+
+@Service
 public class FaceServiceImpl implements FaceService{
     private BlockChain bc=new BlockChain();
     private Table table=new TableImpl();
@@ -141,7 +144,8 @@ public class FaceServiceImpl implements FaceService{
 
             String result = HttpUtil.post(url, accessToken, "application/json", param);
             System.out.println(result);
-            return result;
+            JSONObject jsonObject1 = JSON.parseObject(result);
+            return jsonObject1.getString("score");
         } catch (Exception e) {
             e.printStackTrace();
         }

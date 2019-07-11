@@ -44,8 +44,7 @@ public class UserController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public int login(HttpSession session, String username, String password) {
-//        boolean checkResult = userService.login(username, password);
-        boolean checkResult = true;
+        boolean checkResult = userService.login(username, password);
         if (checkResult) {
             session.setAttribute("username", username);
             logger.info(username + " login");
@@ -362,7 +361,12 @@ public class UserController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        faceService.match(file, username, ethPassword);
+        int score = Integer.parseInt(faceService.match(file, username, ethPassword));
+        if (score > 10) {
+            response.setStatus(200);
+        } else {
+            response.setStatus(203);
+        }
     }
 
 }

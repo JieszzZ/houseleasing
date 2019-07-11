@@ -83,7 +83,7 @@ public class UserServicesImpl implements UserService {
         User user = new User(_username, _password, pay_password, name, phone, _profile_a, _profile_b, _id, _gender);
         System.out.println(user.toString());
         try {
-//            if (userDao.checkUser(_username) <= 0 && userDao.insertUser(_username, _password) > 0) {
+            if (userDao.checkUser(_username) <= 0 && userDao.insertUser(_username, _password) > 0) {
                 BlockChain bc = new BlockChain();
                 Map map = bc.creatCredentials(pay_password);
 
@@ -180,9 +180,9 @@ public class UserServicesImpl implements UserService {
                 pro_b.delete();
 
                 return true;
-//            } else {
-//                System.out.println("the user has exists");
-//            }
+            } else {
+                System.out.println("the user has exists");
+            }
 
         } catch (IOException e) {
             System.out.println("register failed.");
