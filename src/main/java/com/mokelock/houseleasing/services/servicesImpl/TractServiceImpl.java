@@ -63,8 +63,8 @@ public class TractServiceImpl implements TractService {
         String[] key_to_get={"SK"};
         ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+hash+"\\"+"user.txt");
         String sk=v.get(0)[0];
-        JSONArray result=bc.findOrders();
-        return result;
+//        JSONArray result=bc.findOrders();
+        return null;
     }
 
     public String ownerGet(String owner,String ethPassWord){

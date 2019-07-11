@@ -1,7 +1,7 @@
 package com.mokelock.houseleasing.blockchain;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
@@ -16,6 +16,7 @@ import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tuples.generated.Tuple6;
+import org.web3j.tuples.generated.Tuple7;
 import org.web3j.tuples.generated.Tuple8;
 import org.web3j.tx.Transfer;
 import org.web3j.tx.gas.DefaultGasProvider;
@@ -31,18 +32,18 @@ import java.util.concurrent.ExecutionException;
 
 public class BlockChain {
 
-//    @Value(value = "${BlockChain.url}")
+    //    @Value(value = "${BlockChain.url}")
     private String url = "http://121.250.222.90:9988/";
     private Web3j web3j = Web3j.build(new HttpService(url));
-//    @Value(value = "${BlockChain.filePath}")
+    //    @Value(value = "${BlockChain.filePath}")
     private String filePath = "E:\\Geth\\data\\keystore";
-//    @Value(value = "${BlockChain.root.Address")
+    //    @Value(value = "${BlockChain.root.Address")
     private String rootAddress = "0x7d8b423d21b1e682063665b4fa99df5d04874c48";
-//    @Value(value = "${BlockChain,root.Password}")
+    //    @Value(value = "${BlockChain,root.Password}")
     private String rootPassword = "123";
-//    @Value(value = "${BlockChain.root.File}")
+    //    @Value(value = "${BlockChain.root.File}")
     private String rootFile = "E:\\Geth\\data\\keystore\\UTC--2019-07-09T00-53-06.868496100Z--7d8b423d21b1e682063665b4fa99df5d04874c48";
-//    @Value(value = "${BlockChain.contract.address}")
+    //    @Value(value = "${BlockChain.contract.address}")
     private String contractAddress = "0xa0f490e57d4ddf2c5a526d99aea5125fd310466c";
 
     /**
@@ -502,21 +503,40 @@ public class BlockChain {
         }
     }
 
-    public String findOrders(String ownerAddress, String ethFile, String ethPassword) {
+    public JSONArray findOrders(String ownerAddress, String ethFile, String ethPassword) {
         House_sol_blockChain houseContract = loadContract(ownerAddress, ethFile, ethPassword);
         Address address = new Address(ownerAddress);
         Uint256 num;
         Tuple8<Address, Address, Uint256, Uint256, Uint256, Uint256, Uint256, Uint256> tuple8 = null;
+        Tuple7<Uint256, Uint256, Uint256, Uint256, Uint256, Uint256, Utf8String> tuple7 = null;
+        JSONArray jsonArray = new JSONArray();
         try {
             num = houseContract.findOrdersNum(address).send();
             for (int i = Integer.parseInt(num + ""); i > 0; i++) {
                 tuple8 = houseContract.findOrder_1(address, new Uint256(i)).send();
-//                String
+                tuple7 = houseContract.findOrder_2(address, new Uint256(i)).send();
+                JSONObject temp = new JSONObject();
+                temp.put("submiter", tuple8.getValue1());
+                temp.put("responder", tuple8.getValue2());
+                temp.put("submiterEthCoin", tuple8.getValue3());
+                temp.put("aimerEthCoin", tuple8.getValue4());
+                temp.put("subFirstSign", tuple8.getValue5());
+                temp.put("resFirstSign", tuple8.getValue6());
+                temp.put("subSecondSign", tuple8.getValue7());
+                temp.put("resSecondSign", tuple8.getValue8());
+                temp.put("sub_time", tuple7.getValue1());
+                temp.put("effect_time", tuple7.getValue2());
+                temp.put("finish_time", tuple7.getValue3());
+                temp.put("role", tuple7.getValue4());
+                temp.put("state", tuple7.getValue5());
+                temp.put("money", tuple7.getValue6());
+                temp.put("house_hash", tuple7.getValue7());
+                jsonArray.add(temp);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        return jsonArray;
     }
 
     /**
