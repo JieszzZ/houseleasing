@@ -2,6 +2,7 @@ package com.mokelock.houseleasing.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import com.mokelock.houseleasing.model.HouseModel.HouseTemp;
 import com.mokelock.houseleasing.services.HouseService;
 import org.slf4j.Logger;
@@ -36,9 +37,9 @@ public class HouseController {
      * @param house_id_hash 房子hash
      * @return 信息列表
      */
-    @RequestMapping(value = "/speInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "/speinfo", method = RequestMethod.POST)
     public String speInfo(HttpServletResponse response, String house_id_hash) {
-        logger.debug("speInfo's param is " + house_id_hash);
+        logger.info("speInfo's param is " + house_id_hash);
         return houseService.speInfo(house_id_hash).toJSONString();
 //        return "{\"house_pic\":[\"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1561902918490" +
 //                "&di=93de199997bd27876fb3e72842da2551&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2Fa403a1d2880ef70d" +
@@ -72,10 +73,10 @@ public class HouseController {
 //        logger.debug("request param has \n\t\t" + low_location.toJSONString() + " " + lease_inter + " " + house_type + " " +
 //                lease_type + " " + elevator);
         String low_location = provi + city + site_select;
-        logger.debug("low_location in controller is " + low_location);
+        logger.info("low_location in controller is " + low_location);
         String result =
                 houseService.search(low_location, lease_inter, house_type, lease_type, elevator, Integer.parseInt(page)).toJSONString();
-        logger.debug("search result is \n\t" + result);
+        logger.info("search result is \n\t" + result);
         return result;
 //        return "[{\"photo\":\"sadfadsfadf\",\"low_location\":\"山东省济南市历下区**小区\",\"lease\":\"5000\",\"house_type\":\"2\",\"lease_type\":\"1\"},{\"photo\":\"sadfadsfadf\",\"low_location\":\"山东省济南市历下区B小区\",\"lease\":\"3000\",\"house_type\":\"2\",\"lease_type\":\"1\"},{\"photo\":\"sadfadsfadf\",\"low_location\":\"山东省济南市历下区**小区\",\"lease\":\"2000\",\"house_type\":\"2\",\"lease_type\":\"1\"}]";
     }
@@ -94,7 +95,7 @@ public class HouseController {
             files[i] = new File(path + multipartFiles.get(i).getOriginalFilename());
             multipartFiles.get(i).transferTo(files[i]);
         }
-        String result =  houseService.valuation(house_hash, house_level, comment_word, files);
+        String result = houseService.valuation(house_hash, house_level, comment_word, files);
         for (File file : files) {
             if (file.exists()) {
                 file.delete();
@@ -113,28 +114,42 @@ public class HouseController {
         return houseService.allInfo();
     }
 
-    @RequestMapping(value = "/setUpHouse", method = RequestMethod.GET)
+    @RequestMapping(value = "/setUpHouse", method = RequestMethod.POST)
     public String setUpHouse(HttpServletRequest request, HttpServletResponse response, HouseTemp house) throws IOException {
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
         if (username == null) {
             return "notLogin";
         }
-        String ethPassword = (String) session.getAttribute("payPassword");
-        if ( ethPassword== null) {
+        String ethPassword = (String) session.getAttribute("payPass");
+        logger.info("payPass in setUpHouse is " + ethPassword);
+        if (ethPassword == null) {
             response.setStatus(201);
             return null;
         }
-        List<MultipartFile> multipartFiles = ((MultipartHttpServletRequest) request).getFiles("file");
+        logger.info(house.toString());
+        List<MultipartFile> multipartFiles = ((MultipartHttpServletRequest) request).getFiles("house_pic");
         File[] files = new File[multipartFiles.size()];
         String path = System.getProperty("user.dir") + "\\src\\main\\file\\temp\\";
         for (int i = 0; i < multipartFiles.size(); i++) {
             files[i] = new File(path + multipartFiles.get(i).getOriginalFilename());
             multipartFiles.get(i).transferTo(files[i]);
         }
+
+        logger.info("pic num in setupHouse is " + files.length + "");
+
+        house.setHouse_owner_credit("15");
+        JSONObject low_location = new JSONObject();
+        low_location.put("provi", house.getProvi());
+        low_location.put("city", house.getCity());
+        low_location.put("sector", house.getSector());
+        low_location.put("commu_name", house.getCommu_name());
+
+        System.out.println("username is " + username);
+
         JSONObject jsonObject = houseService.setUpHouse(username, ethPassword, Integer.parseInt(house.getHouse_owner_credit()),
-                house.getHouse_id(), Integer.parseInt(house.getState()),JSON.parseObject( house.getLow_location()),
-                house.getSpecific_location(), Integer.parseInt( house.getFloor()), house.isElevator(),
+                house.getHouse_id(), Integer.parseInt(house.getState()), low_location,
+                house.getSpecific_location(), Integer.parseInt(house.getFloor()), house.isElevator(),
                 Integer.parseInt(house.getLease()), Integer.parseInt(house.getLease_type()),
                 Integer.parseInt(house.getHouse_type()), house.getLon(), house.getLat(), house.getArea(),
                 house.getAccessory(), files);

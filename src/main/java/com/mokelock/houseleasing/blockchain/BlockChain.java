@@ -16,6 +16,7 @@ import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tuples.generated.Tuple6;
+import org.web3j.tuples.generated.Tuple8;
 import org.web3j.tx.Transfer;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
@@ -31,7 +32,7 @@ import java.util.concurrent.ExecutionException;
 public class BlockChain {
 
 //    @Value(value = "${BlockChain.url}")
-    private String url = "http://211.87.230.89:9988/";
+    private String url = "http://121.250.222.90:9988/";
     private Web3j web3j = Web3j.build(new HttpService(url));
 //    @Value(value = "${BlockChain.filePath}")
     private String filePath = "E:\\Geth\\data\\keystore";
@@ -464,6 +465,7 @@ public class BlockChain {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("receipt in changeTable is " + receipt.toString());
     }
 
     /**
@@ -504,10 +506,12 @@ public class BlockChain {
         House_sol_blockChain houseContract = loadContract(ownerAddress, ethFile, ethPassword);
         Address address = new Address(ownerAddress);
         Uint256 num;
+        Tuple8<Address, Address, Uint256, Uint256, Uint256, Uint256, Uint256, Uint256> tuple8 = null;
         try {
             num = houseContract.findOrdersNum(address).send();
             for (int i = Integer.parseInt(num + ""); i > 0; i++) {
-
+                tuple8 = houseContract.findOrder_1(address, new Uint256(i)).send();
+//                String
             }
         } catch (Exception e) {
             e.printStackTrace();

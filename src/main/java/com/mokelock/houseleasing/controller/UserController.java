@@ -41,7 +41,8 @@ public class UserController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public int login(HttpSession session, String username, String password) {
-        boolean checkResult = userService.login(username, password);
+//        boolean checkResult = userService.login(username, password);
+        boolean checkResult = true;
         if (checkResult) {
             session.setAttribute("username", username);
             logger.info(username + " login");
@@ -94,10 +95,11 @@ public class UserController {
                 user.getName(), user.getPhone(), excelFile, excelFile1, user.getId(), new Byte(user.getGender()));
         logger.info("result is " + result);
         if (!result) {
-            logger.debug("register failed");
+            logger.info("register failed");
             response.setStatus(202);
         } else {
-            logger.debug(user.toString());
+            response.setStatus(200);
+            logger.info(user.toString());
         }
         if (excelFile.exists()) {
             excelFile.delete();
@@ -157,12 +159,12 @@ public class UserController {
         if (username == null) {
             username = (String) session.getAttribute("username");
         }
-        if (session.getAttribute("payPassword") == null) {
+        if (session.getAttribute("payPass") == null) {
             response.setStatus(201);
             return null;
         }
         logger.debug("/user/user " + username);
-        return userService.getUser(username, (String) session.getAttribute("payPassword"));
+        return userService.getUser(username, (String) session.getAttribute("payPass"));
     }
 
     /**
@@ -177,13 +179,13 @@ public class UserController {
         if (username == null) {
             username = (String) session.getAttribute("username");
         }
-        if (session.getAttribute("payPassword") == null) {
+        if (session.getAttribute("payPass") == null) {
             response.setStatus(201);
             return null;
         }
         User user = new User();
         int balance = userService.getBalance(username);
-        user = userService.getUser(username, (String) session.getAttribute("payPassword"));
+        user = userService.getUser(username, (String) session.getAttribute("payPass"));
         JSONObject json = new JSONObject();
         json.put("username", username);
         json.put("name", user.getName());
@@ -205,7 +207,7 @@ public class UserController {
         if (username == null) {
             username = (String) session.getAttribute("username");
         }
-        if (session.getAttribute("payPassword") == null) {
+        if (session.getAttribute("payPass") == null) {
             response.setStatus(201);
             return null;
         }
@@ -214,7 +216,7 @@ public class UserController {
         if (result) {
             User user = new User();
             int balance = userService.getBalance(username);
-            user = userService.getUser(username, (String) session.getAttribute("payPassword"));
+            user = userService.getUser(username, (String) session.getAttribute("payPass"));
             json.put("username", username);
             json.put("name", user.getName());
             json.put("balance", balance);
@@ -249,11 +251,11 @@ public class UserController {
         if (username == null) {
             username = (String) session.getAttribute("username");
         }
-        if (session.getAttribute("payPassword") == null) {
+        if (session.getAttribute("payPass") == null) {
             response.setStatus(201);
             return null;
         }
-        return userService.getRecords(username, (String) session.getAttribute("payPassword"));
+        return userService.getRecords(username, (String) session.getAttribute("payPass"));
     }
 
     /**
@@ -295,11 +297,11 @@ public class UserController {
         if (username == null) {
             username = (String) session.getAttribute("username");
         }
-        if (session.getAttribute("payPassword") == null) {
+        if (session.getAttribute("payPass") == null) {
             response.setStatus(201);
             return false;
         }
-        return userService.postPhone(username, password, (String) session.getAttribute("payPassword"), phone);
+        return userService.postPhone(username, password, (String) session.getAttribute("payPass"), phone);
     }
 
     /**
@@ -312,11 +314,11 @@ public class UserController {
     public String contactOwner(HttpServletRequest request, HttpServletResponse response, String house_hash) {
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
-        if (session.getAttribute("payPassword") == null) {
+        if (session.getAttribute("payPass") == null) {
             response.setStatus(201);
             return null;
         }
-        return userService.getUser(username, (String) session.getAttribute("payPassword")).getPhone();
+        return userService.getUser(username, (String) session.getAttribute("payPass")).getPhone();
     }
 
     /**
