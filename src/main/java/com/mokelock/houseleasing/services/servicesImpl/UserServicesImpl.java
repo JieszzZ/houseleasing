@@ -2,7 +2,9 @@ package com.mokelock.houseleasing.services.servicesImpl;
 
 import com.mokelock.houseleasing.Cipher.Ciphers;
 import com.mokelock.houseleasing.Cipher.CiphersImpl.CiphersImpl;
+import com.mokelock.houseleasing.IPFS.File_Read_Test;
 import com.mokelock.houseleasing.IPFS.IPFS_SERVICE;
+import com.mokelock.houseleasing.IPFS.IpfsImpl.IPFS_SERVICE_IMPL;
 import com.mokelock.houseleasing.IPFS.Table;
 import com.mokelock.houseleasing.IPFS.TableImpl.TableImpl;
 import com.mokelock.houseleasing.blockchain.BlockChain;
@@ -21,36 +23,43 @@ import java.util.ArrayList;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 //import org.springframework.stereotype.Service;
 
 @Service
 public class UserServicesImpl implements UserService {
 
-    private static final int User_Account_TYPE = 1;
-    private static String path = "src\\file";//身份证文件下载和上传路径
-    private static String tablepath = ".\\table";
+    private static final int User_Account_TYPE = 0;
+    private static String path = System.getProperty("user.dir") + "\\src\\main\\file\\id";//身份证文件下载和上传路径
+    private static String tablepath =  System.getProperty("user.dir") + "\\src\\main\\file\\table";
     //private static String SK = "";
     private static String profile_a = "profile_a.png";//身份证正面位置
     private static String profile_b = "profile_b.png";//身份证背面位置
     //private static String ipfs = "";//用户信息的位置
-    private static String oneTable = "onetable";//用户-账号表
+    private static String oneTable = "onetable.txt";//用户-账号表
     //private static String twoTable = "";//能租的房子
     //private static String threeTable = "";//不能租的房子
     //private static String contractAddress = "";//合约的地址
-    private static String adminAccount = "1f3ff30f01ec45eb10a6c5613aaf33224b40d0b0";
-    private static String adminEthPassword = "yuan";
-    private static String adminFilePath = "N:\\geth\\data\\keystore\\UTC--2019-07-06T05-37-21.279150600Z--1f3ff30f01ec45eb10a6c5613aaf33224b40d0b0";
+//    @Value("${BlockChain.root.Address}")
+    private static String adminAccount = "0x7d8b423d21b1e682063665b4fa99df5d04874c48";
+//    @Value("${BlockChain.root.Password}")
+    private static String adminEthPassword = "123";
+//    @Value("${BlockChain.root.File}")
+    private String adminFilePath = "E:\\Geth\\data\\keystore\\UTC--2019-07-09T00-53-06.868496100Z--7d8b423d21b1e682063665b4fa99df5d04874c48";
+//    private static String adminFilePath = "N:\\geth\\data\\keystore\\UTC--2019-07-06T05-37-21.279150600Z--1f3ff30f01ec45eb10a6c5613aaf33224b40d0b0";
     private static final int InitialCredit = 10;
-    private static final int InitialGive = 100;
-    //@Resources
+    private static final int InitialGive = 10000000;
+    @Resource
     private UserDao userDao;
 
     @Override
     //使用用户和密码进行登录，成功返回true,失败返回false；
     public boolean login(String _username, String _password) {
-        if (userDao.getPasswordByUsername(_username) == _password) {
+        if ( _password.equals(userDao.getPasswordByUsername(_username))) {
             return true;
         }
         return false;
@@ -72,16 +81,24 @@ public class UserServicesImpl implements UserService {
     //已完成
     public boolean register(String _username, String _password, String pay_password, String name, String phone, File _profile_a, File _profile_b, String _id, byte _gender) {
         User user = new User(_username, _password, pay_password, name, phone, _profile_a, _profile_b, _id, _gender);
+        System.out.println(user.toString());
         try {
-            if (userDao.checkUser(_username) <= 0 && userDao.insertUser(_username, _password) > 0) {
+//            if (userDao.checkUser(_username) <= 0 && userDao.insertUser(_username, _password) > 0) {
                 BlockChain bc = new BlockChain();
                 Map map = bc.creatCredentials(pay_password);
+
+                String old = findUser_Account_hash();
+                IPFS_SERVICE_IMPL.download(tablepath + "\\" + oneTable,old,oneTable);
+                //File table_one = new File(tablepath+"\\"+oneTable);
                 String account = (String) map.get("ethAddress");
                 String ethPath = (String) map.get("ethPath");
                 Table table = new TableImpl();
-                table.insert(_username, account, ethPath, tablepath + "\\" + oneTable);
+                System.out.println("before insert " + _username + account + ethPath);
+                String tempPath = System.getProperty("user.dir") + "\\src\\main\\file\\table\\onetable.txt";
+                System.out.println("tempPath is " + tempPath);
 
-                postAccount(_username, InitialGive);
+
+                postAccount(account, InitialGive);
 
                 //将身份证照片存储在IPFS上
                 File pro_a = new File(path + "/" + profile_a);
@@ -129,9 +146,19 @@ public class UserServicesImpl implements UserService {
                 fos.close();
                 */
 
-                //把身份证照片的文件夹传到IPFS
-                String is = IPFS_SERVICE.upload(path);
+                System.out.println("length is " + new File("E:\\houseleasing\\houseleasing\\src\\main\\file\\table\\onetable.txt").length());
 
+                System.out.println("length before is " + new File("E:\\houseleasing\\houseleasing\\src\\main\\file" +
+                        "\\table\\onetable.txt").length());
+                table.insert(_username, account, ethPath, tempPath);
+                System.out.println("length after is " + new File("E:\\houseleasing\\houseleasing\\src\\main\\file" +
+                        "\\table\\onetable.txt").length());
+
+                //把身份证照片的文件夹传到IPFS
+                String is = IPFS_SERVICE_IMPL.upload(path);
+                String new_table = IPFS_SERVICE_IMPL.upload(tablepath+"\\"+oneTable);
+                System.out.println("is is " + is);
+                System.out.println("new_table is " + new_table);
                 //把哈希值传给以太坊
                 //bc.changeHashInfo(account,is);
 
@@ -145,15 +172,16 @@ public class UserServicesImpl implements UserService {
 
                 String id_hash = ci.encryHASH(_id);
                 bc.addUser(account, ethPath, pay_password, _username, id_hash, is, phone, _gender, InitialCredit);
+                bc.changeTable(User_Account_TYPE,new_table);
                 return true;
-            }
+//            } else {
+//                System.out.println("the user has exists");
+//            }
 
         } catch (IOException e) {
             System.out.println("register failed.");
-        } finally {
-            return false;
         }
-
+        return false;
 
     }
 
@@ -264,10 +292,12 @@ public class UserServicesImpl implements UserService {
 
     //向目标账户进行充值
     @Override
-    public boolean postAccount(String _username, int _money) {
+    public boolean postAccount(String account, int _money) {
+        //System.out.println("postAccount " + _username);
         try {
             BlockChain bc = new BlockChain();
-            String account = findAccount(_username);
+            //String account = findAccount(_username);
+            System.out.println(account);
             bc.transaction(adminEthPassword, adminFilePath, account);
             return true;
 
@@ -336,7 +366,7 @@ public class UserServicesImpl implements UserService {
     public boolean postPhone(String _username, String _password, String _pay_password, String _phone) {
         BlockChain bc = new BlockChain();
         String account, ethFile;
-        if (_password != userDao.getPasswordByUsername(_username)) {
+        if (!_password.equals(userDao.getPasswordByUsername(_username))) {
             return false;
         }
         try {
@@ -409,16 +439,16 @@ public class UserServicesImpl implements UserService {
     public String findAccount(String _username) throws IOException {
         int where = 0;
         String hash = findUser_Account_hash();
+        System.out.println("findAccount_hash is " + hash);
 
-
-        IPFS_SERVICE.download(tablepath, hash, oneTable);
+        IPFS_SERVICE_IMPL.download(tablepath, hash, oneTable);
 
 
         Table table = new TableImpl();
         String[] user_name = {"username"};
         String[] _user = {_username};
         String[] eth_id = {"eth_id"};
-        ArrayList<String[]> result = table.query(user_name, _user, eth_id, tablepath + "/" + oneTable);
+        ArrayList<String[]> result = table.query(user_name, _user, eth_id, tablepath + "\\" + oneTable);
         String res = result.get(where)[where];
 
         return res;
@@ -648,7 +678,7 @@ public class UserServicesImpl implements UserService {
         String[] user_name = {"username"};
         String[] _user = {_username};
         String[] SK = {"SK"};
-        ArrayList<String[]> result = table.query(user_name, _user, SK, tablepath + "/" + oneTable);
+        ArrayList<String[]> result = table.query(user_name, _user, SK, tablepath + "\\" + oneTable);
         String res = result.get(where)[where];
 
         return res;

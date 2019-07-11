@@ -1,7 +1,7 @@
 package com.mokelock.houseleasing.blockchain;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
@@ -16,6 +16,8 @@ import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tuples.generated.Tuple6;
+import org.web3j.tuples.generated.Tuple7;
+import org.web3j.tuples.generated.Tuple8;
 import org.web3j.tx.Transfer;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
@@ -25,23 +27,24 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class BlockChain {
 
-    @Value(value = "${BlockChain.url}")
-    private static String url;
-    private static Web3j web3j = Web3j.build(new HttpService(url));
-    @Value(value = "${BlockChain.filePath}")
-    private static String filePath;
-    @Value(value = "${BlockChain.root.Address")
-    private static String rootAddress;
-    @Value(value = "${BlockChain,root.Password}")
-    private static String rootPassword;
-    @Value(value = "${BlockChain.root.File}")
-    private static String rootFile;
-    @Value(value = "${BlockChain.contract.address}")
-    private static String contractAddress;
+    //    @Value(value = "${BlockChain.url}")
+    private String url = "http://121.250.222.90:9988/";
+    private Web3j web3j = Web3j.build(new HttpService(url));
+    //    @Value(value = "${BlockChain.filePath}")
+    private String filePath = "E:\\Geth\\data\\keystore";
+    //    @Value(value = "${BlockChain.root.Address")
+    private String rootAddress = "0x7d8b423d21b1e682063665b4fa99df5d04874c48";
+    //    @Value(value = "${BlockChain,root.Password}")
+    private String rootPassword = "123";
+    //    @Value(value = "${BlockChain.root.File}")
+    private String rootFile = "E:\\Geth\\data\\keystore\\UTC--2019-07-09T00-53-06.868496100Z--7d8b423d21b1e682063665b4fa99df5d04874c48";
+    //    @Value(value = "${BlockChain.contract.address}")
+    private String contractAddress = "0xa0f490e57d4ddf2c5a526d99aea5125fd310466c";
 
     /**
      * 创建用户账户
@@ -52,14 +55,17 @@ public class BlockChain {
         String fileName_local = "";
         Credentials credentials = null;
         try {
+            System.out.println(filePath);
             fileName_local = WalletUtils.generateNewWalletFile(ethPassword, new File(filePath), false);
-            credentials = WalletUtils.loadCredentials(ethPassword, filePath + "/" + fileName_local);
+            credentials = WalletUtils.loadCredentials(ethPassword, filePath + "\\" + fileName_local);
         } catch (Exception e) {
             e.printStackTrace();
         }
         assert credentials != null;
         String ethAddress = credentials.getAddress();
-        String ethPath = filePath + "/" + fileName_local;
+        String ethPath = filePath + "\\" + fileName_local;
+
+        System.out.println(ethPath);
 
         Map<String, String> map = new HashMap<String, String>();
         map.put("ethAddress", ethAddress);
@@ -219,20 +225,20 @@ public class BlockChain {
      */
     public String getMessage(String userAddress, String ethFile, String ethPassword) {
         House_sol_blockChain houseContract = loadContract(userAddress, ethFile, ethPassword);
-        Tuple6<String, String, String, String, BigInteger, BigInteger> tuple6 = null;
+        Tuple6<Utf8String, Utf8String, Utf8String, Utf8String, Uint256, Uint256> tuple6 = null;
         Address address = new Address(userAddress);
         try {
-            tuple6 = houseContract.findUser(userAddress).send();
+            tuple6 = houseContract.findUser(address).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("tuple6 is " + tuple6.toString());
-        String username = tuple6 != null ? tuple6.getValue1() : null;
-        String id = tuple6 != null ? tuple6.getValue2() : null;
-        String IPFS_hash = tuple6 != null ? tuple6.getValue3() : null;
-        String phone = tuple6 != null ? tuple6.getValue4() : null;
-        BigInteger gender = tuple6 != null ? tuple6.getValue5() : null;
-        BigInteger credit = tuple6 != null ? tuple6.getValue6() : null;
+        Utf8String username = tuple6 != null ? tuple6.getValue1() : null;
+        Utf8String id = tuple6 != null ? tuple6.getValue2() : null;
+        Utf8String IPFS_hash = tuple6 != null ? tuple6.getValue3() : null;
+        Utf8String phone = tuple6 != null ? tuple6.getValue4() : null;
+        Uint256 gender = tuple6 != null ? tuple6.getValue5() : null;
+        Uint256 credit = tuple6 != null ? tuple6.getValue6() : null;
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
         jsonObject.put("id", id);
@@ -288,8 +294,9 @@ public class BlockChain {
         Uint256 _gender = new Uint256(gender);
         Uint256 _credit = new Uint256(credit);
         try {
-            TransactionReceipt receipt =
-                    houseContract.addUser(userAddress, username, id, IPFS_hash, tel, new BigInteger(gender + ""), new BigInteger(credit + "")).send();
+            TransactionReceipt receipt = houseContract.addUser(address, _username, _id, _IPFS_hash, _tel, _gender,
+                    _credit).send();
+            System.out.println("addUser's receipt = " + receipt.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -308,11 +315,11 @@ public class BlockChain {
         House_sol_blockChain houseContract = loadContract(userAddress, ethFile, ethPassword);
         Address address = new Address(userAddress);
         Utf8String _houseHash = new Utf8String(houseHash);
-        Uint32 coin = new Uint32(coins);
+        Uint256 coin = new Uint256(coins);
         //???wei value是个啥么东西
         try {
             TransactionReceipt receipt =
-                    houseContract.submitOrder(userAddress, houseHash, coins, BigInteger.valueOf(1L)).send();
+                    houseContract.submitOrder(address, _houseHash, coin, BigInteger.valueOf(1L)).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -332,7 +339,7 @@ public class BlockChain {
         Bool _res = new Bool(res);
         Uint32 coin = new Uint32(coins);
         try {
-            TransactionReceipt receipt = houseContract.respondOrder(ownerAddress, res, coins, BigInteger.valueOf(1L)).send();
+            TransactionReceipt receipt = houseContract.respondOrder(address, _res, coin, BigInteger.valueOf(1L)).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -358,7 +365,7 @@ public class BlockChain {
         Address o_address = new Address(ownerAddress);
         try {
             TransactionReceipt receipt = houseContract != null ?
-                    houseContract.resSecond(userAddress, ownerAddress, res).send()
+                    houseContract.resSecond(u_address, o_address, _res).send()
                     : null;
         } catch (Exception e) {
             e.printStackTrace();
@@ -393,7 +400,7 @@ public class BlockChain {
         Address o_address = new Address(ownerAddress);
         try {
             TransactionReceipt receipt = houseContract != null ?
-                    houseContract.withdraw(userAddress, ownerAddress, res_address, new BigInteger("1")).send() : null;
+                    houseContract.withdraw(u_address, o_address, resAddress, new BigInteger("1")).send() : null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -407,6 +414,7 @@ public class BlockChain {
      */
     public String getHash(int type) {
         House_sol_blockChain houseContract = loadContract(rootAddress, rootFile, rootPassword);
+        System.out.println("getHash_houseContract " + houseContract.getContractAddress());
 //        Credentials credentials = null;
 //        try {
 //            credentials = WalletUtils.loadCredentials(rootPassword, rootFile);
@@ -446,18 +454,19 @@ public class BlockChain {
         try {
             switch (type) {
                 case 0:
-                    receipt = houseContract.postUser_account(hash).send();
+                    receipt = houseContract.postUser_account(_hash).send();
                     break;
                 case 1:
-                    receipt = houseContract.postAccount_house_online(hash).send();
+                    receipt = houseContract.postAccount_house_online(_hash).send();
                     break;
                 case 2:
-                    receipt = houseContract.postAccount_house_downline(hash).send();
+                    receipt = houseContract.postAccount_house_downline(_hash).send();
                     break;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("receipt in changeTable is " + receipt.toString());
     }
 
     /**
@@ -471,7 +480,7 @@ public class BlockChain {
         Address address = new Address(ownerAddress);
         Utf8String _phone = new Utf8String(phone);
         try {
-            TransactionReceipt receipt = houseContract.postUserPhone(ownerAddress, phone).send();
+            TransactionReceipt receipt = houseContract.postUserPhone(address, _phone).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -488,38 +497,46 @@ public class BlockChain {
         Utf8String _hash = new Utf8String(hash);
         Address address = new Address(ownerAddress);
         try {
-            TransactionReceipt receipt = houseContract.postUserPhone(ownerAddress, hash).send();
+            TransactionReceipt receipt = houseContract.postUserPhone(address, _hash).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public String findOrders(String ownerAddress, String ethFile, String ethPassword) {
+    public JSONArray findOrders(String ownerAddress, String ethFile, String ethPassword) {
         House_sol_blockChain houseContract = loadContract(ownerAddress, ethFile, ethPassword);
         Address address = new Address(ownerAddress);
-        List<Type> inputParameters = new ArrayList<>();
-        inputParameters.add(address);
-        Function function = new Function("findOrdersNum", inputParameters, Collections.<TypeReference<?>>emptyList());
-        String encodedFunction = FunctionEncoder.encode(function);
-        EthCall response = null;
+        Uint256 num;
+        Tuple8<Address, Address, Uint256, Uint256, Uint256, Uint256, Uint256, Uint256> tuple8 = null;
+        Tuple7<Uint256, Uint256, Uint256, Uint256, Uint256, Uint256, Utf8String> tuple7 = null;
+        JSONArray jsonArray = new JSONArray();
         try {
-            response = web3j.ethCall(
-                    Transaction.createEthCallTransaction(ownerAddress, contractAddress, encodedFunction),
-                    DefaultBlockParameterName.LATEST)
-                    .sendAsync().get();
-        } catch (InterruptedException | ExecutionException e) {
+            num = houseContract.findOrdersNum(address).send();
+            for (int i = Integer.parseInt(num + ""); i > 0; i++) {
+                tuple8 = houseContract.findOrder_1(address, new Uint256(i)).send();
+                tuple7 = houseContract.findOrder_2(address, new Uint256(i)).send();
+                JSONObject temp = new JSONObject();
+                temp.put("submiter", tuple8.getValue1());
+                temp.put("responder", tuple8.getValue2());
+                temp.put("submiterEthCoin", tuple8.getValue3());
+                temp.put("aimerEthCoin", tuple8.getValue4());
+                temp.put("subFirstSign", tuple8.getValue5());
+                temp.put("resFirstSign", tuple8.getValue6());
+                temp.put("subSecondSign", tuple8.getValue7());
+                temp.put("resSecondSign", tuple8.getValue8());
+                temp.put("sub_time", tuple7.getValue1());
+                temp.put("effect_time", tuple7.getValue2());
+                temp.put("finish_time", tuple7.getValue3());
+                temp.put("role", tuple7.getValue4());
+                temp.put("state", tuple7.getValue5());
+                temp.put("money", tuple7.getValue6());
+                temp.put("house_hash", tuple7.getValue7());
+                jsonArray.add(temp);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        assert response != null;
-        if (response.getValue().equals("0x")) {
-
-        }
-//        try {
-//            TransactionReceipt receipt = houseContract.findOrdersNum(address).send();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        return "";
+        return jsonArray;
     }
 
     /**
@@ -574,53 +591,53 @@ public class BlockChain {
         return houseContract;
     }
 
-    public static void main(String[] args) throws IOException {
-        BlockChain blockChain = new BlockChain();
-        System.out.println(blockChain.getVersion());
-        System.out.println("root's balance is " + blockChain.getBalance(rootAddress));
-//        System.out.println("test's balance is " + blockChain.getBalance(testAddress));
-        System.out.println("isValid() is " + blockChain.loadContract(rootAddress, rootFile, rootPassword).isValid());
+//    public static void main(String[] args) throws IOException {
+//        BlockChain blockChain = new BlockChain();
 //        System.out.println(blockChain.getVersion());
-//        String contractAddress = blockChain.deploy();
-//        System.out.println(contractAddress);
-//        System.out.println(blockChain.creatCredentials("test"));
-//        System.out.println(blockChain.transaction(rootPassword, rootFile, "0xdfec136611676641542ce3dff6e930db3259f372"));
-//        blockChain.addUser(rootAddress,
+//        System.out.println("root's balance is " + blockChain.getBalance(rootAddress));
+////        System.out.println("test's balance is " + blockChain.getBalance(testAddress));
+//        System.out.println("isValid() is " + blockChain.loadContract(rootAddress, rootFile, rootPassword).isValid());
+////        System.out.println(blockChain.getVersion());
+////        String contractAddress = blockChain.deploy();
+////        System.out.println(contractAddress);
+////        System.out.println(blockChain.creatCredentials("test"));
+////        System.out.println(blockChain.transaction(rootPassword, rootFile, "0xdfec136611676641542ce3dff6e930db3259f372"));
+////        blockChain.addUser(rootAddress,
+////                rootFile,
+////                "123", "孙梓杰", "123456", "", "12345678910", 0, 10);
+////        System.out.println("add user");
+////        blockChain.addUser(rootAddress, rootFile, rootPassword, "孙梓杰", "123456", "", "12345678910", 0, 10);
+////        System.out.println("get message");
+//        System.out.println(blockChain.getMessage(rootAddress,
 //                rootFile,
-//                "123", "孙梓杰", "123456", "", "12345678910", 0, 10);
-//        System.out.println("add user");
-//        blockChain.addUser(rootAddress, rootFile, rootPassword, "孙梓杰", "123456", "", "12345678910", 0, 10);
-//        System.out.println("get message");
-        System.out.println(blockChain.getMessage(rootAddress,
-                rootFile,
-                "123"));
-
-        // blockChain.changeTable(0,"wanyanaguda");
-        System.out.println(blockChain.getHash(0));
-        // blockChain.changeTable(1,"bilishi");
-        System.out.println(blockChain.getHash(1));
-        // blockChain.changeTable(2,"alibaba");
-        System.out.println(blockChain.getHash(2));
-
-        //blockChain.changeTelInfo(rootAddress,rootFile,rootPassword,"987654321");
-        System.out.println(blockChain.getMessage(rootAddress, rootFile, rootPassword));
-        //    private final static String contractAddress = "0xf7afa5662dcca6f75aa8f6fd0168cd3c861f09a9";
-        //            "0xA802412997277907849B29f7ea1361CEdc2E224D";
-        String testAddress = "";
-        blockChain.submitOrder(rootAddress, rootFile, rootPassword, testAddress, "lishiquyuan", BigInteger.valueOf(1));
-        System.out.println(blockChain.findOrders(rootAddress, rootFile, rootPassword));
-        String testPassword = "";
-        String testFile = "";
-        blockChain.responseOrder(testAddress, testFile, testPassword, rootAddress, true, BigInteger.valueOf(1));
-        System.out.println(blockChain.findOrders(testAddress, testFile, testPassword));
-        blockChain.confirmSecond(0, testAddress, testFile, rootAddress, testPassword, true);
-        System.out.println(blockChain.findOrders(testAddress, testFile, testPassword));
-        blockChain.confirmSecond(1, rootAddress, rootFile, testAddress, rootPassword, true);
-        System.out.println(blockChain.findOrders(rootAddress, rootFile, rootPassword));
-        //blockChain.transaction(rootPassword,rootFile,testAddress);
-//        System.out.println("get message2");
-//        blockChain.getMessage2("0xdfec136611676641542ce3dff6e930db3259f372",
-//                "E:\\Geth\\data\\keystore\\UTC--2019-07-04T06-19-35.677670200Z--dfec136611676641542ce3dff6e930db3259f372.json",
-//                "test");
-    }
+//                "123"));
+//
+//        // blockChain.changeTable(0,"wanyanaguda");
+//        System.out.println(blockChain.getHash(0));
+//        // blockChain.changeTable(1,"bilishi");
+//        System.out.println(blockChain.getHash(1));
+//        // blockChain.changeTable(2,"alibaba");
+//        System.out.println(blockChain.getHash(2));
+//
+//        //blockChain.changeTelInfo(rootAddress,rootFile,rootPassword,"987654321");
+//        System.out.println(blockChain.getMessage(rootAddress, rootFile, rootPassword));
+//        //    private final static String contractAddress = "0xf7afa5662dcca6f75aa8f6fd0168cd3c861f09a9";
+//        //            "0xA802412997277907849B29f7ea1361CEdc2E224D";
+//        String testAddress = "";
+//        blockChain.submitOrder(rootAddress, rootFile, rootPassword, testAddress, "lishiquyuan", BigInteger.valueOf(1));
+//        System.out.println(blockChain.findOrders(rootAddress, rootFile, rootPassword));
+//        String testPassword = "";
+//        String testFile = "";
+//        blockChain.responseOrder(testAddress, testFile, testPassword, rootAddress, true, BigInteger.valueOf(1));
+//        System.out.println(blockChain.findOrders(testAddress, testFile, testPassword));
+//        blockChain.confirmSecond(0, testAddress, testFile, rootAddress, testPassword, true);
+//        System.out.println(blockChain.findOrders(testAddress, testFile, testPassword));
+//        blockChain.confirmSecond(1, rootAddress, rootFile, testAddress, rootPassword, true);
+//        System.out.println(blockChain.findOrders(rootAddress, rootFile, rootPassword));
+//        //blockChain.transaction(rootPassword,rootFile,testAddress);
+////        System.out.println("get message2");
+////        blockChain.getMessage2("0xdfec136611676641542ce3dff6e930db3259f372",
+////                "E:\\Geth\\data\\keystore\\UTC--2019-07-04T06-19-35.677670200Z--dfec136611676641542ce3dff6e930db3259f372.json",
+////                "test");
+//    }
 }

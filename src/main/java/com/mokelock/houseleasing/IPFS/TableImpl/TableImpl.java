@@ -1,5 +1,6 @@
 package com.mokelock.houseleasing.IPFS.TableImpl;
 
+import com.mokelock.houseleasing.IPFS.IpfsImpl.IPFS_SERVICE_IMPL;
 import com.mokelock.houseleasing.IPFS.Table;
 import com.mokelock.houseleasing.model.HouseModel.House;
 import com.alibaba.fastjson.*;
@@ -14,6 +15,7 @@ public class TableImpl implements Table {
     }
 
     public void insert(String user_name, String eth_id, String SK, String path) {
+        System.out.println("into insert " + user_name + eth_id + SK + " " + path);
         File file = new File(path);
         Map map = new HashMap();
         map.put("user_name", user_name);
@@ -121,6 +123,7 @@ public class TableImpl implements Table {
 //        String[] element=new String[key_to_get.length];
         try {
             String str = null;
+            System.out.println("path in tableImpl is" + path);
             BufferedReader br = new BufferedReader(new FileReader(path));
             while ((str = br.readLine()) != null) {
                 JSONObject jsonObject = JSONObject.parseObject(str);
@@ -279,49 +282,61 @@ public class TableImpl implements Table {
     }
 
     public static void main(String args[]) {
-        TableImpl tml = new TableImpl();
-        String path1 = "C:\\Users\\徐宇钦\\Desktop\\fortest1.txt";
-        String path2 = "C:\\Users\\徐宇钦\\Desktop\\fortest2.txt";
-        House house = new House();
-        house.setHouse_id_hash("asfasdas");
-        house.setHouse_id("123456");
-        house.setLease_type(1);
-        house.setLease(3500);
-        house.setHouse_type(1);
-        house.setLease_inter(1);
-        house.setElevator(false);
-        house.setFloor(11);
-        house.setHouse_owner_credit(5);
-        house.setLat("111");
-        house.setLon("333");
-        house.setOwner("abc");
-        house.setOwner_id("123");
-        house.setOwner_name("ppp");
-        Map<String, Object> map = new HashMap<>();
-        map.put("provi", "山东");
-        map.put("city", "济南");
-        map.put("sector", "历下区");
-        map.put("commu_name", "奥龙官邸");
-        JSONObject jsonObject = new JSONObject(map);
-        house.setLow_location(jsonObject);
-//        tml.insert(house,"qwewqeqw",path1);
-//        tml.insert_into_more_info(house,path2);
-        String[] key_for_search = {"provi", "city"};
-        String[] value_for_search = {"山东", "济南"};
-        String[] key_to_get = {"house_hash", "lease", "lon"};
-        String[] key_to_update = {"lease", "elevator"};
-        String[] new_value = {"100", "true"};
-        House[] houses = {house};
-        tml.update(house, key_to_update, new_value, path2);
-        tml.delete(houses, path1);
-        tml.delete(houses, path2);
-        ArrayList<String[]> v = tml.query(key_for_search, value_for_search, key_to_get, path2);
-        for (int i = 0; i < v.size(); i++) {
-            for (int j = 0; j < v.get(i).length; j++) {
-                System.out.println(v.get(i)[j]);
-            }
-        }
 
+        Table table = new TableImpl();
+        table.insert("28","0x6bdb8f65df73f9f334fbb1aa4ded13fd1ed4e51c","E:\\Geth\\data\\keystore\\UTC--2019-07-10T09-05-34.249621200Z--6bdb8f65df73f9f334fbb1aa4ded13fd1ed4e51c.json","E:\\houseleasing\\houseleasing\\src\\main\\file\\table\\onetable.txt");
+        String a = null;
+        try {
+            a = IPFS_SERVICE_IMPL.upload("E:\\houseleasing\\houseleasing\\src\\main\\file\\table\\onetable.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("ipfs: " + a);
+        //
+//
+//        TableImpl tml = new TableImpl();
+//        String path1 = "C:\\Users\\徐宇钦\\Desktop\\fortest1.txt";
+//        String path2 = "C:\\Users\\徐宇钦\\Desktop\\fortest2.txt";
+//        House house = new House();
+//        house.setHouse_id_hash("asfasdas");
+//        house.setHouse_id("123456");
+//        house.setLease_type(1);
+//        house.setLease(3500);
+//        house.setHouse_type(1);
+//        house.setLease_inter(1);
+//        house.setElevator(false);
+//        house.setFloor(11);
+//        house.setHouse_owner_credit(5);
+//        house.setLat("111");
+//        house.setLon("333");
+//        house.setOwner("abc");
+//        house.setOwner_id("123");
+//        house.setOwner_name("ppp");
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("provi", "山东");
+//        map.put("city", "济南");
+//        map.put("sector", "历下区");
+//        map.put("commu_name", "奥龙官邸");
+//        JSONObject jsonObject = new JSONObject(map);
+//        house.setLow_location(jsonObject);
+////        tml.insert(house,"qwewqeqw",path1);
+////        tml.insert_into_more_info(house,path2);
+//        String[] key_for_search = {"provi", "city"};
+//        String[] value_for_search = {"山东", "济南"};
+//        String[] key_to_get = {"house_hash", "lease", "lon"};
+//        String[] key_to_update = {"lease", "elevator"};
+//        String[] new_value = {"100", "true"};
+//        House[] houses = {house};
+//        tml.update(house, key_to_update, new_value, path2);
+//        tml.delete(houses, path1);
+//        tml.delete(houses, path2);
+//        ArrayList<String[]> v = tml.query(key_for_search, value_for_search, key_to_get, path2);
+//        for (int i = 0; i < v.size(); i++) {
+//            for (int j = 0; j < v.get(i).length; j++) {
+//                System.out.println(v.get(i)[j]);
+//            }
+//        }
+//
 
     }
 }

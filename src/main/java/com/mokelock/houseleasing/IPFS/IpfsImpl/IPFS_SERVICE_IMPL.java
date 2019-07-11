@@ -13,8 +13,8 @@ import java.util.List;
 
 public class IPFS_SERVICE_IMPL implements IPFS_SERVICE {
 
-    @Value(value = "${IPFS.address}")
-    private static String IPFS_address;
+//    @Value(value = "${IPFS.address}")
+    private static String IPFS_address = "/ip4/127.0.0.1/tcp/5001";
 
     public static String upload(String filePathName) throws IOException {
         IPFS ipfs = new IPFS(IPFS_address);//ipfs的服务器地址和端口

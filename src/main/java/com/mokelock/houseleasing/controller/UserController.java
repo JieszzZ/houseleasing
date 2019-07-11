@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -39,10 +41,11 @@ public class UserController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public int login(HttpSession session, String username, String password) {
-        boolean checkResult = userService.login(username, password);
+//        boolean checkResult = userService.login(username, password);
+        boolean checkResult = true;
         if (checkResult) {
             session.setAttribute("username", username);
-            logger.debug(username + " login");
+            logger.info(username + " login");
             return 0;
         }
         return 3;
@@ -73,7 +76,8 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public void register(UserTemp user, HttpServletResponse response) throws IOException {
-        logger.debug("userTemp = " + user.toString());
+        logger.info("userTemp = " + user.toString());
+        logger.info(user.getProfile_a().getOriginalFilename());
         // 获取文件名
         String fileName = user.getProfile_a().getOriginalFilename();
         String fileName1 = user.getProfile_a().getOriginalFilename();
@@ -81,22 +85,21 @@ public class UserController {
         String prefix = fileName.substring(fileName.lastIndexOf("."));
         String prefix1 = fileName1.substring(fileName.lastIndexOf("."));
         // 用uuid作为文件名，防止生成的临时文件重复
-        final File excelFile = File.createTempFile(user.getId() + "a", prefix);
-        final File excelFile1 = File.createTempFile(user.getId() + "b", prefix1);
+        File excelFile = File.createTempFile(user.getId() + "a", prefix);
+        File excelFile1 = File.createTempFile(user.getId() + "b", prefix1);
         // MultipartFile to File
         user.getProfile_a().transferTo(excelFile);
         user.getProfile_b().transferTo(excelFile1);
+        logger.info(excelFile.getPath());
         boolean result = userService.register(user.getUsername(), user.getPassword(), user.getPay_password(),
                 user.getName(), user.getPhone(), excelFile, excelFile1, user.getId(), new Byte(user.getGender()));
+        logger.info("result is " + result);
         if (!result) {
-            logger.debug("register failed");
-            try {
-                response.getWriter().append("fail");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            logger.info("register failed");
+            response.setStatus(202);
         } else {
-            logger.debug(user.toString());
+            response.setStatus(200);
+            logger.info(user.toString());
         }
         if (excelFile.exists()) {
             excelFile.delete();
@@ -105,6 +108,44 @@ public class UserController {
             excelFile1.delete();
         }
     }
+//    @RequestMapping(value = "/register", method = RequestMethod.POST, consumes = "multipart/form-data")
+//    public void register(MultipartHttpServletRequest request, HttpServletResponse response) throws IOException {
+//        String username = request.getParameter("username");
+//        String name = request.getParameter("name");
+//        String id = request.getParameter("id");
+//        String password = request.getParameter("password");
+//        String pay_password = request.getParameter("pay_password");
+//        String gender = request.getParameter("gender");
+//        String phone = request.getParameter("phone");
+//        MultipartFile profile_a = request.getFile("profile_a");
+//        MultipartFile profile_b = request.getFile("profile_b");
+//        // 获取文件名
+//        String fileName = profile_a.getOriginalFilename();
+//        String fileName1 = profile_b.getOriginalFilename();
+//        logger.info(new UserTemp(username, name, id, pay_password, profile_a, profile_b, password, phone, gender).toString());
+//        // 获取文件后缀
+//        String prefix = fileName.substring(fileName.lastIndexOf("."));
+//        String prefix1 = fileName1.substring(fileName.lastIndexOf("."));
+//        // 用uuid作为文件名，防止生成的临时文件重复
+//        final File excelFile = File.createTempFile(id + "a", prefix);
+//        final File excelFile1 = File.createTempFile(id + "b", prefix1);
+//        // MultipartFile to File
+//        profile_a.transferTo(excelFile);
+//        profile_b.transferTo(excelFile1);
+//        boolean result = userService.register(username, password, pay_password, name, phone, excelFile, excelFile1,
+//                id, new Byte(gender));
+//        if (!result) {
+//            logger.debug("register failed");
+//            response.setStatus(202);
+//        }
+//        if (excelFile.exists()) {
+//            excelFile.delete();
+//        }
+//        if (excelFile1.exists()) {
+//            excelFile1.delete();
+//        }
+//    }
+
 
     /**
      * 获取用户信息
@@ -118,12 +159,12 @@ public class UserController {
         if (username == null) {
             username = (String) session.getAttribute("username");
         }
-        if (session.getAttribute("payPassword") == null) {
+        if (session.getAttribute("payPass") == null) {
             response.setStatus(201);
             return null;
         }
         logger.debug("/user/user " + username);
-        return userService.getUser(username, (String) session.getAttribute("payPassword"));
+        return userService.getUser(username, (String) session.getAttribute("payPass"));
     }
 
     /**
@@ -138,13 +179,13 @@ public class UserController {
         if (username == null) {
             username = (String) session.getAttribute("username");
         }
-        if (session.getAttribute("payPassword") == null) {
+        if (session.getAttribute("payPass") == null) {
             response.setStatus(201);
             return null;
         }
         User user = new User();
         int balance = userService.getBalance(username);
-        user = userService.getUser(username, (String) session.getAttribute("payPassword"));
+        user = userService.getUser(username, (String) session.getAttribute("payPass"));
         JSONObject json = new JSONObject();
         json.put("username", username);
         json.put("name", user.getName());
@@ -166,7 +207,7 @@ public class UserController {
         if (username == null) {
             username = (String) session.getAttribute("username");
         }
-        if (session.getAttribute("payPassword") == null) {
+        if (session.getAttribute("payPass") == null) {
             response.setStatus(201);
             return null;
         }
@@ -175,7 +216,7 @@ public class UserController {
         if (result) {
             User user = new User();
             int balance = userService.getBalance(username);
-            user = userService.getUser(username, (String) session.getAttribute("payPassword"));
+            user = userService.getUser(username, (String) session.getAttribute("payPass"));
             json.put("username", username);
             json.put("name", user.getName());
             json.put("balance", balance);
@@ -210,11 +251,11 @@ public class UserController {
         if (username == null) {
             username = (String) session.getAttribute("username");
         }
-        if (session.getAttribute("payPassword") == null) {
+        if (session.getAttribute("payPass") == null) {
             response.setStatus(201);
             return null;
         }
-        return userService.getRecords(username, (String) session.getAttribute("payPassword"));
+        return userService.getRecords(username, (String) session.getAttribute("payPass"));
     }
 
     /**
@@ -256,11 +297,11 @@ public class UserController {
         if (username == null) {
             username = (String) session.getAttribute("username");
         }
-        if (session.getAttribute("payPassword") == null) {
+        if (session.getAttribute("payPass") == null) {
             response.setStatus(201);
             return false;
         }
-        return userService.postPhone(username, password, (String) session.getAttribute("payPassword"), phone);
+        return userService.postPhone(username, password, (String) session.getAttribute("payPass"), phone);
     }
 
     /**
@@ -273,11 +314,11 @@ public class UserController {
     public String contactOwner(HttpServletRequest request, HttpServletResponse response, String house_hash) {
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
-        if (session.getAttribute("payPassword") == null) {
+        if (session.getAttribute("payPass") == null) {
             response.setStatus(201);
             return null;
         }
-        return userService.getUser(username, (String) session.getAttribute("payPassword")).getPhone();
+        return userService.getUser(username, (String) session.getAttribute("payPass")).getPhone();
     }
 
     /**

@@ -17,7 +17,7 @@ public class TractServiceImpl implements TractService {
     BlockChain bc=new BlockChain();
     Table table=new TableImpl();
     String path=System.getProperty("user.dir") + "\\src\\main\\file\\";
-    BigInteger coins=null;
+    BigInteger coins= new BigInteger("10000");
     String role_user="";
     String role_owner="";
     private String download(){
@@ -37,15 +37,22 @@ public class TractServiceImpl implements TractService {
         String[] key_for_search={"user_name"};
         String[] value_for_search={username};
         String[] key_to_get={"eth_id"};
-        ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+"\\"+hash+"\\"+"user.txt");
+        ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+hash+"\\"+"user.txt");
         String user_addr=v.get(0)[0];
         return user_addr;
     }
 
-    public void userSet(String house_id_hash,String owner,String userAddress,String ethPassword){
+    public void userSet(String house_id_hash,String owner,String username,String ethPassword){
         String hash=download();
         String owner_addr=get_addr(owner,hash);
-        bc.submitOrder(userAddress,contractAddress,ethPassword,owner_addr,coins);
+        String eth_id = get_addr(username, hash);
+        String[] key_for_search={"user_name"};
+        String[] value_for_search={username};
+        String[] key_to_get={"SK"};
+        ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+hash+"\\"+"user.txt");
+        String sk=v.get(0)[0];
+        System.out.println("sk is " + sk);
+        bc.submitOrder(eth_id,sk,ethPassword,owner_addr, house_id_hash, coins);
     }
 
     private JSONArray infoGet(String owner, String ethPassWord){
@@ -54,10 +61,10 @@ public class TractServiceImpl implements TractService {
         String[] key_for_search={"user_name"};
         String[] value_for_search={owner};
         String[] key_to_get={"SK"};
-        ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+"\\"+hash+"\\"+"user.txt");
+        ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+hash+"\\"+"user.txt");
         String sk=v.get(0)[0];
-        JSONArray result=null;
-        return result;
+//        JSONArray result=bc.findOrders();
+        return null;
     }
 
     public String ownerGet(String owner,String ethPassWord){
@@ -84,28 +91,28 @@ public class TractServiceImpl implements TractService {
         return r;
     }
 
-    public void ownerRes(String username,boolean request_response,String owner,String ethPassword){
+    public void ownerRes(String username,boolean request_response,String ownername,String ethPassword){
         String hash=download();
-        String owner_addr=get_addr(owner,hash);
+        String owner_addr=get_addr(ownername,hash);
         String user_addr=get_addr(username,hash);
-        if(request_response)
-            bc.responseOrder(owner_addr,contractAddress,ethPassword,user_addr,coins);
-        else
-            bc.rejectOrder(owner_addr,contractAddress,ethPassword,user_addr);
+//        if(request_response)
+            bc.responseOrder(owner_addr,contractAddress,ethPassword,user_addr, request_response, coins);
+//        else
+//            bc.rejectOrder(owner_addr,contractAddress,ethPassword,user_addr);
     }
 
     public void userIden(String ownername,boolean requestIdentify,String username,String ethPassword){
         String hash=download();
         String user_addr=get_addr(username,hash);
         String owner_addr=get_addr(ownername,hash);
-        bc.confirmSecond(1,owner_addr,contractAddress,user_addr,ethPassword);
+        bc.confirmSecond(1,owner_addr,contractAddress,user_addr,ethPassword, requestIdentify);
     }
 
     public void ownerIden(String username,boolean requestIdentify,String ownername,String ethPassword){
         String hash=download();
         String user_addr=get_addr(username,hash);
         String owner_addr=get_addr(ownername,hash);
-        bc.confirmSecond(0,owner_addr,contractAddress,user_addr,ethPassword);
+        bc.confirmSecond(0,owner_addr,contractAddress,user_addr,ethPassword, requestIdentify);
     }
 
     public void payPass(String paypass1,String username,String ethpassword){

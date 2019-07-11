@@ -22,7 +22,6 @@ public class UserTemp {
     private String pay_password;
     private MultipartFile profile_a; //本人身份证照片带脸，这是一个文件地址
     private MultipartFile profile_b; //本人身份证照片带国徽，这是一个文件地址
-    private String IPFS_hash;
     private String password;
     private String phone;
     private String gender;
@@ -30,14 +29,13 @@ public class UserTemp {
     public UserTemp() {
     }
 
-    public UserTemp(String username, String name, String id, String pay_password, MultipartFile profile_a, MultipartFile profile_b, String IPFS_hash, String password, String phone, String gender) {
+    public UserTemp(String username, String name, String id, String pay_password, MultipartFile profile_a, MultipartFile profile_b, String password, String phone, String gender) {
         this.username = username;
         this.name = name;
         this.id = id;
         this.pay_password = pay_password;
         this.profile_a = profile_a;
         this.profile_b = profile_b;
-        this.IPFS_hash = IPFS_hash;
         this.password = password;
         this.phone = phone;
         this.gender = gender;
@@ -91,14 +89,6 @@ public class UserTemp {
         this.profile_b = profile_b;
     }
 
-    public String getIPFS_hash() {
-        return IPFS_hash;
-    }
-
-    public void setIPFS_hash(String IPFS_hash) {
-        this.IPFS_hash = IPFS_hash;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -132,7 +122,6 @@ public class UserTemp {
                 ", pay_password='" + pay_password + '\'' +
                 ", profile_a=" + profile_a +
                 ", profile_b=" + profile_b +
-                ", IPFS_hash='" + IPFS_hash + '\'' +
                 ", password='" + password + '\'' +
                 ", phone='" + phone + '\'' +
                 ", gender='" + gender + '\'' +
