@@ -323,7 +323,8 @@ public class UserServicesImpl implements UserService {
             BlockChain bc = new BlockChain();
 
 
-            String orders = bc.findOrders(account, ethFile, pay_password);
+//            String orders = bc.findOrders(account, ethFile, pay_password);
+            String orders = "";
             ArrayList<record> ars = readRecords(orders);
             for (int i = 0; i < ars.size(); i++) {
                 alr.add(new front_record(ars.get(i)));
