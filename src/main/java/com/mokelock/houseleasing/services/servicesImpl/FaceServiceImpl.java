@@ -91,6 +91,7 @@ public class FaceServiceImpl implements FaceService{
         }
         String[]key_for_search1={"user_name"};
         String[]value_for_search1={name};
+        System.out.println(name);
         String[]key_to_get1={"sk"};
         ArrayList<String[]>v=table.query(key_for_search1,value_for_search1,key_to_get1,path1);
         String eth_File=v.get(0)[0];

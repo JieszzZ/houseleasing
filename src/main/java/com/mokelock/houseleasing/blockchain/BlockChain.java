@@ -33,16 +33,16 @@ import java.util.concurrent.ExecutionException;
 public class BlockChain {
 
     //    @Value(value = "${BlockChain.url}")
-    private String url = "http://211.87.230.20:9988/";
+    private String url = "http://211.87.230.8:9988/";
     private Web3j web3j = Web3j.build(new HttpService(url));
     //    @Value(value = "${BlockChain.filePath}")
-    private String filePath = "E:\\Geth\\data\\keystore";
+    private String filePath = "D:\\Geth\\data\\keystore";
     //    @Value(value = "${BlockChain.root.Address")
-    private String rootAddress = "0x7d8b423d21b1e682063665b4fa99df5d04874c48";
+    private String rootAddress = "0xed87e99eb4ec72678f1912c329d1c1cbf44f9c36";
     //    @Value(value = "${BlockChain,root.Password}")
     private String rootPassword = "123";
     //    @Value(value = "${BlockChain.root.File}")
-    private String rootFile = "E:\\Geth\\data\\keystore\\UTC--2019-07-09T00-53-06.868496100Z--7d8b423d21b1e682063665b4fa99df5d04874c48";
+    private String rootFile = "D:\\Geth\\data\\keystore\\UTC--2019-07-10T08-43-43.932731400Z--ed87e99eb4ec72678f1912c329d1c1cbf44f9c36";
     //    @Value(value = "${BlockChain.contract.address}")
     private String contractAddress = "0x6b9d6f53b69847568ae06f5cad8062a2f4176aa6";
 //            "0xa0f490e57d4ddf2c5a526d99aea5125fd310466c";
@@ -249,6 +249,7 @@ public class BlockChain {
         jsonObject.put("credit", credit);
         return jsonObject.toJSONString();
     }
+
     public JSONObject getMessage3(String userAddress, String ethFile, String ethPassword) {
         House_sol_blockChain houseContract = loadContract(userAddress, ethFile, ethPassword);
         Tuple6<Utf8String, Utf8String, Utf8String, Utf8String, Uint256, Uint256> tuple6 = null;
@@ -266,12 +267,12 @@ public class BlockChain {
         Uint256 gender = tuple6 != null ? tuple6.getValue5() : null;
         Uint256 credit = tuple6 != null ? tuple6.getValue6() : null;
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("username", username);
-        jsonObject.put("id", id);
-        jsonObject.put("IPFS_hash", IPFS_hash);
-        jsonObject.put("phone", phone);
-        jsonObject.put("gender", gender);
-        jsonObject.put("credit", credit);
+        jsonObject.put("username", username.getValue());
+        jsonObject.put("id", id.getValue());
+        jsonObject.put("IPFS_hash", IPFS_hash.getValue());
+        jsonObject.put("phone", phone.getValue());
+        jsonObject.put("gender", gender.getValue().intValue());
+        jsonObject.put("credit", credit.getValue().intValue());
         System.out.println("json in getMessage3 is " + jsonObject.toJSONString());
         return jsonObject;
     }
@@ -340,13 +341,14 @@ public class BlockChain {
                             String houseHash, BigInteger coins) {
 
         House_sol_blockChain houseContract = loadContract(userAddress, ethFile, ethPassword);
-        Address address = new Address(userAddress);
+        Address address = new Address(ownerAddress);
         Utf8String _houseHash = new Utf8String(houseHash);
         Uint256 coin = new Uint256(coins);
         //???wei value是个啥么东西
         try {
             TransactionReceipt receipt =
                     houseContract.submitOrder(address, _houseHash, coin, BigInteger.valueOf(1L)).send();
+            System.out.println("receipt in submitOrder is " + receipt.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -539,12 +541,15 @@ public class BlockChain {
         JSONArray jsonArray = new JSONArray();
         try {
             num = houseContract.findOrdersNum(address).send();
-            for (int i = Integer.parseInt(num + ""); i > 0; i++) {
+            for (int i = num.getValue().intValue() - 1; i >= 0; i--) {
                 tuple8 = houseContract.findOrder_1(address, new Uint256(i)).send();
                 tuple7 = houseContract.findOrder_2(address, new Uint256(i)).send();
                 JSONObject temp = new JSONObject();
+                System.out.println("getValue in find orders is " + tuple8.getValue1().toString());
+                System.out.print("   " +tuple8.getValue1().getValue());
                 temp.put("submiter", tuple8.getValue1().getValue());
                 temp.put("responder", tuple8.getValue2().getValue());
+                System.out.println("sub and res in blockChain is "+tuple8.getValue1().getValue()+" "+tuple8.getValue2().getValue());
                 temp.put("submiterEthCoin", tuple8.getValue3().getValue());
                 temp.put("aimerEthCoin", tuple8.getValue4().getValue());
                 temp.put("subFirstSign", tuple8.getValue5().getValue());
@@ -599,6 +604,7 @@ public class BlockChain {
     private House_sol_blockChain loadContract(String userAddress, String userFile, String ethPassword) {
         Credentials credentials = null;
         try {
+            System.out.println("ethPass and file in loadContract is " + ethPassword + " " + userFile);
             credentials = WalletUtils.loadCredentials(ethPassword, userFile);
         } catch (IOException | CipherException e) {
             e.printStackTrace();

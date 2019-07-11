@@ -165,7 +165,7 @@ public class UserController {
             response.setStatus(201);
             return null;
         }
-        logger.debug("/user/user " + username);
+        logger.info("/user/user " + username);
         return userService.getUser(username, (String) session.getAttribute("payPass"));
     }
 

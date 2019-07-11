@@ -49,7 +49,7 @@ public class UserServicesImpl implements UserService {
 //    @Value("${BlockChain.root.Password}")
     private static String adminEthPassword = "123";
 //    @Value("${BlockChain.root.File}")
-    private String adminFilePath = "E:\\Geth\\data\\keystore\\UTC--2019-07-09T00-53-06.868496100Z--7d8b423d21b1e682063665b4fa99df5d04874c48";
+    private String adminFilePath = "D:\\Geth\\data\\keystore\\UTC--2019-07-10T08-43-43.932731400Z--ed87e99eb4ec72678f1912c329d1c1cbf44f9c36";
 //    private static String adminFilePath = "N:\\geth\\data\\keystore\\UTC--2019-07-06T05-37-21.279150600Z--1f3ff30f01ec45eb10a6c5613aaf33224b40d0b0";
     private static final int InitialCredit = 10;
     private static final int InitialGive = 10000000;
@@ -107,7 +107,7 @@ public class UserServicesImpl implements UserService {
                 String pro_b_binary = "";
                 FileInputStream fis = new FileInputStream(_profile_a);
                 FileOutputStream fos = new FileOutputStream(pro_a);
-
+                System.out.println(1);
                 int ch = fis.read();
                 while (ch != -1) {
                     fos.write(ch);
@@ -213,12 +213,15 @@ public class UserServicesImpl implements UserService {
     public User getUser(String _username, String _pay_password) {
         User _one;
         try {
+            System.out.println("getUser-1 " + _username + _pay_password);
             String account = findAccount(_username);
             String sk = findEthFile(_username);
+            System.out.println("getUser " + account + sk);
             BlockChain bc = new BlockChain();
-            String message = bc.getMessage(account, sk, _pay_password);
+            JSONObject message = bc.getMessage3(account, sk, _pay_password);
             _one = readUser(message);
             _one.setUsername(_username);
+            System.out.println("user info is " + _one.toString());
             /*
             IPFS_SERVICE.download(path,_one.getIPFS_hash(),ipfs);
 
@@ -281,7 +284,7 @@ public class UserServicesImpl implements UserService {
             ArrayList<User> ans = new ArrayList<User>();
             for (int i = 0; i < res.size(); i++) {
                 User one;
-                String message = bc.getMessage(res.get(i)[0], adminFilePath, adminEthPassword);
+                JSONObject message = bc.getMessage3(res.get(i)[0], adminFilePath, adminEthPassword);
                 one = readUser(message);
                 ans.add(one);
             }
@@ -466,11 +469,11 @@ public class UserServicesImpl implements UserService {
         String hash = findUser_Account_hash();
         System.out.println("findAccount_hash is " + hash);
 
-        IPFS_SERVICE_IMPL.download(tablepath, hash, oneTable);
+        IPFS_SERVICE_IMPL.download(tablepath + "\\" + oneTable, hash, oneTable);
 
-
+        System.out.println("1111111111111" + _username);
         Table table = new TableImpl();
-        String[] user_name = {"username"};
+        String[] user_name = {"user_name"};
         String[] _user = {_username};
         String[] eth_id = {"eth_id"};
         ArrayList<String[]> result = table.query(user_name, _user, eth_id, tablepath + "\\" + oneTable);
@@ -696,16 +699,17 @@ public class UserServicesImpl implements UserService {
     }
 
     public String findEthFile(String _username) throws IOException {
+        System.out.println("000000" + _username);
         int where = 0;
         String hash = findUser_Account_hash();
-        IPFS_SERVICE.download(tablepath, hash, oneTable);
+        IPFS_SERVICE.download(tablepath+"\\"+oneTable, hash, oneTable);
         Table table = new TableImpl();
-        String[] user_name = {"username"};
+        String[] user_name = {"user_name"};
         String[] _user = {_username};
         String[] SK = {"SK"};
         ArrayList<String[]> result = table.query(user_name, _user, SK, tablepath + "\\" + oneTable);
         String res = result.get(where)[where];
-
+        System.out.println("0000000000000000" + res);
         return res;
 
     }
@@ -757,8 +761,15 @@ public class UserServicesImpl implements UserService {
         return -1;
     }
 
-    public User readUser(String userStr) {
-        User user = (User) JSONObject.parseObject(userStr, User.class);
+    public User readUser(JSONObject userStr) {
+        User user = new User();
+        user.setCredit(Integer.parseInt(userStr.getString("credit")));
+        user.setGender(Integer.parseInt(userStr.getString("gender")));
+        user.setId(userStr.getString("id"));
+        user.setIPFS_hash(userStr.getString("IPFS_hash"));
+        user.setPhone(userStr.getString("phone"));
+        user.setName(userStr.getString("username"));
+
         return user;
     }
 

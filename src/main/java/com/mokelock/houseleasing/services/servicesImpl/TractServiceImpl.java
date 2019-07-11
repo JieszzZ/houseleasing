@@ -50,12 +50,22 @@ public class TractServiceImpl implements TractService {
         String[] hash={hash1,hash2};
         return hash;
     }
+    private String get_name(String hash,String eth_id){
+        String[] key_for_search={"eth_id"};
+        String[] value_for_search={eth_id};
+        String[] key_to_get={"user_name"};
+        ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+hash+"\\"+"user.txt");
+ //       System.out.println("username in tractS is "+username);
+        String user_name=v.get(0)[0];
+        return user_name;
+    }
 
     private String get_addr(String username,String hash){
         String[] key_for_search={"user_name"};
         String[] value_for_search={username};
         String[] key_to_get={"eth_id"};
         ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+hash+"\\"+"user.txt");
+        System.out.println("username in tractS is "+username);
         String user_addr=v.get(0)[0];
         return user_addr;
     }
@@ -64,6 +74,9 @@ public class TractServiceImpl implements TractService {
         String hash=download();
         String owner_addr=get_addr(owner,hash);
         String eth_id = get_addr(username, hash);
+        System.out.println("user_addr is "+eth_id);
+        System.out.println("owner_addr is "+owner_addr);
+        System.out.println("");
         String[] key_for_search={"user_name"};
         String[] value_for_search={username};
         String[] key_to_get={"SK"};
@@ -81,7 +94,9 @@ public class TractServiceImpl implements TractService {
         String[] key_to_get={"SK"};
         ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+hash+"\\"+"user.txt");
         String sk=v.get(0)[0];
+        System.out.println("param in tractS is  "+owner+"  "+owner_addr);
         JSONArray result=bc.findOrders(owner_addr,sk,ethPassWord);
+        System.out.println("_result in tractS is  "+result.toJSONString());
         return result;
     }
 
@@ -92,7 +107,7 @@ public class TractServiceImpl implements TractService {
         for(int i=0;i<_result.size();i++){
             JSONObject tmp=_result.getJSONObject(i);
             String role=tmp.getString("role");
-            if(role.equals(role_owner))
+            if(role.equals(role_user))
                 _result.remove(i);
         }
         String[] key_for_search={"user_name"};
@@ -100,15 +115,21 @@ public class TractServiceImpl implements TractService {
         String[] key_to_get={"SK"};
         ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+hash+"\\"+"user.txt");
         String sk=v.get(0)[0];
-        String msg=bc.getMessage(addr,sk,ethPassWord);
-        JSONObject jsonObject= JSON.parseObject(msg);
-        JSONArray result=null;
+        JSONObject jsonObject= bc.getMessage3(addr,sk,ethPassWord);
+        JSONArray result=new JSONArray();
         String[]hash_house=download_house();
         for(int i=0;i<_result.size();i++){
-            Map<String,Object>map=new HashMap<>();
-            map.put("username",owner);
-            map.put("name",jsonObject.getString("username"));
             JSONObject temp=_result.getJSONObject(i);
+            Map<String,Object>map=new HashMap<>();
+            String responder=temp.getString("responder");
+            String submiter=temp.getString("submiter");
+            System.out.println("sub and res are "+submiter+" "+responder);
+            JSONObject submiter_info=bc.getMessage3(addr,sk,ethPassWord);
+            String username=get_name(hash,submiter);
+            map.put("username",username);
+            System.out.println("username return is "+username);
+            map.put("name",submiter_info.getString("username"));
+            System.out.println("name return is "+submiter_info.getString("username"));
             map.put("house_id_hash",temp.getString("house_hash"));
             key_for_search=new String[]{"house_id_hash"};
             value_for_search=new String[]{temp.getString("house_hash")};
@@ -121,12 +142,33 @@ public class TractServiceImpl implements TractService {
                 v=table.query(key_for_search,value_for_search,key_to_get,path+"housetable2.txt");
                 commu_name=v.get(0)[0];
             }
+            System.out.println("commu_name in tract is "+commu_name);
             map.put("commu_name",commu_name);
-            map.put("tract_status",temp.getString("state"));
+            String _status=null;
+            String status=temp.getString("state");
+            String user_signed=temp.getString("subSecondSign");
+            String owner_signed=temp.getString("resSecondSign");
+            if(status.equals("0"))
+                _status="submit";
+            else if(status.equals("1"))
+                _status="effect";
+            else if(status.equals("2"))
+                _status="finish";
+            else if(status.equals("3"))
+                _status="refused";
+            else if(status.equals("4"))
+                _status="fail";
+            if(user_signed.equals("1")&&!owner_signed.equals("1"))
+                _status="userIden";
+            else if(!user_signed.equals("1")&&owner_signed.equals("1"))
+                _status="ownerIden";
+            map.put("tract_status",_status);
             JSONObject result_node=new JSONObject(map);
             result.add(result_node);
+            System.out.println("result_node in tractS is "+result_node.toJSONString());
         }
         String r=result.toJSONString();
+        System.out.println("result in tractS is "+result.toJSONString());
         return r;
     }
 
@@ -145,21 +187,35 @@ public class TractServiceImpl implements TractService {
         String[] key_to_get={"SK"};
         ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+hash+"\\"+"user.txt");
         String sk=v.get(0)[0];
-        String msg=bc.getMessage(addr,sk,ethPassWord);
-        JSONObject jsonObject= JSON.parseObject(msg);
-        JSONArray result=null;
+//        String msg=bc.getMessage(addr,sk,ethPassWord);
+        JSONObject jsonObject= bc.getMessage3(addr,sk,ethPassWord);
+        JSONArray result=new JSONArray();
         String[]hash_house=download_house();
         for(int i=0;i<_result.size();i++){
             Map<String,Object>map=new HashMap<>();
-            map.put("username",owner);
-            map.put("name",jsonObject.getString("username"));
             JSONObject temp=_result.getJSONObject(i);
+            String responder=temp.getString("responder");
+            String submiter=temp.getString("submiter");
+            System.out.println("sub and res in user get are "+submiter+" "+responder);
+            JSONObject submiter_info=bc.getMessage3(addr,sk,ethPassWord);
+//            String username=get_name(hash,responder);
+//            map.put("username",username);
+//            map.put("name",submiter_info.getString("username"));
             map.put("house_id_hash",temp.getString("house_hash"));
             key_for_search=new String[]{"house_id_hash"};
             value_for_search=new String[]{temp.getString("house_hash")};
-            key_to_get=new String[]{"commu_name"};
+            key_to_get=new String[]{"commu_name","house_hash"};
             v=table.query(key_for_search,value_for_search,key_to_get,path+"housetable1.txt");
             String commu_name=null;
+            String de_hash=v.get(0)[1];
+            try{
+            IPFS_SERVICE_IMPL.download(path+"detailedHouse\\"+hash,de_hash,"");}
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+//            map.put("username",username);
+//            map.put("name",user);
             try{
                 commu_name=v.get(0)[0];
             }catch (Exception e){
@@ -167,7 +223,31 @@ public class TractServiceImpl implements TractService {
                 commu_name=v.get(0)[0];
             }
             map.put("commu_name",commu_name);
-            map.put("tract_status",temp.getString("state"));
+            key_to_get=new String[]{"owner_name","owner"};
+            v=table.get_all(key_to_get,path+"detailedHouse\\"+hash+"\\info.txt");
+            String username=v.get(0)[0];
+            String user=v.get(0)[1];
+            map.put("username",username);
+            map.put("name",user);
+            String _status=null;
+            String status=temp.getString("state");
+            String user_signed=temp.getString("subSecondSign");
+            String owner_signed=temp.getString("resSecondSign");
+            if(status.equals("0"))
+                _status="submit";
+            else if(status.equals("1"))
+                _status="effect";
+            else if(status.equals("2"))
+                _status="finish";
+            else if(status.equals("3"))
+                _status="refused";
+            else if(status.equals("4"))
+                _status="fail";
+            if(user_signed.equals("1")&&!owner_signed.equals("1"))
+                _status="userIden";
+            else if(!user_signed.equals("1")&&owner_signed.equals("1"))
+                _status="ownerIden";
+            map.put("tract_status",_status);
             JSONObject result_node=new JSONObject(map);
             result.add(result_node);
         }
@@ -178,8 +258,13 @@ public class TractServiceImpl implements TractService {
         String hash=download();
         String owner_addr=get_addr(ownername,hash);
         String user_addr=get_addr(username,hash);
+        String[] key_for_search={"user_name"};
+        String[] value_for_search={ownername};
+        String[] key_to_get={"SK"};
+        ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+hash+"\\"+"user.txt");
+        String sk=v.get(0)[0];
 //        if(request_response)
-            bc.responseOrder(owner_addr,contractAddress,ethPassword,user_addr, request_response, coins);
+            bc.responseOrder(owner_addr,sk,ethPassword,user_addr, request_response, coins);
 //        else
 //            bc.rejectOrder(owner_addr,contractAddress,ethPassword,user_addr);
     }
@@ -188,14 +273,24 @@ public class TractServiceImpl implements TractService {
         String hash=download();
         String user_addr=get_addr(username,hash);
         String owner_addr=get_addr(ownername,hash);
-        bc.confirmSecond(1,owner_addr,contractAddress,user_addr,ethPassword, requestIdentify);
+        String[] key_for_search={"user_name"};
+        String[] value_for_search={username};
+        String[] key_to_get={"SK"};
+        ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+hash+"\\"+"user.txt");
+        String sk=v.get(0)[0];
+        bc.confirmSecond(1,owner_addr,sk,user_addr,ethPassword, requestIdentify);
     }
 
     public void ownerIden(String username,boolean requestIdentify,String ownername,String ethPassword){
         String hash=download();
         String user_addr=get_addr(username,hash);
         String owner_addr=get_addr(ownername,hash);
-        bc.confirmSecond(0,owner_addr,contractAddress,user_addr,ethPassword, requestIdentify);
+        String[] key_for_search={"user_name"};
+        String[] value_for_search={ownername};
+        String[] key_to_get={"SK"};
+        ArrayList<String[]>v=table.query(key_for_search,value_for_search,key_to_get,path+hash+"\\"+"user.txt");
+        String sk=v.get(0)[0];
+        bc.confirmSecond(0,owner_addr,sk,user_addr,ethPassword, requestIdentify);
     }
 
     public void payPass(String paypass1,String username,String ethpassword){
