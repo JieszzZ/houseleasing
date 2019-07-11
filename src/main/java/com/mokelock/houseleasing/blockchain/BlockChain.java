@@ -44,7 +44,8 @@ public class BlockChain {
     //    @Value(value = "${BlockChain.root.File}")
     private String rootFile = "E:\\Geth\\data\\keystore\\UTC--2019-07-09T00-53-06.868496100Z--7d8b423d21b1e682063665b4fa99df5d04874c48";
     //    @Value(value = "${BlockChain.contract.address}")
-    private String contractAddress = "0xa0f490e57d4ddf2c5a526d99aea5125fd310466c";
+    private String contractAddress = "0x6b9d6f53b69847568ae06f5cad8062a2f4176aa6";
+//            "0xa0f490e57d4ddf2c5a526d99aea5125fd310466c";
 
     /**
      * 创建用户账户

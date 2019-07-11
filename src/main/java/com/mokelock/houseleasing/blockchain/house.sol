@@ -299,6 +299,7 @@ contract blockChain
         
         
         cis.submiterEthCoin = coins;
+        cir.submiterEthCoin = coins;
         cis.subFirstSign = 1;
         cir.subFirstSign = 1;
         cis.sub_time = now;
@@ -504,20 +505,21 @@ contract blockChain
         uint256 a;
         uint256 km;
         uint256 am;
-        if(_appealer == owner)
+        if(_appealer == msg.sender)
         {
              k = uint256(findEnd_noReturned_oreder(_submiter,_aimer,_submiter));
              a = uint256(findEnd_noReturned_oreder(_submiter,_aimer,_aimer));
              
         }
-        else if(_appealer != owner)
+        else if(_appealer != msg.sender)
         {
              k = uint256(findFailed_noReturned_orderer(_submiter,_aimer,_submiter));
              a = uint256(findFailed_noReturned_orderer(_submiter,_aimer,_aimer));
         }
         km = contracts[_submiter][k].submiterEthCoin;
         am = contracts[_aimer][a].aimerEthCoin;
-        if(_appealer == owner)
+        uint256 om = km+am;
+        if(_appealer == msg.sender)
         {
                 contracts[_submiter][k].money = 2;
                 contracts[_aimer][a].money = 3;
@@ -533,13 +535,13 @@ contract blockChain
                     return false;
                 }
         }
-         else if(_appealer != owner)
-            {
+         else if(_appealer != msg.sender)
+        {
                 if(_appealer == _submiter)
                 {
                     contracts[_submiter][k].money = 2;
                     contracts[_aimer][a].money = 3;
-                     if(!_submiter.send(km+am))
+                     if(!_submiter.send(om))
                     {
                         contracts[_appealer][k].money = 1;
                         contracts[_submiter][a].money = 1;
@@ -550,7 +552,7 @@ contract blockChain
                 {
                     contracts[_submiter][k].money = 3;
                     contracts[_aimer][a].money = 2;
-                     if(!_aimer.send(km+am))
+                     if(!_aimer.send(om))
                     {
                         contracts[_appealer][k].money = 1;
                         contracts[_submiter][a].money = 1;
@@ -660,4 +662,3 @@ contract blockChain
         return true;
     }
 }
-
