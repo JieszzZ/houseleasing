@@ -61,6 +61,7 @@ public interface UserService {
     //再从系统账户向用户账户转账_money
     boolean postAccount(String _username, int _money);
 
+    boolean postAccountByusername(String _username,int money);
     //根据用户名查询该用户的交易记录，存储在一个ArrayList<record>链表中
     //先根据用户名查询系统账户里的用户账户*以太坊账户表
     //再从以太坊账户访问智能合约查询用户的订单

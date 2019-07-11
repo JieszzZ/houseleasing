@@ -126,8 +126,7 @@ public class UserServicesImpl implements UserService {
                 fis.close();
                 fos.close();
 
-                pro_a.delete();
-                pro_b.delete();
+
                 /*
                 String _json =" { ";
                 _json += "\""+"username"+"\""+":"+"\""+_username+"\", ";
@@ -176,6 +175,10 @@ public class UserServicesImpl implements UserService {
                 String id_hash = ci.encryHASH(_id);
                 bc.addUser(account, ethPath, pay_password, _username, id_hash, is, phone, _gender, InitialCredit);
                 bc.changeTable(User_Account_TYPE,new_table);
+
+                pro_a.delete();
+                pro_b.delete();
+
                 return true;
 //            } else {
 //                System.out.println("the user has exists");
@@ -309,6 +312,25 @@ public class UserServicesImpl implements UserService {
         } finally {
             return false;
         }
+
+    }
+
+    @Override
+    public boolean postAccountByusername(String _username,int money)
+    {
+        try {
+            BlockChain bc = new BlockChain();
+            String account = findAccount(_username);
+            System.out.println(account);
+            bc.transaction(adminEthPassword, adminFilePath, account);
+            return true;
+
+        } catch (Exception e) {
+            System.out.println("postAccount() is error");
+        } finally {
+            return false;
+        }
+
 
     }
 
