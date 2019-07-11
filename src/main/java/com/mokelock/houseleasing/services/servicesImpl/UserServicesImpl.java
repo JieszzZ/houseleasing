@@ -2,6 +2,7 @@ package com.mokelock.houseleasing.services.servicesImpl;
 
 import com.mokelock.houseleasing.Cipher.Ciphers;
 import com.mokelock.houseleasing.Cipher.CiphersImpl.CiphersImpl;
+import com.mokelock.houseleasing.IPFS.File_Read_Test;
 import com.mokelock.houseleasing.IPFS.IPFS_SERVICE;
 import com.mokelock.houseleasing.IPFS.IpfsImpl.IPFS_SERVICE_IMPL;
 import com.mokelock.houseleasing.IPFS.Table;
@@ -51,7 +52,7 @@ public class UserServicesImpl implements UserService {
     private String adminFilePath = "E:\\Geth\\data\\keystore\\UTC--2019-07-09T00-53-06.868496100Z--7d8b423d21b1e682063665b4fa99df5d04874c48";
 //    private static String adminFilePath = "N:\\geth\\data\\keystore\\UTC--2019-07-06T05-37-21.279150600Z--1f3ff30f01ec45eb10a6c5613aaf33224b40d0b0";
     private static final int InitialCredit = 10;
-    private static final int InitialGive = 100;
+    private static final int InitialGive = 10000000;
     @Resource
     private UserDao userDao;
 
@@ -82,7 +83,7 @@ public class UserServicesImpl implements UserService {
         User user = new User(_username, _password, pay_password, name, phone, _profile_a, _profile_b, _id, _gender);
         System.out.println(user.toString());
         try {
-            if (userDao.checkUser(_username) <= 0 && userDao.insertUser(_username, _password) > 0) {
+//            if (userDao.checkUser(_username) <= 0 && userDao.insertUser(_username, _password) > 0) {
                 BlockChain bc = new BlockChain();
                 Map map = bc.creatCredentials(pay_password);
 
@@ -92,7 +93,10 @@ public class UserServicesImpl implements UserService {
                 String account = (String) map.get("ethAddress");
                 String ethPath = (String) map.get("ethPath");
                 Table table = new TableImpl();
-                table.insert(_username, account, ethPath, tablepath + "\\" + oneTable);
+                System.out.println("before insert " + _username + account + ethPath);
+                String tempPath = System.getProperty("user.dir") + "\\src\\main\\file\\table\\onetable.txt";
+                System.out.println("tempPath is " + tempPath);
+
 
                 postAccount(account, InitialGive);
 
@@ -145,9 +149,19 @@ public class UserServicesImpl implements UserService {
                 fos.close();
                 */
 
+                System.out.println("length is " + new File("E:\\houseleasing\\houseleasing\\src\\main\\file\\table\\onetable.txt").length());
+
+                System.out.println("length before is " + new File("E:\\houseleasing\\houseleasing\\src\\main\\file" +
+                        "\\table\\onetable.txt").length());
+                table.insert(_username, account, ethPath, tempPath);
+                System.out.println("length after is " + new File("E:\\houseleasing\\houseleasing\\src\\main\\file" +
+                        "\\table\\onetable.txt").length());
+
                 //把身份证照片的文件夹传到IPFS
                 String is = IPFS_SERVICE_IMPL.upload(path);
                 String new_table = IPFS_SERVICE_IMPL.upload(tablepath+"\\"+oneTable);
+                System.out.println("is is " + is);
+                System.out.println("new_table is " + new_table);
                 //把哈希值传给以太坊
                 //bc.changeHashInfo(account,is);
 
@@ -163,9 +177,9 @@ public class UserServicesImpl implements UserService {
                 bc.addUser(account, ethPath, pay_password, _username, id_hash, is, phone, _gender, InitialCredit);
                 bc.changeTable(User_Account_TYPE,new_table);
                 return true;
-            } else {
-                System.out.println("the user has exists");
-            }
+//            } else {
+//                System.out.println("the user has exists");
+//            }
 
         } catch (IOException e) {
             System.out.println("register failed.");

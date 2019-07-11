@@ -7,7 +7,11 @@ public class HouseTemp {
     private String house_owner_credit;
     private String house_id;
     private String state;
-    private String low_location;
+//    private String low_location;
+    private String provi;
+    private String city;
+    private String sector;
+    private String commu_name;
     private String specific_location;
     private String floor;
     private boolean elevator;
@@ -22,13 +26,36 @@ public class HouseTemp {
     public HouseTemp() {
     }
 
-    public HouseTemp(String user_id, String user, String house_owner_credit, String house_id, String state, String low_location, String specific_location, String floor, boolean elevator, String lease, String lease_type, String house_type, String lon, String lat, String area, String accessory) {
+//    public HouseTemp(String user_id, String user, String house_owner_credit, String house_id, String state, String low_location, String specific_location, String floor, boolean elevator, String lease, String lease_type, String house_type, String lon, String lat, String area, String accessory) {
+//        this.user_id = user_id;
+//        this.user = user;
+//        this.house_owner_credit = house_owner_credit;
+//        this.house_id = house_id;
+//        this.state = state;
+//        this.low_location = low_location;
+//        this.specific_location = specific_location;
+//        this.floor = floor;
+//        this.elevator = elevator;
+//        this.lease = lease;
+//        this.lease_type = lease_type;
+//        this.house_type = house_type;
+//        this.lon = lon;
+//        this.lat = lat;
+//        this.area = area;
+//        this.accessory = accessory;
+//    }
+
+
+    public HouseTemp(String user_id, String user, String house_owner_credit, String house_id, String state, String provi, String city, String sector, String commu_name, String specific_location, String floor, boolean elevator, String lease, String lease_type, String house_type, String lon, String lat, String area, String accessory) {
         this.user_id = user_id;
         this.user = user;
         this.house_owner_credit = house_owner_credit;
         this.house_id = house_id;
         this.state = state;
-        this.low_location = low_location;
+        this.provi = provi;
+        this.city = city;
+        this.sector = sector;
+        this.commu_name = commu_name;
         this.specific_location = specific_location;
         this.floor = floor;
         this.elevator = elevator;
@@ -81,13 +108,13 @@ public class HouseTemp {
         this.state = state;
     }
 
-    public String getLow_location() {
-        return low_location;
-    }
-
-    public void setLow_location(String low_location) {
-        this.low_location = low_location;
-    }
+//    public String getLow_location() {
+//        return low_location;
+//    }
+//
+//    public void setLow_location(String low_location) {
+//        this.low_location = low_location;
+//    }
 
     public String getSpecific_location() {
         return specific_location;
@@ -167,5 +194,62 @@ public class HouseTemp {
 
     public void setAccessory(String accessory) {
         this.accessory = accessory;
+    }
+
+    public String getProvi() {
+        return provi;
+    }
+
+    public void setProvi(String provi) {
+        this.provi = provi;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getSector() {
+        return sector;
+    }
+
+    public void setSector(String sector) {
+        this.sector = sector;
+    }
+
+    public String getCommu_name() {
+        return commu_name;
+    }
+
+    public void setCommu_name(String commu_name) {
+        this.commu_name = commu_name;
+    }
+
+    @Override
+    public String toString() {
+        return "HouseTemp{" +
+                "user_id='" + user_id + '\'' +
+                ", user='" + user + '\'' +
+                ", house_owner_credit='" + house_owner_credit + '\'' +
+                ", house_id='" + house_id + '\'' +
+                ", state='" + state + '\'' +
+                ", provi='" + provi + '\'' +
+                ", city='" + city + '\'' +
+                ", sector='" + sector + '\'' +
+                ", commu_name='" + commu_name + '\'' +
+                ", specific_location='" + specific_location + '\'' +
+                ", floor='" + floor + '\'' +
+                ", elevator=" + elevator +
+                ", lease='" + lease + '\'' +
+                ", lease_type='" + lease_type + '\'' +
+                ", house_type='" + house_type + '\'' +
+                ", lon='" + lon + '\'' +
+                ", lat='" + lat + '\'' +
+                ", area='" + area + '\'' +
+                ", accessory='" + accessory + '\'' +
+                '}';
     }
 }
