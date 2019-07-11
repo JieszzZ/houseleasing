@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 public class BlockChain {
 
     //    @Value(value = "${BlockChain.url}")
-    private String url = "http://121.250.222.90:9988/";
+    private String url = "http://121.250.222.20:9988/";
     private Web3j web3j = Web3j.build(new HttpService(url));
     //    @Value(value = "${BlockChain.filePath}")
     private String filePath = "E:\\Geth\\data\\keystore";
