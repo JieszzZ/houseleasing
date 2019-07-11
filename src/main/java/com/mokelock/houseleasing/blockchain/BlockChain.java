@@ -516,21 +516,21 @@ public class BlockChain {
                 tuple8 = houseContract.findOrder_1(address, new Uint256(i)).send();
                 tuple7 = houseContract.findOrder_2(address, new Uint256(i)).send();
                 JSONObject temp = new JSONObject();
-                temp.put("submiter", tuple8.getValue1());
-                temp.put("responder", tuple8.getValue2());
-                temp.put("submiterEthCoin", tuple8.getValue3());
-                temp.put("aimerEthCoin", tuple8.getValue4());
-                temp.put("subFirstSign", tuple8.getValue5());
-                temp.put("resFirstSign", tuple8.getValue6());
-                temp.put("subSecondSign", tuple8.getValue7());
-                temp.put("resSecondSign", tuple8.getValue8());
-                temp.put("sub_time", tuple7.getValue1());
-                temp.put("effect_time", tuple7.getValue2());
-                temp.put("finish_time", tuple7.getValue3());
-                temp.put("role", tuple7.getValue4());
-                temp.put("state", tuple7.getValue5());
-                temp.put("money", tuple7.getValue6());
-                temp.put("house_hash", tuple7.getValue7());
+                temp.put("submiter", tuple8.getValue1().getValue());
+                temp.put("responder", tuple8.getValue2().getValue());
+                temp.put("submiterEthCoin", tuple8.getValue3().getValue());
+                temp.put("aimerEthCoin", tuple8.getValue4().getValue());
+                temp.put("subFirstSign", tuple8.getValue5().getValue());
+                temp.put("resFirstSign", tuple8.getValue6().getValue());
+                temp.put("subSecondSign", tuple8.getValue7().getValue());
+                temp.put("resSecondSign", tuple8.getValue8().getValue());
+                temp.put("sub_time", tuple7.getValue1().getValue());
+                temp.put("effect_time", tuple7.getValue2().getValue());
+                temp.put("finish_time", tuple7.getValue3().getValue());
+                temp.put("role", tuple7.getValue4().getValue());
+                temp.put("state", tuple7.getValue5().getValue());
+                temp.put("money", tuple7.getValue6().getValue());
+                temp.put("house_hash", tuple7.getValue7().getValue());
                 jsonArray.add(temp);
             }
         } catch (Exception e) {
