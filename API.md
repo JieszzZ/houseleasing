@@ -4,7 +4,7 @@
 负责人：曲延松
 
 ## 0
-* baseurl : /api/v1/
+* baseurl : /api
 * 所有日期时间如无特殊说明 格式为ISO 8601:
   ```
   YYYY-MM-DDTHH:MM:SSZ
@@ -571,6 +571,10 @@ low_location：
   }
   ```
   
+  
+
+  
+  
    * #### 联系房主
   ```
   POST /user/contact_owner
@@ -988,6 +992,47 @@ low_location：
   |request_response|number|请求反馈 1 房主违约  2 房客违约 |
   
   
+  
+
+
+* #### 历史足迹
+  ```
+  GET /user/history
+  ```
+
+
+   #### response
+  ```
+  {
+  "status":200,
+  "message":"success",
+  "data":{
+      houseList:[
+        {
+          "house_pic":"sadfadsfadf"   //一张图片的hash
+       
+          low_str_location:"山东省济南市历下区奥龙官邸",
+          "lease":"5000",
+          "house_type":"2",
+          "lease_type":"1",
+          "elevator":true,
+          "house_id_hash":"sdfadfafsaf"   //房子房产证的哈希
+        }，
+        ...
+    ],
+    }
+  }
+  ```
+  
+
+  * #### 人脸验证(u)
+  ```
+  POST /user/check
+  ```
+  ##### input
+  |Name|Type|Description|
+  |---|---|---|
+  |face|file|实时人像图片|
   
 
   
