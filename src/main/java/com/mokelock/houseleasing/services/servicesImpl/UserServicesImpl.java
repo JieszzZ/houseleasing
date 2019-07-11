@@ -348,7 +348,7 @@ public class UserServicesImpl implements UserService {
             BlockChain bc = new BlockChain();
 
 
-            String orders = bc.findOrders(account, ethFile, pay_password);
+            JSONArray orders = bc.findOrders(account, ethFile, pay_password);
             ArrayList<record> ars = readRecords(orders);
             for (int i = 0; i < ars.size(); i++) {
                 alr.add(new front_record(ars.get(i)));
@@ -762,11 +762,11 @@ public class UserServicesImpl implements UserService {
         return user;
     }
 
-    private ArrayList<record> readRecords(String records) {
-        JSONArray ja = JSONArray.parseArray(records);
+    private ArrayList<record> readRecords(JSONArray records) {
+        //JSONArray ja = JSONArray.parseArray(records);
         ArrayList<record> alr = new ArrayList<record>();
-        for (int i = 0; i < ja.size(); i++) {
-            record record = (record) ja.get(i);
+        for (int i = 0; i < records.size(); i++) {
+            record record = (record) records.get(i);
             alr.add(record);
         }
         return alr;
