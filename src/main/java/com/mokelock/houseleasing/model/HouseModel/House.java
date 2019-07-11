@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
+import java.util.Arrays;
+
 /*
  * 李晓婷
  * 20190624
@@ -390,4 +392,35 @@ public class House {
         this.house_comment = house_comment;
     }
 
+    @Override
+    public String toString() {
+        return "House{" +
+                "user_id='" + user_id + '\'' +
+                ", house_pic=" + Arrays.toString(house_pic) +
+                ", house_id='" + house_id + '\'' +
+                ", house_id_hash='" + house_id_hash + '\'' +
+                ", owner_id='" + owner_id + '\'' +
+                ", verify=" + verify +
+                ", owner='" + owner + '\'' +
+                ", owner_name='" + owner_name + '\'' +
+                ", role=" + role +
+                ", state=" + state +
+                ", area='" + area + '\'' +
+                ", low_location=" + low_location +
+                ", low_str_location='" + low_str_location + '\'' +
+                ", specific_location='" + specific_location + '\'' +
+                ", floor=" + floor +
+                ", lon='" + lon + '\'' +
+                ", lat='" + lat + '\'' +
+                ", elevator=" + elevator +
+                ", lease=" + lease +
+                ", lease_inter=" + lease_inter +
+                ", lease_type=" + lease_type +
+                ", house_type=" + house_type +
+                ", house_owner_credit=" + house_owner_credit +
+                ", house_level=" + house_level +
+                ", accessory='" + accessory + '\'' +
+                ", house_comment=" + house_comment +
+                '}';
+    }
 }

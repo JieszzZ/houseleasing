@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 public class BlockChain {
 
     //    @Value(value = "${BlockChain.url}")
-    private String url = "http://121.250.222.20:9988/";
+    private String url = "http://211.87.230.20:9988/";
     private Web3j web3j = Web3j.build(new HttpService(url));
     //    @Value(value = "${BlockChain.filePath}")
     private String filePath = "E:\\Geth\\data\\keystore";
@@ -247,6 +247,32 @@ public class BlockChain {
         jsonObject.put("gender", gender);
         jsonObject.put("credit", credit);
         return jsonObject.toJSONString();
+    }
+    public JSONObject getMessage3(String userAddress, String ethFile, String ethPassword) {
+        House_sol_blockChain houseContract = loadContract(userAddress, ethFile, ethPassword);
+        Tuple6<Utf8String, Utf8String, Utf8String, Utf8String, Uint256, Uint256> tuple6 = null;
+        Address address = new Address(userAddress);
+        try {
+            tuple6 = houseContract.findUser(address).send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("tuple6 is " + tuple6.toString());
+        Utf8String username = tuple6 != null ? tuple6.getValue1() : null;
+        Utf8String id = tuple6 != null ? tuple6.getValue2() : null;
+        Utf8String IPFS_hash = tuple6 != null ? tuple6.getValue3() : null;
+        Utf8String phone = tuple6 != null ? tuple6.getValue4() : null;
+        Uint256 gender = tuple6 != null ? tuple6.getValue5() : null;
+        Uint256 credit = tuple6 != null ? tuple6.getValue6() : null;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username", username);
+        jsonObject.put("id", id);
+        jsonObject.put("IPFS_hash", IPFS_hash);
+        jsonObject.put("phone", phone);
+        jsonObject.put("gender", gender);
+        jsonObject.put("credit", credit);
+        System.out.println("json in getMessage3 is " + jsonObject.toJSONString());
+        return jsonObject;
     }
 
     public void getMessage2(String userAddress, String ethFile, String ethPassword) {
@@ -516,21 +542,21 @@ public class BlockChain {
                 tuple8 = houseContract.findOrder_1(address, new Uint256(i)).send();
                 tuple7 = houseContract.findOrder_2(address, new Uint256(i)).send();
                 JSONObject temp = new JSONObject();
-                temp.put("submiter", tuple8.getValue1());
-                temp.put("responder", tuple8.getValue2());
-                temp.put("submiterEthCoin", tuple8.getValue3());
-                temp.put("aimerEthCoin", tuple8.getValue4());
-                temp.put("subFirstSign", tuple8.getValue5());
-                temp.put("resFirstSign", tuple8.getValue6());
-                temp.put("subSecondSign", tuple8.getValue7());
-                temp.put("resSecondSign", tuple8.getValue8());
-                temp.put("sub_time", tuple7.getValue1());
-                temp.put("effect_time", tuple7.getValue2());
-                temp.put("finish_time", tuple7.getValue3());
-                temp.put("role", tuple7.getValue4());
-                temp.put("state", tuple7.getValue5());
-                temp.put("money", tuple7.getValue6());
-                temp.put("house_hash", tuple7.getValue7());
+                temp.put("submiter", tuple8.getValue1().getValue());
+                temp.put("responder", tuple8.getValue2().getValue());
+                temp.put("submiterEthCoin", tuple8.getValue3().getValue());
+                temp.put("aimerEthCoin", tuple8.getValue4().getValue());
+                temp.put("subFirstSign", tuple8.getValue5().getValue());
+                temp.put("resFirstSign", tuple8.getValue6().getValue());
+                temp.put("subSecondSign", tuple8.getValue7().getValue());
+                temp.put("resSecondSign", tuple8.getValue8().getValue());
+                temp.put("sub_time", tuple7.getValue1().getValue());
+                temp.put("effect_time", tuple7.getValue2().getValue());
+                temp.put("finish_time", tuple7.getValue3().getValue());
+                temp.put("role", tuple7.getValue4().getValue());
+                temp.put("state", tuple7.getValue5().getValue());
+                temp.put("money", tuple7.getValue6().getValue());
+                temp.put("house_hash", tuple7.getValue7().getValue());
                 jsonArray.add(temp);
             }
         } catch (Exception e) {

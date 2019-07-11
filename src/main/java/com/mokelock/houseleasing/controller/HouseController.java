@@ -146,6 +146,7 @@ public class HouseController {
         low_location.put("commu_name", house.getCommu_name());
 
         System.out.println("username is " + username);
+        System.out.println("house_id is " + house.getHouse_id());
 
         JSONObject jsonObject = houseService.setUpHouse(username, ethPassword, Integer.parseInt(house.getHouse_owner_credit()),
                 house.getHouse_id(), Integer.parseInt(house.getState()), low_location,

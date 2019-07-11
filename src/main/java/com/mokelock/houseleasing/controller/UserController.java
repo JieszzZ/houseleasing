@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.mokelock.houseleasing.model.HouseModel.House;
 import com.mokelock.houseleasing.model.UserModel.User;
 import com.mokelock.houseleasing.model.UserModel.UserTemp;
+import com.mokelock.houseleasing.services.FaceService;
 import com.mokelock.houseleasing.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +31,9 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private FaceService faceService;
 
     /**
      * 用户登录
@@ -341,6 +344,25 @@ public class UserController {
     @RequestMapping(value = "/changeinfo", method = RequestMethod.POST)
     public void changeInfo(HttpServletRequest request, HttpServletResponse response, String username, String credit) {
 //        String s = userService.postPhone();
+    }
+
+    @RequestMapping(value = "/check")
+    public void changeInfo(HttpServletRequest request, HttpServletResponse response, MultipartFile face) {
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("username");
+        String ethPassword = (String) session.getAttribute("payPass");
+        logger.info("payPass in setUpHouse is " + ethPassword);
+        if (ethPassword == null) {
+            response.setStatus(201);
+        }
+        String path = System.getProperty("user.dir") + "\\src\\main\\file\\temp\\";
+        File file = new File(path + face.getOriginalFilename());
+        try {
+            face.transferTo(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        faceService.match(file, username, ethPassword);
     }
 
 }

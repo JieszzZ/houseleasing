@@ -403,10 +403,14 @@ public class HouseServiceImpl implements HouseService {
             //Response failRes = new Response(200,"fail");
             //toReturn = failRes.RestoJson2();
         }else if(id1.size() == 0 && id2.size() == 0 && fut.size() != 0){
-            JSONObject u = JSONObject.parseObject(bc.getMessage(fut.get(0)[0],fut.get(0)[1],ethPassword));
+            System.out.println("ownername is " + user);
+            JSONObject u = bc.getMessage3(fut.get(0)[0],fut.get(0)[1],ethPassword);
+            System.out.println(u.toJSONString());
+            System.out.println("house_id in service is " + house_id);
             insertHouse.setHouse_id_hash(enId.encryHASH(house_id));
             insertHouse.setOwner_id(u.getString("id"));
             insertHouse.setOwner_name(u.getString("username"));
+            System.out.println("username before insertHouse is " + insertHouse.getOwner_name());
             insertHouse.setOwner(user);
             insertHouse.setRole(0);
             insertHouse.setState(state);
@@ -424,6 +428,8 @@ public class HouseServiceImpl implements HouseService {
             insertHouse.setLat(lat);
             insertHouse.setLon(lon);
             insertHouse.setAccessory(accessory);
+
+            System.out.println("insertHosue is \n" + insertHouse.toString());
 
             System.out.println(4);
             int lease_inter;
